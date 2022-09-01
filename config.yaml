@@ -21,7 +21,7 @@ paginate: 10
 # enableGoogleAnalytics: false
 # googleAnalytics: your-google-analytics-id
 # enableBaiduAnalytics: true
-baiduAnalytics: '8f70ac927bdcaf45a22df60dd240bfcd'
+baiduAnalytics: 'c2336cad7e77b97703a3cc5e2e516161'
 #disqusShortname: your-disqus-shortname
 
 # Hugo Configure Markup
