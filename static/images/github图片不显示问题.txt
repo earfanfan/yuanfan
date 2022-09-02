@@ -1,0 +1,12 @@
+
+https://raw.githubusercontent.com/earfanfan/yf/main/static/images/maomao.jpg
+
+1.从github进去点击图片Download，会出现图片的真实存储地址
+
+
+2.把二级域名输入到https://www.ipaddress.com/ 查找对应的IP地址
+
+
+3.打开本地的hosts文件（C:\Windows\System32\drivers\etc\hosts），将IP地址加进去
+
+4. 显示图片在md文件中的写法是" ![图片描述](图片真实存储地址)  "
