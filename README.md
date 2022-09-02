@@ -1,18 +1,3 @@
-# Hugo Theme Mini Example Site
+# 由来
 
-This repository offers an example site for [Hugo Theme mini](https://github.com/nodejh/hugo-theme-mini) and also it provides the default content for [Online Demo](http://nodejh.github.io/hugo-theme-mini).
-
-# Using
-
-1. [Install Hugo](https://gohugo.io/overview/installing/)
-2. Clone this repository
-
-    ```bash
-    $ git clone https://github.com/nodejh/hugo-theme-mini
-    $ cd exampleSite
-    ```
-3. Run Hugo server. The exampleSite use theme `hugo-theme-mini` by setting `themesDir` as `../../`
-
-    ```bash
-    $ hugo server
-    ```
+由于原来的博客<https://yuanfan.vercel.app/>在中国大陆地区不能继续访问了，所以搭了这个新博客。原博客底下的评论并没有迁移过来，但其实那是一个被沉入海底封存的宝藏，希望将来有一天我还能再看到。
