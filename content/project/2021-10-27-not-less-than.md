@@ -33,7 +33,7 @@ draft: no
 
 可是我还是想不到简单解法，于是就把这个问题拿去问了同事小花，小花给了我一个很简单的思路：把“不连续”的变更记录直接去掉，然后对时间取最小值。
 
-```{sql}
+```sql
 select t.customer_id, min(ch.insert_time)
   from t_base t  --确定数据范围的基础表，瞎编的表名
   left join t_vip_change ch on t.customer_id = ch.customer_id  --t_vip_change也是瞎编的表名

@@ -28,7 +28,7 @@ draft: no
 
 在这个目录下翻到了**hive-jdbc-2.1.1-cdh6.3.2-standalone.jar**，挪到 RStudio Server 所在的那台服务器上面去，接着就能正常连上数据库了。
 
-```{r}
+```r
 options(java.parameters = "-Xmx8192m")
 library(DBI)
 library(rJava)

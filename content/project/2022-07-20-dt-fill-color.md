@@ -18,7 +18,7 @@ DT 包中有一些函数可以针对表格中的各列数据做格式化处理�
 
 依照惯例，编造一份数据，便于以后复现：
 
-```{r}
+```r
 library(DT)
 
 set.seed(2022)
@@ -47,7 +47,7 @@ data <- data.frame(
 
 参照 DT 包官方案例，设定表格中填充的颜色由白色逐渐变为红色。其中白色的 RGB 值是`255,255,255`，红色的 RGB 值是`255,0,0`，那么由白色渐变为红色可理解为 R 值不变，G/B值逐渐减小。
 
-```{r}
+```r
 #数值由小到大，颜色由白到红
 brks <-
   quantile(data$value2, probs = seq(.05, .95, .1), na.rm = TRUE)
@@ -58,11 +58,11 @@ datatable(data, rownames = FALSE, options = list(order = list(2, 'asc'))) |>
   formatStyle('value2', backgroundColor = styleInterval(brks, clrs))
 ```
 
-![](https://yuanfan.vercel.app/images/2022-07-20-1.jpg)
+![](https://yuanfan.rbind.io/images/2022-07-20-1.jpg)
 
 其中`quantile()`是用于求分位数的函数，自不必多说。`seq(from = 1, to = 1, by = ((to - from)/(length.out - 1)), length.out = NULL)`是 R base 中一个用来生成序列的函数。如下，可以指定间隔步长的具体数值，也可以指定所需生成序列的长度。
 
-```
+```r
 >seq(.05, .95, .1)
 [1] 0.05 0.15 0.25 0.35 0.45 0.55 0.65 0.75 0.85 0.95
 
@@ -72,7 +72,7 @@ datatable(data, rownames = FALSE, options = list(order = list(2, 'asc'))) |>
 
 像这种直接改变 RGB 值而使填充表格的颜色从白色渐变为另一种颜色的方式是很简便的，比如下图改成由白色渐变为绿色，由于白色的 RGB 值是`255,255,255`，绿色的RGB值是`0,255,0`，相当于保持G值不变，R/B值逐渐减小。
 
-```{r}
+```r
 #改成由白到绿
 clrs <- round(seq(255, 51, length.out = length(brks) + 1), 0) %>%
   {paste0("rgb(" ,  . , ",255,", ., ")")}
@@ -81,11 +81,11 @@ datatable(data, rownames = FALSE, options = list(order = list(2, 'asc'))) |>
   formatStyle('value2', backgroundColor = styleInterval(brks, clrs))
 ```
 
-![](https://yuanfan.vercel.app/images/2022-07-20-2.jpg)
+![](https://yuanfan.rbind.io/images/2022-07-20-2.jpg)
 
 同理，也可以改成由红色渐变为绿色。由于红色的 RGB 值是`255,0,0`，绿色的 RGB 值是`0,255,0`，由红渐变为绿即 R 值逐渐减小、G值逐渐增大、B值不变。
 
-```{r}
+```r
 #改成由红到绿
 clrs <- round(seq(51, 255, length.out = length(brks) + 1), 0) %>%
   {paste0("rgb(" , 255 - . , ",", ., ", 0)")}
@@ -94,7 +94,7 @@ datatable(data, rownames = FALSE, options = list(order = list(2, 'asc'))) |>
   formatStyle('value2', backgroundColor = styleInterval(brks, clrs))
 ```
 
-![](https://yuanfan.vercel.app/images/2022-07-20-3.jpg)
+![](https://yuanfan.rbind.io/images/2022-07-20-3.jpg)
 
 这种方法有一个弊端，普通人（比如我）对红黄蓝三原色如何配比组合成其他颜色的效果是很陌生的，这样弄出来的颜色总感觉有点扎眼睛。
 
@@ -104,7 +104,7 @@ datatable(data, rownames = FALSE, options = list(order = list(2, 'asc'))) |>
 
 先瞅瞅原案例中由红变绿、由白变绿的颜色长什么样子。
 
-```{r}
+```r
 library(echarts4r)
 
 data.frame(type = c('A', 'B', 'C'), value = rep(1, 3)) |>
@@ -117,12 +117,12 @@ data.frame(type = c('A', 'B', 'C', 'D', 'E'), value = rep(1, 5)) |>
         color = c("#ffffff", "#f2fbd2", "#c9ecb4", "#93d3ab", "#35b0ab"))
 ```
 
-|![](https://yuanfan.vercel.app/images/2022-07-20-4.jpg)|![](https://yuanfan.vercel.app/images/2022-07-20-5.jpg)|
+|![](https://yuanfan.rbind.io/images/2022-07-20-4.jpg)|![](https://yuanfan.rbind.io/images/2022-07-20-5.jpg)|
 |:-:|:-:|
 
 接着搬来案例中生成渐变色的函数。
 
-```{r}
+```r
 make_color_pal <- function(colors, bias = 1) {
   get_color <- colorRamp(colors, bias = bias)
   function(x) rgb(get_color(x), maxColorValue = 255)
@@ -139,7 +139,7 @@ color3 <- make_color_pal(c("#ffffff", "#f2fbd2", "#c9ecb4", "#93d3ab", "#35b0ab"
 
 最后，生成需要的渐变色，并填入表格中。
 
-```{r}
+```r
 # 把上一节中计算出来的十个分位数值拿来生成渐变颜色
 brks <- unname(brks)
 scaled <- (sort(brks) - min(brks)) / (max(brks) - min(brks))
@@ -157,13 +157,13 @@ datatable(data, rownames = FALSE, options = list(order = list(2, 'asc'))) |>
   formatStyle('value2', backgroundColor = styleInterval(brks2, clrs2))
 ```
 
-![](https://yuanfan.vercel.app/images/2022-07-20-6.jpg)
+![](https://yuanfan.rbind.io/images/2022-07-20-6.jpg)
 
 # 转换数据后填充颜色
 
 一般情况下，设置渐变颜色是与数值大小相关的，若是刚好有些数据想转换成特殊字符来展示且同时还填充渐变色的话，可以试试这么干。
 
-```{r}
+```r
 # 1.转换数据
 format_pct <- function(value) {
   ifelse(value == 0, " \u2013 " ,   # en dash for 0%
@@ -198,9 +198,9 @@ datatable(data,
     backgroundColor = styleEqual(scaled.value1, clrs3) ) 
 ```
 
-![](https://yuanfan.vercel.app/images/2022-07-20-7.jpg)
+![](https://yuanfan.rbind.io/images/2022-07-20-7.jpg)
 
-```{r}
+```r
 # 2.生成渐变颜色
 # 使用`styleInterval(brks, clrs)`时，表达颜色的向量长度多1位。
 scaled.value1 <- sort(data$value1)

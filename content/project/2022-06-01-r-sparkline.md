@@ -28,7 +28,7 @@ draft: no
 
 首先，编造一些用于展示迷你图的基础数据。
 
-```{r}
+```r
 library(htmlwidgets)
 library(sparkline)
 library(dplyr) # tidy版操作数据
@@ -49,11 +49,11 @@ u = as.matrix(u) # 转换成矩阵
 
 为了方便显示代码，下表中“代码”一列中均增加了`eval = FALSE`这一参数。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-1.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-1.png)
 
 运用 sparkline 包中的`spk_composite()`函数可以将两个不同的迷你图一起展示。
 
-```{r}
+```r
 # 第一种写法
 s1 <- sparkline(abs(x), type = 'bar')
 s2 <- sparkline(y, type = "line", fillColor = FALSE)
@@ -64,7 +64,7 @@ spk_composite(sparkline(abs(x), type = 'bar'),
               sparkline(y, type = "line", fillColor = FALSE))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-2.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-2.png)
 
 ## 1.2. 迷你图的图形细节
 
@@ -74,11 +74,11 @@ spk_composite(sparkline(abs(x), type = 'bar'),
 
 `sparkline()`函数中默认宽度和高度是`width = 60, height = 20`。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-3.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-3.png)
 
 宽度`width`对柱形图和 'tristate' 不起作用，需要通过修改`barWidth`（单个柱子的宽度）和`barSpacing`（柱子之间的空隙）来达到改变整个迷你图宽度的效果。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-4.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-4.png)
 
 ### 1.2.2. 颜色
 
@@ -86,24 +86,24 @@ spk_composite(sparkline(abs(x), type = 'bar'),
     - 'lineColor'：指定线的颜色
     - 'fillColor'：指定折线下面积的填充颜色，设定为`fillColor = FALSE`时表示不展示折线下的面积。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-5.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-5.png)
 
 + 柱形图的颜色设置
     - 'barColor'：指定普通柱子的颜色，通常就是指数值为正数的柱子
     - 'negBarColor'：指定数值为负数的柱子的颜色
     - 'zeroColor'：指定数值为零的柱子的颜色
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-6.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-6.png)
 
 + 堆叠柱形图的颜色设置
     - 'stackedBarColor'：指定堆叠的柱形图中柱子的颜色，如果是只堆叠了两个不同的数据系列，那么只需要指定两个不同的颜色。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-7.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-7.png)
 
 + 饼图颜色设置
     - 'sliceColors'：指定饼图中各个扇形的颜色。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-8.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-8.png)
 
 ### 1.2.3. 坐标轴
 
@@ -113,12 +113,12 @@ spk_composite(sparkline(abs(x), type = 'bar'),
 
 本文案例中'x'最大值为1.23，最小值为-2.42，因此若指定Y轴最小值为-5时，横轴之下的柱子都会变矮，同理若指定 Y 轴最大值为2时，横轴之上的柱子也会变矮。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-9.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-9.png)
 
 + 旋转角度
     - 'offset'：指定饼图的旋转角度，取值范围是[-90,90]
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-10.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-10.png)
 
 ### 1.2.4. 标注点和区域
 
@@ -128,12 +128,12 @@ spk_composite(sparkline(abs(x), type = 'bar'),
     - 'minSpotColor'：指定标记的最小值的点的颜色
     - 'maxSpotColor'：指定标记的最大值的点的颜色
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-11.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-11.png)
 
 + 标注区域
     - `normalRangeMin` 和`normalRangeMax`这两个参数需要同时设置，只设置一个会不起作用。
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-12.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-12.png)
 
 # 二、在表格中使用 sparkline
 
@@ -143,7 +143,7 @@ spk_composite(sparkline(abs(x), type = 'bar'),
 
 一般来讲一个表格中的一个单元格里仅展示一个数值，如果一个单元格里要显示一个迷你图，那么迷你图中需要写入一串数据。若直接在表格中增加 展示迷你图，那么就需要在原来用于展示的数据框中写入列表，作为迷你图的那一列中的每一行数据都需要单独写入。这一小节的案例中使用的数据如下：
 
-```{r}
+```r
 set.seed(1234)
 x = rnorm(10)
 
@@ -163,7 +163,7 @@ table1 <-
 
 ### 2.1.1. 与 formattable 包结合
 
-```{r}
+```r
 table1.formattable <- as.htmlwidget(formattable(
   data.frame(
     column1 = c('坂田银时', '神乐', '志村新八', '定春'), # 第一列
@@ -180,11 +180,11 @@ table1.formattable <- as.htmlwidget(formattable(
 spk_add_deps(table1.formattable)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-13.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-13.png)
 
 ### 2.1.2. 与 DT 包结合
 
-```{r}
+```r
 table1.dt <- table1
 
 table1.dt$sparkline <- table1.dt$sparkline %>%
@@ -195,7 +195,7 @@ table1.dt$sparkline <- table1.dt$sparkline %>%
 DT::datatable(table1.dt, escape = FALSE) %>% spk_add_deps()
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-14.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-14.png)
 
 ### 2.1.3. 与 reactable 结合
 
@@ -205,7 +205,7 @@ DT::datatable(table1.dt, escape = FALSE) %>% spk_add_deps()
 
 写法是`columns = list( 列名 = colDef(cell = function(values){sparkline(values)}) )`。
 
-```{r}
+```r
 reactable(table1,
           columns = list(sparkline = colDef(
             cell = function(values) {
@@ -219,7 +219,7 @@ reactable(table1,
 
 写法是`columns = list( 列名 = colDef( cell = function(value, index){sparkline( 表名$列名[[index] )}))`。
 
-```{r}
+```r
 reactable(table1,
           columns = list(sparkline = colDef(
             cell = function(value, index) {
@@ -228,13 +228,13 @@ reactable(table1,
           )))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-15.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-15.png)
 
 + 写法3
 
 reactable 包的案例中，还有一种[特别的写法](https://glin.github.io/reactable/articles/examples.html#footers)。
 
-```{r}
+```r
 reactable(
   iris[1:20, ],
   defaultPageSize = 5,
@@ -246,13 +246,13 @@ reactable(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-16.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-16.png)
 
 ## 2.2. 分组聚合后展示
 
 若是用于表格展示的数据需要先进行一些分组聚合的操作，而后又需要增加展示迷你图，那么……这一小节的案例中使用的数据如下：
 
-```{r}
+```r
 table2 <- data.frame(
   column1 = c(rep(c('坂田银时', '神乐', '志村新八', '定春'), 10)),
   column2 = sample(1:4, 40, replace = T),
@@ -263,7 +263,7 @@ table2 <- data.frame(
 
 + tidy 版本
 
-```{r}
+```r
 table2 %>%
   group_by(column1) %>%
   summarise(
@@ -276,11 +276,11 @@ table2 %>%
   spk_add_deps()
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-17.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-17.png)
 
 + data.table 版本
 
-```{r}
+```r
 table2.dt <- as.data.table(table2)
 
 table2.dt[, by = .(column1), .(
@@ -297,7 +297,7 @@ table2.dt[, by = .(column1), .(
 
 + tidy 版本
 
-```{r}
+```r
 table2.tidy <- table2 %>%
   group_by(column1) %>%
   summarise(column2_mean = mean(column2))
@@ -317,13 +317,13 @@ table2.tidy$sparkline2 <- table2$column3 %>%
 DT::datatable(table2.tidy, escape = FALSE) %>% spk_add_deps()
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-18.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-18.png)
 
 + data.table 版本
 
 下面的写法来源于统计之都论坛上的[一个帖子](<https://d.cosx.org/d/423198-tidy-datatable>)。不熟 data.table 包的时候，可以使用`dtplyr::lazy_dt()`把tidy版本转换成data.table版本，然后用`dtplyr:::dt_call()`提取出具体的代码。
 
-```{r}
+```r
 table2.dt.DT <- table2.dt[, .(
   column2_mean = mean(column2),
   sparkline1 = as.character(htmltools::as.tags(sparkline(column2, type = "line"))),
@@ -337,7 +337,7 @@ DT::datatable(table2.dt.DT, escape = FALSE) |> spk_add_deps()
 
 + tidy 版本
 
-```{r}
+```r
 table2.tidy.react <- table2 %>%
   group_by(column1) %>%
   summarise(
@@ -362,11 +362,11 @@ reactable(table2.tidy.react,
           ))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-01-19.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-01-19.png)
 
 + data.table 版本
 
-```{r}
+```r
 table2.dt.react <-
   table2.dt[, .(
     column2_mean = mean(column2),
@@ -393,7 +393,7 @@ reactable(table2.dt.react,
 
 举个栗子：
 
-```{r}
+```r
 library(dtplyr)
 a <- lazy_dt(table2) %>%
   group_by(column1) %>%
@@ -413,31 +413,3 @@ dtplyr:::dt_call(a)
     sparkline2 = list(column3)), keyby = .(column1)]
 ```
 
-环境信息：
-
-```
-> sessionInfo()
-R version 4.2.0 (2022-04-22 ucrt)
-Platform: x86_64-w64-mingw32/x64 (64-bit)
-Running under: Windows 10 x64 (build 19043)
-
-Matrix products: default
-
-locale:
-[1] LC_COLLATE=Chinese (Simplified)_China.utf8  LC_CTYPE=Chinese (Simplified)_China.utf8    LC_MONETARY=Chinese (Simplified)_China.utf8
-[4] LC_NUMERIC=C                                LC_TIME=Chinese (Simplified)_China.utf8    
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-other attached packages:
- [1] dtplyr_1.2.1      reactable_0.3.0   DT_0.23           formattable_0.2.1 data.table_1.14.2 purrr_0.3.4       tibble_3.1.6     
- [8] dplyr_1.0.8       sparkline_2.0     htmlwidgets_1.5.4
-
-loaded via a namespace (and not attached):
- [1] bslib_0.3.1      jquerylib_0.1.4  pillar_1.7.0     compiler_4.2.0   tools_4.2.0      digest_0.6.28    jsonlite_1.8.0   evaluate_0.14   
- [9] lifecycle_1.0.1  pkgconfig_2.0.3  rlang_1.0.2      cli_3.2.0        DBI_1.1.2        rstudioapi_0.13  crosstalk_1.2.0  yaml_2.2.1      
-[17] blogdown_1.5     xfun_0.26        fastmap_1.1.0    reactR_0.4.4     knitr_1.36       sass_0.4.0       generics_0.1.2   vctrs_0.3.8     
-[25] tidyselect_1.1.2 glue_1.6.2       R6_2.5.1         fansi_1.0.2      rmarkdown_2.11   bookdown_0.24    magrittr_2.0.2   ellipsis_0.3.2  
-[33] htmltools_0.5.2  assertthat_0.2.1 utf8_1.2.2       crayon_1.5.0    
-```

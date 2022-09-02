@@ -32,7 +32,7 @@ crosstalk 包是 Rstudio 他们家提供的一个 html 小部件，此包可以�
 
 scatterD3 包的`scatterD3()`函数不需要多的设置，本身自带筛选和过滤功能，将鼠标放置到中间的图形区域中滚动鼠标的滚轮便可看见图形在自动地放大或缩小，而将鼠标放到右侧图例中的其中一个上面的时候，图形中展示的散点范围也会自动改变。
 
-```{r}
+```r
 #install.packages("./scatterD3_1.0.1.tar.gz",repo=NULL,type="source")
 library(scatterD3)
 
@@ -43,7 +43,7 @@ scatterD3(mtcars,
           col_var = cyl)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-1.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-1.png)
 
 ### 1.1.2. echarts4r
 
@@ -51,7 +51,7 @@ scatterD3(mtcars,
 
 使用 echarts4r 包时若要增加刷选功能需写入`e_datazoom()`或`e_brush()`，图例过滤的功能和 scatterD3 包类似。
 
-```{r}
+```r
 library(echarts4r)
 
 mtcars$cyl<-as.factor(mtcars$cyl)
@@ -64,7 +64,7 @@ mtcars |>
   e_datazoom(y_inde = 0) # 增加主Y轴的刷选
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-2.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-2.png)
 
 ### 1.1.3. ggplot2 结合 `plotly::ggplotly()`
 
@@ -72,7 +72,7 @@ mtcars |>
 
 转换之后的动态图自带许多细节。
 
-```{r}
+```r
 library(plotly)
 library(ggplot2)
 
@@ -83,13 +83,13 @@ p <-
 plotly::ggplotly(p)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-3.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-3.png)
 
 ## 1.2. 与 plotly 结合
 
 官方文档：<https://plotly.com/r/>。
 
-```{r}
+```r
 library(crosstalk)
 
 mtcars$cyl<-as.factor(mtcars$cyl)
@@ -111,7 +111,7 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-4.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-4.png)
 
 # 二、 与表格包结合
 
@@ -119,7 +119,7 @@ bscols(
 
 官方文档：<https://rstudio.github.io/DT/>。
 
-```{r}
+```r
 library(DT)
 
 shared_mtcars <- SharedData$new(mtcars)
@@ -140,13 +140,13 @@ bscols(
                    )))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-5.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-5.png)
 
 ## 2.2. 与 reactable 包结合
 
 官方文档：<https://glin.github.io/reactable/articles/examples.html#cross-widget-interactions>。
 
-```{r}
+```r
 library(reactable)
 
 shared_mtcars <- SharedData$new(mtcars)
@@ -161,7 +161,7 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-6.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-6.png)
 
 # 三、参数细节
 
@@ -173,7 +173,7 @@ crosstalk 包可使放到`bscols()`中的多个数据图表联动刷选和过滤
 
 + 放多个 plotly 的图
 
-```{r}
+```r
 shared_mtcars <- SharedData$new(mtcars)
 bscols(
   widths = c(3, NA, NA),
@@ -197,11 +197,11 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-7.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-7.png)
 
 + 放多个图和表
 
-```{r}
+```r
 shared_mtcars <-
   SharedData$new(mtcars)
 bscols(
@@ -227,13 +227,13 @@ bscols(
                    )))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-8.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-8.png)
 
 ## 3.2. 分组
 
 若是希望同一区域中两组不同的数据仍然可以联动刷选，那么需要如此设定`SharedData$new(, group = "mtcars_subset")`，即`group = ''`中的内容一致。这样即使范围不同，但有相同字段的数据也可以联动刷选
 
-```{r}
+```r
 # 全量数据，用于设置刷选项
 sd_mtcars_all <- SharedData$new(mtcars, group = "mtcars_subset")
 # 第一份数据
@@ -265,13 +265,13 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-9.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-9.png)
 
 ## 3.3. 位置
 
 把`filter_checkbox()`等挪到`bscols()`外面去，这几个筛选项的位置也会自动挪到表格的上方。
 
-```{r}
+```r
 shared_mtcars <- SharedData$new(mtcars)
 
 filter_checkbox("cyl", "Cylinders", shared_mtcars, ~ cyl, inline = TRUE)
@@ -294,13 +294,13 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-10.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-10.png)
 
 ## 3.4. 布局
 
 如`bscols(widths = c(2, NA, NA), list( ), list( ), list( ))`中三个`list()`就是把整个展示区域竖着分成三份。而`widths = c()`中的三个值就对应三个`list()`所占的宽度，里面的三个值都填上的话需要加起来等于12，如`widths = c(2, NA, NA)`表示第一份站2格，剩下两份均分剩下的区域。每个`list()`里面还可以写多个图或表来展示，但前提条件是需要调整每个图或表的高度和宽度。
 
-```{r}
+```r
 shared_mtcars <- SharedData$new(mtcars)
 bscols(
   widths = c(2, NA, NA),
@@ -335,13 +335,13 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-11.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-11.png)
 
 # 四、 奇形怪状的数据
 
 那些表格包的官网在展示功能时往往使用的都是如`mtcars`、`iris`等比较标准的数据集，但真实应用场景下的数据往往长得奇形怪状的。比如下面这样的。
 
-```{r}
+```r
 table1 <- data.frame(
   "xxxx号" = rep('10000000000', 20),
   "是否欺诈" = rep('是', 20),
@@ -387,7 +387,7 @@ table1 <- data.frame(
 
 但是遇上奇形数据还是会看起来怪怪的。
 
-```{r}
+```r
 shared_table1 <- SharedData$new(table1)
 bscols(
   widths = c(2, 10),
@@ -408,11 +408,11 @@ bscols(
                    )))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-12.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-12.png)
 
 ## 4.2. 用 reactable 包
 
-```{r}
+```r
 shared_table1 <- SharedData$new(table1)
 bscols(
   widths = c(2, 10),
@@ -426,6 +426,6 @@ bscols(
 )
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-02-13.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-02-13.png)
 
 两者对比发现，DT 包的表头傻乎乎地不会换行……总而言之，使用时都得仔细调整。

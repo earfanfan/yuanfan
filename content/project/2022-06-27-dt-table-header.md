@@ -27,14 +27,13 @@ draft: no
 |`<caption>`||定义表格标题|
 |`<colgroup>`|column group|定义表格列的组|
 |`<col>`|column|定义用于表格列的属性|
-|`<thead>`|table head|定义表格的页眉|
+|`<thead>`|table head|定义表格的表头|
 |`<tbody>`|table body|定义表格的主体|
-|`<tfoot>`|table foot|定义表格的页脚|
+|`<tfoot>`|table foot|定义表格的脚注|
 
 照旧，为了今后方便复现，先编造一份数据。
 
-````
-```{r}
+```r
 library(DT)
 library(htmltools)
 
@@ -54,7 +53,6 @@ data <- data.frame(
   `门诊-三级医院-上5%分位数` = sample(0:20000, 6),
   `门诊-三级医院-下5%分位数` = sample(0:20000, 6))
 ```
-````
 
 # 创建多级表头
 
@@ -63,8 +61,7 @@ data <- data.frame(
 + rowspan：设置单元格可横跨的行数。
 + colspan：设置单元格可横跨的列数。
 
-````
-```{r}
+```r
 sketch = htmltools::withTags(table(
   class='display',
   thead(
@@ -89,10 +86,9 @@ sketch = htmltools::withTags(table(
   )
 ))
 ```
-````
 
-````
-```{r}
+
+```r
 DT::datatable(
   data,
   rownames = FALSE,
@@ -102,9 +98,8 @@ DT::datatable(
                  autoWidth = TRUE)
 )
 ```
-````
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-27-1.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-27-1.png)
 
 # 调整表头样式
 
@@ -135,8 +130,7 @@ font-weight:normal;
 
 + 第二步，创建表头且写入定义好的 CSS 样式的名称。
 
-````
-```{r}
+```r
 sketch2 = htmltools::withTags(table(
   class='display',
   thead(
@@ -163,12 +157,10 @@ sketch2 = htmltools::withTags(table(
   )
 ))
 ```
-````
 
 + 第三步，使用 DT 包绘制表格。
 
-````
-```{r}
+```r
 DT::datatable(
   data,
   rownames = FALSE,
@@ -178,16 +170,15 @@ DT::datatable(
                  autoWidth = TRUE)
 )
 ```
-````
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-27-2.png)
+
+![](https://yuanfan.rbind.io/images/2022/2022-06-27-2.png)
 
 ## 使用回调函数引入 CSS
 
 DT 包的官方网站中<https://rstudio.github.io/DT/options.html>，此页第4.3、4.4、4.5节里有介绍使用回调函数（引入JS）的案例。原案例中`options=list(initComplete=JS(" "))`，写入 JS 语言的时候每行的代码都要用`" ",`来连接，试了试只在 JS 代码的头尾写引号也是可以的。
 
-````
-```{r}
+```r
 # 原案例的写法
 datatable(
   data,
@@ -218,9 +209,8 @@ datatable(
   )
 )
 ```
-````
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-27-3.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-27-3.png)
 
 # 引入 CSS 增加外框线
 
@@ -242,8 +232,7 @@ DT 包也可以给单独的每一列引入 CSS 样式，形如`options=list(colu
 
 + 第二步，引入 css 样式并绘制表格。
 
-````
-```{r}
+```r
 DT::datatable(
   data,
   rownames = FALSE,
@@ -260,8 +249,7 @@ DT::datatable(
   )
 )
 ```
-````
 
-![](https://yuanfan.vercel.app/images/2022/2022-06-27-4.png)
+![](https://yuanfan.rbind.io/images/2022/2022-06-27-4.png)
 
 既然都可以通过引入 CSS 样式的方式来增加表格的外框线了，那么接下来可以改动的地方当然就很多很多啦。可是这相当于一jio踩进了一个大坑里。本菜鸟先随便写写，毕竟已经十一点了，作为阳间作息者，马上就要睁不开俺的狗眼了。今天又是想要拍拍大神的毛驴屁--但是又不好意思拍--纠结纠结--于是在自己的博客里絮叨絮叨的一天。

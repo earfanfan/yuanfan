@@ -18,7 +18,7 @@ draft: no
 
 R里面的内置数据集我不熟悉，随便翻了翻也没找到合适的面板数据，在正式画图之前先编造一份基础数据：
 
-```{r}
+```r
 data<-data.frame(
   area=c('area1','area2','area3','area4','area5','area6','area7','area8'),
   value1=sample(1:10,8),
@@ -37,7 +37,7 @@ data<-data.frame(
 
 先用基础数据画一个最普通的柱状图:
 
-```{r}
+```r
 library(echarts4r)
 
 data%>%
@@ -50,7 +50,7 @@ data%>%
 
 echarts4r包中的函数通常都有默认参数，横轴通常默认间隔1来展示具体标签,若要调整横轴需要设置`e_x_axis()`，若要调整纵轴的间隔需要设置`e_y_axis()`。
 
-```{r}
+```r
 data %>%
   e_charts(area) %>%  
   e_bar(value1) %>%  
@@ -72,7 +72,7 @@ data %>%
 
 提示工具就是鼠标放到柱子上时会显示出来的内容。
 
-```{r}
+```r
 data %>%
   e_charts(area) %>%
   e_bar(value1, name = "数据项的名字") %>%
@@ -88,7 +88,7 @@ data %>%
 
 echarts4r包提供三种标记方式：标记点(`e_mark_point`)、标记线(`e_mark_line`)、标记区域(`e_mark_area`)。
 
-```{r}
+```r
 #可以这样写
 data %>%
   e_charts(area) %>%
@@ -129,7 +129,7 @@ data %>%
 
 当需要显示许多数据项时，需要对图例做详细设置，以后遇到复杂情况时再把这部分展开细写。
 
-```{r}
+```r
 data %>%
   e_charts(area) %>%
   e_bar(value1) %>%
@@ -149,7 +149,7 @@ data %>%
 
 当需要展示的数据项不止一个时，可以根据业务需要进行堆叠：
 
-```{r}
+```r
 #四个数据项并排展示
 data %>%
   e_charts(area) %>%
@@ -182,7 +182,7 @@ data %>%
 
 全堆到一起的情况，也可以展示各个数据项的占比：
 
-```{r}
+```r
 #计算占比
 data.1 <-
   data %>% dplyr::mutate(
@@ -209,7 +209,7 @@ data.1 %>%
 
 同时需要展示多个数据项但是数据的量级存在差异时，可以考虑用两个Y轴来展示：
 
-```{r}
+```r
 #下面是我瞎碰乱试出来的，备注的文字仅仅是我的猜想
 data %>%
   e_chart(area) %>%
@@ -236,7 +236,7 @@ data %>%
 
 虽然名字是时间轴，但是也可以用于将数据分组后展示：
 
-```{r}
+```r
 data.2 <- data.frame(
   type = c('type1','type1','type1','type1','type2','type2','type2','type2'),
   area = c('area1','area2','area3','area4','area1','area2','area3','area4'),
@@ -257,7 +257,7 @@ data.2 %>%
 
 若要将图形旋转90度后横轴与纵轴互换，即行列互换，亦即转置，最好是按数值排序后展示，或者按照数据项本身的含义排序后展示如人口金字塔图：
 
-```{r}
+```r
 #倒序排序
 data.3 <- data[order(data$value1, decreasing = FALSE), ] 
 
@@ -271,7 +271,7 @@ data.3 %>%
 ```
 
 
-```{r}
+```r
 #仿人口结构的金字塔图
 data.4 <- data.frame(
   level = c('0-10岁','11-20岁','21-30岁','31-40岁','41-50岁','51-60岁','61-70岁','71-80岁','80岁以上'),
@@ -299,7 +299,7 @@ data.4%>%
 
 echarts4r包还提供了一种画在极坐标系上的条形图，相当于把普通条形图的横轴两端连成一个圆：
 
-```{r}
+```r
 data %>%
   e_charts(area) %>%  #X轴
   e_polar() %>% 
@@ -309,7 +309,7 @@ data %>%
   e_scatter(value2, coord_system = "polar")
 ```
 
-```{r}
+```r
 data %>%
   e_charts(area) %>%
   e_polar() %>%

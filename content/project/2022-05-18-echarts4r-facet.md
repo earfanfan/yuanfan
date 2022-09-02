@@ -14,9 +14,9 @@ draft: no
 
 <!--more-->
 
-在[之前的笔记](https://yuanfan.vercel.app/posts/e-line/)中，曾想要把一片图形区域分成上下左右四片未能实现。近日偶然留意到 echarts4r 包更新到了0.4.3版本，此包对应的 echarts.js 也更新到5.2.2版本，新版本中新增了`e_facet`函数可以实现分面的效果，也顺便记录一些温故而知新的东西。仍然是用以前编造的数据，如下。
+在[之前的笔记](https://yuanfan.rbind.io/project/e-line/)中，曾想要把一片图形区域分成上下左右四片未能实现。近日偶然留意到 echarts4r 包更新到了0.4.3版本，此包对应的 echarts.js 也更新到5.2.2版本，新版本中新增了`e_facet`函数可以实现分面的效果，也顺便记录一些温故而知新的东西。仍然是用以前编造的数据，如下。
 
-```{r}
+```r
 library(echarts4r)
 library(data.table)
 
@@ -59,7 +59,7 @@ data.facet |>
   ) 
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-05-18-1.png)
+![](https://yuanfan.rbind.io/images/2022/2022-05-18-1.png)
 
 # 引入新数据
 
@@ -85,11 +85,11 @@ data |>
   e_add_nested("label", show, fontSize, position)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-05-18-2.png)
+![](https://yuanfan.rbind.io/images/2022/2022-05-18-2.png)
 
 ## 嵌套环形图
 
-基于饼图半径可修改的特性，可使用`e_data`函数引入多份数据，在一个图形区域中嵌套多层饼状图、环形图，更多细节可参照[画花笔记](https://yuanfan.vercel.app/posts/echarts-flower/)
+基于饼图半径可修改的特性，可使用`e_data`函数引入多份数据，在一个图形区域中嵌套多层饼状图、环形图，更多细节可参照[画花笔记](https://yuanfan.rbind.io/posts/echarts-flower/)
 
 ```r
 data0 <- data.table(name = LETTERS[1:2], value = c(1:2))
@@ -113,7 +113,7 @@ data0 |>
   e_labels(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-05-18-3.png)
+![](https://yuanfan.rbind.io/images/2022/2022-05-18-3.png)
 
 ## 地图上加线
 
@@ -171,7 +171,7 @@ city |>
     )) ) 
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-05-18-4.png)
+![](https://yuanfan.rbind.io/images/2022/2022-05-18-4.png)
 
 ## 改变横轴的排列顺序
 
@@ -184,4 +184,4 @@ data[letter%in%c('A','B','C','D'),]|>
   e_x_axis(data=c('B','A','D','C'))
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-05-18-5.png)
+![](https://yuanfan.rbind.io/images/2022/2022-05-18-5.png)

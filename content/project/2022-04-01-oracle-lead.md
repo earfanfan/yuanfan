@@ -33,7 +33,7 @@ draft: no
 
 我原先不知道 ORACLE 里面有`lead`这个函数，所以把这一步拆成了几个临时的中间表，直到今日请教同事小花别的问题顺带问了这个，才知道可以写得如此简便。
 
-```{sql}
+```sql
 select t.*,
 --按customer_id分组，按insert_time倒序排序并生成序号
        row_number() over(
@@ -98,7 +98,7 @@ select t.*,
 
 同事小花给的脚本，仍然是基于 ORACLE 的 sql ：
 
-```{sql}
+```sql
 select distinct tt.code_N,
                 tt.name_N,
 --用 regexp_substr 匹配正则表达式,最后一个参数‘i’表示不区分大小写        
@@ -141,7 +141,7 @@ connect by tt.code_n = prior tt.code_n
 
 `level`是 ORACLE执行递归查询后默认生成的序号，查询起点的序号默认记为1，每递归一次序号增加1。倘若下面的代码最后一行加上`and level < 3`，执行出来的结果就会只有两行。
 
-```{sql}
+```sql
 select t.name, t.parent, level
   from tmp_table3 t
  start with t.name = '本人'
@@ -161,7 +161,7 @@ connect by prior t.parent = t.name;
 
 `connect by t.parent = prior t.name`表示把查询到的当代的父亲（PARENT）传递给当代（NAME），相当于不断递归查找下一代。
 
-```{sql}
+```sql
 select t.name, t.parent, level
   from tmp_table3 t
  start with t.name = '本人'
@@ -187,7 +187,7 @@ connect by t.parent = prior t.name;
 
 然后自己与自己递归，会得到递归生成的序号：
 
-```{sql}
+```sql
 select distinct  code_N,
        tt.name_N,
        tt.hospital_name,
@@ -208,7 +208,7 @@ connect by tt.code_N = prior tt.code_N
 
 根据得到的序号，取出 hospital_name 中按逗号分隔的逗号前后的内容：
 
-```{sql}
+```sql
 select distinct  code_N,
        tt.name_N,
        tt.hospital_name,
@@ -249,7 +249,7 @@ connect by tt.code_N = prior tt.code_N
 
 我的解题思路是将三个表关联起来以后，去找是否存在这样的情况。一个 case_id 会对应多个 item_id，只要证明其中的 item_id 和 change_id 的关系为“仅一对一”、“既有一对一也有一对多”、“既有一对一也有多对一”、“既有一对一也有一对多和多对一”的情况都没有数据，就算是完成了。第一步，先按 case_id 分组、按 item_id 排序得到 rank1，再按 case_id 分组、按 change_id 排序得到 rank2，最后按 case_id/item_id 分组、按 change_id 排序得到 rank3。第二步，对 rank1、rank2、rank3 取最大值得到 m_rank1、m_rank2、m_rank3。第三步，通过比较到 m_rank1、m_rank2、m_rank3 三者之间的关系来判断是不是任何包含“一对一”的情况都不存在。
 
-```{sql}
+```sql
 select *
   from (select max(rank1) m_rank1, max(rank2) m_rank2, max(rank3) m_rank3
           from (select t1.case_id,

@@ -22,7 +22,7 @@ draft: no
 
 遛狗快要结束的时候，我最后一次抬头望了望天，刚刚才认识的那朵云似乎已经消失了。驻足停留，静静地看、缓缓地感受，终于发现头顶上方那朵云正好还是刚刚认识的那朵，只是那朵云确实已被吹散。但是因为我用爪机记录了云未散开之前的模样，所以即使那朵云被风吹得越来越小，我也还是能够认出来。
 
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-1.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-2.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-3.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-1.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-2.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-3.jpg)|
 |:-:|:-:|:-:|
 
 云的样子本来都是很好看的，只是太快被风吹散的云，很少会被人类看到。若是那些云不幸在夜晚才形成，那么相比白天的云，被看到的概率更低。云是不是也会有生命周期呢？汇集成很大很大一团的云，一定就不会那么容易被风吹散。
@@ -33,35 +33,35 @@ draft: no
 
 也不知道还要继续丧多久，但是为了让将来的我看到这里的时候能感受到世界的美好，下面将展示很多很多生机盎然的花草树木。
 
-在上月初写下《[开满鲜花的门](https://yuanfan.vercel.app/posts/flower-door/)》的时候，我曾感慨那花门可能无缘再见，事实上吐槽完没多久，那花门就渐渐地开花了。起初的时候，我只是留意到没有花的花门变得更绿了，没几天花门上的花骨朵就变多了起来。花的盛开是不等人的，往往一个夜晚过后，今晨盛开的花就比昨夜盛开的花多出不少。不巧的是，五月是长江中下游的汛期，一场大雨过后，花门上的花便纷纷被淋得低了头。但是花也并不都是娇弱的，低头的花也还是会重新抬头。只是汛期的雨也是不懂得怜惜鲜花的，每一场雨后，花便要低头，可是逢上晴天，花便又努力重新抬头。花与雨在这样交手几个回合后，花期也到了。花门上的花很多，也有零星的花朵会挣扎着多盛开一些时日，但终究抵不过自然规律。曾经开满鲜花的花门，再一次变成一片绿色。
+在上月初写下《[开满鲜花的门](https://yuanfan.rbind.io/posts/flower-door/)》的时候，我曾感慨那花门可能无缘再见，事实上吐槽完没多久，那花门就渐渐地开花了。起初的时候，我只是留意到没有花的花门变得更绿了，没几天花门上的花骨朵就变多了起来。花的盛开是不等人的，往往一个夜晚过后，今晨盛开的花就比昨夜盛开的花多出不少。不巧的是，五月是长江中下游的汛期，一场大雨过后，花门上的花便纷纷被淋得低了头。但是花也并不都是娇弱的，低头的花也还是会重新抬头。只是汛期的雨也是不懂得怜惜鲜花的，每一场雨后，花便要低头，可是逢上晴天，花便又努力重新抬头。花与雨在这样交手几个回合后，花期也到了。花门上的花很多，也有零星的花朵会挣扎着多盛开一些时日，但终究抵不过自然规律。曾经开满鲜花的花门，再一次变成一片绿色。
 
 好在这世界还有一个我，在那段时间里每个不下雨的早晨，都会拍下一张那花门的模样，有幸见证了那扇鲜花之门曾经一次次开得那么美丽。
 
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-4.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-5.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-6.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-7.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-4.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-5.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-6.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-7.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-8.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-9.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-10.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-11.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-8.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-9.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-10.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-11.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-12.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-13.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-14.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-15.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-12.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-13.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-14.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-15.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-16.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-17.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-18.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-19.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-16.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-17.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-18.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-19.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-20.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-21.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-22.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-23.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-20.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-21.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-22.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-23.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-24.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-25.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-26.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-27.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-24.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-25.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-26.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-27.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-28.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-29.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-30.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-31.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-28.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-29.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-30.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-31.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-32.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-33.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-34.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-35.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-32.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-33.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-34.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-35.jpg)|
 |:-:|:-:|:-:|:-:|
   
-|![](https://yuanfan.vercel.app/images/2022/2022-05-26-36.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-37.jpg)|![](https://yuanfan.vercel.app/images/2022/2022-05-26-38.jpg)|![](https://yuanfan.vercel.app/images/2022/36.jpg)|
+|![](https://yuanfan.rbind.io/images/2022/2022-05-26-36.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-37.jpg)|![](https://yuanfan.rbind.io/images/2022/2022-05-26-38.jpg)|![](https://yuanfan.rbind.io/images/2022/36.jpg)|
 |:-:|:-:|:-:|:-:|
 
 # 狗的微笑

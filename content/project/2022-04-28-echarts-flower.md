@@ -88,7 +88,7 @@ df |>
   e_legend(show = FALSE)  # 不显示图例
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-1.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-1.png)
 
 # 基础要点2：花瓣颜色
 
@@ -104,7 +104,7 @@ df |>
 
 下图中的颜色设置得有点辣眼睛，请先做好心理准备。
 
-```{r}
+```r
 df |>
   e_charts(name) |>
   e_pie(
@@ -144,7 +144,7 @@ df |>
           e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-2.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-2.png)
 
 ## 纹理填充
 
@@ -155,7 +155,7 @@ df |>
 + `symbolSize`，作为纹理填充的图形大小，设置为0时等同于没有填充纹理。
 + `rotation`，作为纹理填充的图形可以旋转的角度。
 
-```{r}
+```r
 df |>
   e_charts(name) |>
   e_pie(
@@ -180,13 +180,13 @@ df |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-3.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-3.png)
 
 ## 纯色
 
 承袭 Apache Echarts 的设定，echarts4r 包中的饼状图默认给每个数据项分配不同的颜色，即`e_charts`中输入的数据项有几个不同的值，便默认为饼状图中的扇区分配几种颜色。
 
-```{r}
+```r
 df1 <- data.frame(name = letters[1:8], value = rep(8, 8))
 
 df1 |>
@@ -196,7 +196,7 @@ df1 |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-4.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-4.png)
 
 ## 给花瓣分配颜色
 
@@ -225,7 +225,7 @@ df2 |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-5.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-5.png)
 
 # 基础要点3：多重花瓣
 
@@ -237,7 +237,7 @@ df2 |>
 
 下图中一共嵌套了三层饼图，参照第一小节中的说明，当第二层饼图的内外圈半径设置为`radius = c("20%", "80%")`，第三层的内外圈半径设置为`radius = c("70%", "90%")`时，相当于第二层和第三层在图形容器中的70%至80%处会重叠，第三层会覆盖第二层的部分区域，若同时将第三层的扇区颜色设置为白色，便可达到改变第一层花瓣边缘形状的效果。
 
-```{r}
+```r
 flower1 <- data.frame(name = 'A', value1 = 1)
 flower2 <- data.frame(name2 = rep('B', 8),  value2 = rep(3, 8))
 flower3 <- data.frame(name3 = rep('B', 24), value3 = rep(3, 24))
@@ -270,13 +270,13 @@ flower1 |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-6.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-6.png)
 
 ## 嵌套多层--各层颜色不同
 
 根据嵌套饼状图多层覆盖的特性，将第一、二、三层按照下层花瓣、上层花瓣、花蕊的顺序进行设置，如此便可以得到有多重花瓣的花。为了不使各层花瓣的不同颜色重叠，可将上层花瓣的扇区进行旋转，即在`e_pie()`中添加`startAngle`参数来设定起始角度，可填入数值的范围为[0, 360]。
 
-```{r}
+```r
 flower1 <- data.frame(name = rep('A', 16), value = rep(1, 16))
 flower2 <- data.frame(name = rep('B', 16), value2 = rep(2, 16))
 flower3 <- data.frame(name = 'A', value3 = 1)
@@ -308,13 +308,13 @@ flower1 |>
 
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-7.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-7.png)
 
 ## 嵌套多层--各层颜色相同
 
 在嵌套多层时，若每一层花瓣的颜色要设置成同一种颜色，那么最好同时设置每一层花瓣间距大于0，并且每隔一层设置一次该层花瓣旋转的起始角度。
 
-```{r}
+```r
 flower1 <- data.frame(name = rep('A', 8), value1 = rep(8, 8))
 flower2 <- data.frame(name = rep('A', 8), value2 = rep(8, 8))
 flower3 <- data.frame(name = rep('A', 8), value3 = rep(8, 8))
@@ -373,13 +373,13 @@ flower1 |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-8.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-8.png)
 
 ## 堆叠多层
 
 如下图，也可使用极坐标系下的堆叠柱状图来达到重瓣花的效果。
 
-```{r}
+```r
 data4 <- data.frame(
   name = rep(letters[1:24], 1),
   value1 = rep(4, 24),
@@ -402,7 +402,7 @@ data4 |>
   e_labels(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-9.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-9.png)
 
 # 画花
 
@@ -416,7 +416,7 @@ data4 |>
 2. 第二层，略微覆盖第一层，所有扇区为白色，改变第一层花瓣边缘的形状。
 3. 将扇形旋转，在`e_pie()`中添加`startAngle`参数来设定起始角度。
 
-```{r}
+```r
 leaf1 <- data.frame(
   name1 = rep('A', 4),
   value1 = c(4, 3, 0.1, 3),
@@ -443,7 +443,7 @@ leaf1 |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-10.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-10.png)
 
 ## 向日葵
 
@@ -452,7 +452,7 @@ leaf1 |>
 1. 第一层，花蕊，通过`e_aria()`设置贴花的纹理。
 2. 第二层，花瓣，在`e_pie()`中设置`itemStyle = list(decal = list(symbolSize = 0))`，即贴花图案尺寸为0，去掉第一层中`e_aria()`造成的全局贴花的效果。
 
-```{r}
+```r
 flower1 <- data.frame(name = 'A',
                       value1 = 1)
 
@@ -487,13 +487,13 @@ flower1 |>
   e_legend(show = FALSE)
 ```
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-11.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-11.png)
 
 ## 花纹
 
 除了绘制与现实中花草形态相接近的图案，还可以参照[一些花纹图案](https://www.vcg.com/creative-vectorgraph/huawen/)来画花纹。
 
-![](https://yuanfan.vercel.app/images/2022/2022-04-28-12.png)
+![](https://yuanfan.rbind.io/images/2022/2022-04-28-12.png)
 
 # 结尾
 
@@ -505,7 +505,7 @@ flower1 |>
 
 ## 第一排 左一
 
-```{r}
+```r
 flower1 <- data.frame(name = rep('A', 5), value1 = rep(5, 5))
 flower2 <- data.frame(name = rep('A', 15), value2 = rep(5, 15))
 
@@ -531,7 +531,7 @@ flower1 |>
 
 ## 第一排 左二
 
-```{r}
+```r
 flower1 <- data.frame(name = rep('A', 8), value1 = rep(8, 8))
 flower2 <- data.frame(name = rep('A', 8), value2 = rep(8, 8))
 
