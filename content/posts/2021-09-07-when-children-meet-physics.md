@@ -26,25 +26,25 @@ I.声音的振动与传播
 
 此时的小孩还是个小小孩，还没有上初中也还没有开始学物理，但他早早就接触到了声音的振动和传播现象，但要一直等到学习声学的篇章时他才会明白。原来物理物理，万物之理，自己本身就身处万物之中，自然早早就开始接触物理，只是当时不知道罢了。
 
-![](https://raw.githubusercontent.com/earfanfan/yf/main/static/images/2021-09-11-1.jpg)
+![](https://yuanfan.rbind.io/images/2021-09-11-1.jpg)
 
 II.丁达尔效应
 
 从前有个小孩有天起得很早，他推开家门发现整个世界都是雾蒙蒙的。他背起小书包去上学，走着走着雾变淡了，但还没有全部消失。在经过一片小树林时，他看到正好有一束光照射下来，哇嗷，好美丽的光，于是他决定坐下来欣赏一会……
 
-![](https://raw.githubusercontent.com/earfanfan/yf/main/static/images/2021-09-11-2.jpg)
+![](https://yuanfan.rbind.io/images/2021-09-11-2.jpg)
 
 III.多普勒效应
 
 从前有个小孩坐在家门口，远远有条小狗一边汪汪叫一边朝他跑过来。小孩留意到狗叫声离得远时声音很小，而离得近时声音很大。为了确认自己没有听错，小孩让狗在前面边跑边叫自己在后面追，试试是否随着距离不同听到的声音大小也不同。追着追着，两条腿跑不过四条腿，狗叫声越来越远，狗子也跑没影了。
 
-![](https://raw.githubusercontent.com/earfanfan/yf/main/static/images/2021-09-11-3.jpg)
+![](https://yuanfan.rbind.io/images/2021-09-11-3.jpg)
 
 IV.万有引力
 
 从前有个小孩学习了物理，他听说牛顿夫子就是被苹果砸到头以后发现了万有引力，于是他也想感受一下被智(苹)慧(果)砸到头的感觉。历经千辛万苦，小孩终于找到了一颗梨树，他看了看树上硕大的果实，又看了看地上硕大的果实，心想：被砸到肯定很疼吧，哎呀，理论已经学到就足够了吧。于是小孩告诉梨树的树洞，我学过万有引力定律啦，不需要被砸头啊。
 
-![](https://raw.githubusercontent.com/earfanfan/yf/main/static/images/2021-09-11-4.jpg)
+![](https://yuanfan.rbind.io/images/2021-09-11-4.jpg)
 
 ---后记的分界线---
 
