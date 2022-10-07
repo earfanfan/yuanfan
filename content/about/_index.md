@@ -39,7 +39,9 @@ title: About Me
   
 + [BYVoid](https://byvoid.com/zht/about/)：旅行者，游记，语言文字  
     
-+ [郝鸿涛](https://hongtaoh.com/cn/blog/)：比较高产， 好读书 
++ [郝鸿涛](https://hongtaoh.com/cn/blog/)：比较高产，好读书，从谏如流 
+
++ [黄湘云](https://xiangyun.rbind.io/post/)：不嫌我菜的编辑大人，正走在成长为技术大神的路上
 
 &emsp; &emsp;
     
