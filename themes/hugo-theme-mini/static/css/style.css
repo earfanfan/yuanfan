@@ -5,7 +5,7 @@ html[theme='dark-mode'] {
 body {
   line-height: 1;
   font: normal 15px/1.5em 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  color: #404040;
+  color: #000000;
   line-height: 1.75;
   letter-spacing: 0.008em;
 }
@@ -116,7 +116,7 @@ h4:hover a {
 p code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
   font-size: inherit;
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: rgba(238, 233, 233, 0.2);
   padding: 0 2px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 2px 2px;
@@ -126,6 +126,7 @@ p code {
 }
 pre code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
+  display: block;
 }
 
 
