@@ -7,13 +7,13 @@ title: About Me
 
 # 个人兴趣 ∠( ᐛ 」∠)_ 
     
-&emsp; &emsp;
++ useR！本新手最近吭哧吭哧往统计之都主站投稿了几篇文章。
     
-+ useR！最近吭哧吭哧往统计之都主站投稿了几篇文章（ps.不是为了抵抗被生活的无意义感吞噬才写，而是本来就有一颗停不下来的心）。
+    - echarts4r: 从入门到应用（[文章](https://cosx.org/2021/12/introduction-to-echarts4r/)，[幻灯片](https://yuanfan.rbind.io/slides/echarts4r.html#1)，[B站视频](https://www.bilibili.com/video/BV14S4y1R7SX/?spm_id_from=333.337.search-card.all.click)）
     
-    - [echarts4r: 从入门到应用](https://cosx.org/2021/12/introduction-to-echarts4r/)
+    - 探索定西市的 Sci-Hub 流量之谜（[文章](https://cosx.org/2022/05/scihub-traffic-analysis/)，[幻灯片](https://yuanfan.rbind.io/slides/sci-hub202206.html#1)，[B站视频](https://www.bilibili.com/video/BV1nF411c7Ro/?spm_id_from=333.337.search-card.all.click)）
     
-    - [探索定西市的 Sci-Hub 流量之谜](https://cosx.org/2022/05/scihub-traffic-analysis/)
+    - Echarts4r 挥发化飞花（[文章](https://cosx.org/2022/04/echarts4r-flower/)）
   
 + 我喜欢一切美好事物，愿意探循宇宙天地万物的规律。无论人、事、物，总是想要弄清楚背后的行事逻辑、因果。倒也不强求，当下不明白的事情放一放，积累够了，某天碰到一个该明白的时机自然就明白了。
   
@@ -22,8 +22,6 @@ title: About Me
 &emsp; &emsp; 
     
 # 我喜欢的博主们 ╭☞( ￣ ▽￣)╭☞ 
-    
-&emsp; &emsp;
     
 + [张列弛](https://www.liechi.org/)：思辨力，文学，鲁迅，温和地批判
   
@@ -46,8 +44,6 @@ title: About Me
 &emsp; &emsp;
     
 # 阿木狗主的自白 ❥(^_-)
-    
-&emsp; &emsp;    
   
 几近而立之年，终于从浑浑噩噩、随波逐流的状态中渐渐认识自己、认清自己、认可自己。一般来说，“正常的人生轨迹”是读书、工作、恋爱、结婚、养育后代，“成功的人生”是买房、买车、迎娶白富美/嫁个高富帅、走上人生巅峰。上层继续宣扬着单一、稳定的价值观，多元化的人生观、生活观却慢慢开始从小众走向大众。
 
