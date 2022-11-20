@@ -1,7 +1,7 @@
 ---
 title: 一万次人生
 author: yuanfan
-date: '2022-11-16'
+date: '2022-11-20'
 slug: ten-thousand-life
 categories:
   - NOVEL
