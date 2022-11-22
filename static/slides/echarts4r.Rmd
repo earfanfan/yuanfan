@@ -1,0 +1,2922 @@
+---
+title: "echarts4r：从入门到应用"
+author: "袁凡"
+date: "2021年11月20日"
+output:
+  ioslides_presentation:
+    widescreen: true
+    smaller: true
+    css: my-theme.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,message = FALSE,warning = FALSE)
+```
+
+## 1.echarts4r是什么
+
+### Echarts for R
+
+- Echarts：开源、画图、JavaScript、Web页面
+
+- R：开源
+
+```{r}
+library(DiagrammeR)
+
+grViz("
+digraph nicegraph{
+graph[rankdir=LR]
+
+node[shape=square]
+
+edge[color=frey,minlen=10]
+
+Echarts -> R
+
+}  ",width=800,height=100)
+```
+
+### echarts4r的特点
+
+- 语法简单、上手快
+
+### 参考资料
+
+- Echarts官网：<u>https://echarts.apache.org</u>
+
+- echarts4r官网：<u>https://echarts4r.john-coene.com</u>
+
+
+<div class="notes">
+
+- Echarts是一个开源的图形可视化工具，用JavaScript语言实现，且多用于前端开发。
+
+</div> 
+
+## 2.echarts4r可以用来做什么
+
++ **交互可视化图形**
+
+```{r}
+library(echarts4r)
+library(data.table)
+
+data.ab <- data.frame(
+  type=c(
+  'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'A区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域',	'B区域'),
+  month=c('1月',	'2月',	'3月',	'4月',	'5月',	'6月',	'7月',	'8月',	'9月',	'10月',	'11月',	'12月',	'1月',	'2月',	'3月',	'4月',	'5月',	'6月',	'7月',	'8月',	'9月',	'10月',	'11月',	'12月'),
+Evaporation=c(2,	4.9,	7,	23.2,	25.6,	76.7,	135.6,	162.2,	32.6,	20,	6.4,	3.3,
+              2.6,	5.9,	9,	26.4,	28.7,	70.7,	175.6,	182.2,	48.7,	18.8,	6,	2.3),
+ Precipitation=c(2.6,	5.9,	9,	26.4,	28.7,	70.7,	175.6,	182.2,	48.7,	18.8,	6,	2.3,
+                2,	4.9,	7,	23.2,	25.6,	76.7,	135.6,	162.2,	32.6,	20,	6.4,	3.3),
+Temperature=c(2,	2.2,	3.3,	4.5,	6.3,	10.2,	20.3,	23.4,	23,	16.5,	12,	6.2,	2,	2.2,	3.3,	4.5,	6.3,	10.2,	20.3,	23.4,	23,	16.5,	12,	6.2))
+
+# data |> group_by(year) |>
+#   e_charts(month, timeline = TRUE) |>
+data<-data.ab[which(data.ab$type == "A区域"),]
+
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_line(Temperature, name = "平均温度", y_index = 1) |>
+  e_y_axis(
+    min = 0,
+    max = 250,
+    interval = 50,
+    name = "水量",
+    formatter = '{value} ml',
+    axisLine = list(show = TRUE),
+    axisTick = list(show = TRUE, 
+                    inside = TRUE )
+    ) |>
+      e_y_axis(
+        index = 1,
+        min = 0,
+        max = 25,
+        interval = 5,
+        name = "温度",
+        formatter = '{value} °C'
+      ) |>
+      e_title('图表的主标题') |>
+      e_tooltip(trigger = "axis") |>
+      e_labels(fontSize = 9,
+               position = "top") |>
+      e_datazoom(y_index = 1) |>
+      e_mark_point("平均温度", data = list(type = "min")) |>
+      e_mark_point("平均温度", data = list(type = "max")) |>
+      e_mark_line("平均温度", data = list(type = "average")) |>  
+      e_mark_area(
+        serie = "蒸发量",
+        data = list(list(xAxis = "6月", yAxis = 100),
+                    list(xAxis = "9月", yAxis = 180)),
+        itemStyle = list(color = "lightblue")
+      ) |> 
+      e_toolbox_feature(feature = "brush") |>
+      e_toolbox_feature(feature = "dataView")
+```
+
+## 目录
+
+### 基本语法
+
+自适应；横轴；纵轴--多个指标、双Y轴、堆叠、转置、反向、分组、时间轴
+
+### 基本组件
+
+标题、图例、数据标签(格式化文本、富文本)、提示框(格式化文本)、标注点、标注线、标注区域、数据区域缩放、工具栏、视觉映射、自定义图形、<b>排列组合、连接、嵌套</b>
+
+### 坐标系
+
+直角坐标系、极坐标系、单轴、日历、地理坐标系、平行坐标系
+
+### 主题
+
+选择主题；背景颜色；
+
+线：坐标轴轴线、坐标轴刻度线、坐标轴分割线、数据标签的视觉引导线；
+
+文字：坐标轴标题、坐标轴标签、图表标题、图例、数据标签、提示框
+
+# 实践出真知
+
+## 3.0.基本语法
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+library(echarts4r)
+
+# data |>
+#   e_charts(month) |> #横轴
+#   e_bar(Evaporation) #纵轴
+
+e_charts(data, month) |> #横轴
+  e_bar(Evaporation)  #纵轴
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+ 
++ <b> 本次分享所使用R版本为4.1.1 </b>
++ <b> echarts4r包的版本为0.4.2 </b>
++ <b> 对应Echarts版本为v5 </b>
++ <b> R4.1.0之前的版本应将所有的`|>`换成`%>%`  </b>
+
+```
+library(echarts4r)
+
+data |>
+  e_charts(month) |> #横轴
+  e_bar(Evaporation) #纵轴
+  
+e_charts(data, month) |> #横轴
+  e_bar(Evaporation) #纵轴  
+```
+
+```{r}
+head(data[,2:3])
+```
+
+</div>
+
+## 3.1.自适应
+
++ ehcarts4r画的图形是根据页面大小自适应的。
+
+<div style="float: left; width: 70%; ">
+
+```{r}
+library(echarts4r)
+
+# data |>
+#   e_charts(month) |> #横轴
+#   e_bar(Evaporation) #纵轴
+
+e_charts(data, month) |> #横轴
+  e_bar(Evaporation) #纵轴
+```
+
+</div>
+
+<div style="float: right; width:30%; text-align: left;">
+```
+library(echarts4r)
+
+data |>
+  e_charts(month) |> #横轴
+  e_bar(Evaporation) #纵轴
+  
+e_charts(data, month) |> #横轴
+  e_bar(Evaporation) #纵轴  
+```
+</div>
+
+## 3.2.横轴(e_x_axis)
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |> #横轴
+  e_bar(Evaporation) |> #纵轴
+  e_x_axis(
+    axisLabel = list(interval = 0, rotate = 30),
+    name = "X轴",
+    formatter = '{value} 单位'
+  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+- 横轴的坐标轴标题
+- 默认间隔为1，可改为间隔0，可旋转角度
+- 可增加单位
+
+```
+data |>
+  e_charts(month) |> #横轴
+  e_bar(Evaporation) |> #纵轴
+### <b> 
+  e_x_axis(
+    axisLabel = list(interval = 0, rotate = 30),
+    name = "X轴", #X轴的名字
+    formatter = '{value} 单位') #X轴标签的格式
+### </b> 
+```
+
+</div>
+
+## 3.3.纵轴(e_y_axis) 
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |> #横轴
+  e_bar(Evaporation) |> #纵轴
+  e_y_axis(
+    min = 0,
+    max = 200,
+    interval = 50,
+    name = "Y轴",
+    formatter = '{value}ml'
+  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation) |>  #纵轴
+### <b> 
+  e_y_axis(
+    min = 0,  #最小值
+    max = 200,  #最大值
+    interval = 50,  #间隔值
+    name = "Y轴",  #轴名称
+    formatter = '{value} 单位'  #轴标签
+  )
+### </b> 
+```
+
+</div>
+
+## 3.3.纵轴 | 多个指标
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation) |>  #纵轴
+  e_bar(Precipitation) |>
+  e_line(Temperature) |>
+  e_y_axis(
+    min = 0,
+    max = 200,
+    interval = 50,
+    name = "Y轴",
+    formatter = '{value}ml'
+  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>  
+### <b> 
+  e_bar(Evaporation) |>  
+  e_bar(Precipitation) |>
+  e_line(Temperature) |>
+### </b> 
+  e_y_axis(
+    min = 0,
+    max = 200,
+    interval = 50,
+    name = "Y轴",
+    formatter = '{value} 单位')
+```
+
+</div>
+
+## 3.3.纵轴 | 双Y轴(y_index)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation) |>  #纵轴
+  e_bar(Precipitation) |>
+  e_line(Temperature, y_index = 1) |>
+  e_y_axis(
+    min = 0,
+    max = 200,
+    interval = 50,
+    name = "主Y轴",
+    formatter = '{value}ml'
+  ) |>
+  e_y_axis(
+    index = 1,
+    min = 0,
+    max = 28,
+    interval = 7,
+    name = "副Y轴",
+    formatter = '{value}°C'
+  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
++ 一般默认左轴为主轴
++ y_index=0为主轴，y_index=1为副轴
+
+```
+data |>
+  e_charts(month) |>  
+  e_bar(Evaporation) |>  
+  e_bar(Precipitation) |>
+### <b> 
+  e_line(Temperature, y_index = 1) |>
+### </b> 
+  e_y_axis(
+    min = 0,
+    max = 200,
+    interval = 50,
+    name = "主Y轴",
+    formatter = '{value}ml') |>
+### <b>     
+  e_y_axis(
+    index = 1,
+    min = 0,
+    max = 28,
+    interval = 7,
+    name = "副Y轴",
+    formatter = '{value}°C')
+### </b>     
+```
+
+</div>
+
+
+## 3.3.纵轴 | 堆叠(stack)-数值
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation, stack = "group1") |>  #纵轴
+  e_bar(Precipitation, stack = "group1") |>
+  e_y_axis(
+    min = 0,
+    max = 400,
+    interval = 50,
+    name = "Y轴",
+    formatter = '{value}ml'
+  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ stack = "group1"
+
+```
+data |>
+  e_charts(month) |> 
+### <b>   
+  e_bar(Evaporation, stack = "group1") |>  
+  e_bar(Precipitation, stack = "group1") |>
+### </b>   
+  e_y_axis(
+    min = 0,
+    max = 400,
+    interval = 50,
+    name = "Y轴",
+    formatter = '{value} 单位')
+```
+
+</div>
+
+## 3.3.纵轴 | 堆叠(stack)-比例
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.new <- data |> dplyr::mutate(
+  Evaporation_rate = 
+    round(Evaporation / (Evaporation + Precipitation), 2),
+  Precipitation_rate = 
+    round(Precipitation / (Evaporation + Precipitation), 2)
+)
+
+data.new |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation_rate, stack = "group1") |>  #纵轴
+  e_bar(Precipitation_rate, stack = "group1") |>
+  e_y_axis(
+    max = 1,
+    interval = 0.5,
+    formatter = e_axis_formatter("percent", digits = 1)
+  ) |>
+  e_tooltip(formatter = e_tooltip_item_formatter("percent"))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 百分数(%)、小数点后几位数字
+```
+data.new <- data |> dplyr::mutate(
+  Evaporation_rate = 
+    round(Evaporation / (Evaporation + Precipitation), 2),
+  Precipitation_rate = 
+    round(Precipitation / (Evaporation + Precipitation), 2))
+
+data.new |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation_rate, stack = "group1") |>  #纵轴
+  e_bar(Precipitation_rate, stack = "group1") |>
+### <b> 
+  e_y_axis(
+    max = 1,
+    interval = 0.5,
+    formatter = e_axis_formatter("percent", digits = 1)) |>
+  e_tooltip(formatter = e_tooltip_item_formatter("percent"))
+### </b>   
+```
+
+</div>
+
+## 3.3.纵轴 | 转置(e_flip_coords)
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.flip <- data[order(data$Evaporation), ]
+
+data.flip |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation) |>  #纵轴
+  e_bar(Precipitation) |>
+  e_flip_coords()
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 转置：交换横轴和纵轴
+
++ 一般先按数值排序，也可按数据本身含义排序如人口金字塔
+```
+data.flip <- data[order(data$Evaporation), ]
+
+data.flip |>
+  e_charts(month) |>  
+  e_bar(Evaporation) |>  
+  e_bar(Precipitation) |> 
+### <b>   
+  e_flip_coords()  #转置
+### </b>   
+```
+
+</div>
+
+## 3.3.纵轴 | 反向(inverse)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>  #横轴
+  e_bar(Evaporation) |>  #纵轴
+  e_bar(Precipitation, x_index = 1, y_index = 1) |>
+  e_y_axis(index = 0, min = 0, max = 200) |>
+  e_y_axis(
+    index = 1,
+    inverse = TRUE, 
+    min = 0,
+    max = 200)
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>  
+  e_bar(Evaporation) |>  
+  e_bar(Precipitation, x_index = 1, y_index = 1) |>
+  e_y_axis(index = 0, min = 0, max = 200) |>
+  e_y_axis(
+    index = 1,
+### <b>     
+    inverse = TRUE,  #反向
+### </b>     
+    min = 0,
+    max = 200)
+```
+
+</div>
+
+## 3.3.纵轴 | 反向
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.inverse <- data |>
+  dplyr::mutate(Evaporation_i = -Evaporation)
+
+data.inverse |>
+  e_charts(month) |>
+  e_bar(Precipitation, stack = "group1", name = "男") |>
+  e_bar(Evaporation_i, stack = "group1", name = "女") |>
+  e_y_axis(show = FALSE) |>
+  e_flip_coords()
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 正数变负数
+```
+### <b> 
+data.inverse <- data |>
+  dplyr::mutate(Evaporation_i = -Evaporation)
+### </b> 
+
+data.inverse |>
+  e_charts(month) |>
+### <b>
+  e_bar(Precipitation, stack = "group1", name = "男") |>
+  e_bar(Evaporation_i, stack = "group1", name = "女") |>
+### </b>   
+  e_y_axis(show = FALSE) |>
+### <b>  
+  e_flip_coords()
+### </b>  
+```
+
+</div>
+
+## 3.3.纵轴 | 分组(group_by)
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.ab |>
+  group_by(type) |>
+  e_charts(month) |>
+  e_line(Evaporation) |>
+  e_toolbox_feature(feature = "dataView") |>
+  e_toolbox_feature(feature="dataZoom")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```{r}
+print(data.ab[c(1:2,13:14),])
+```
+
+```
+data.ab |>
+### <b> 
+  group_by(type) |>
+### </b>   
+  e_charts(month) |>
+  e_line(Evaporation) |>
+  e_toolbox_feature(feature = "dataView") |>
+  e_toolbox_feature(feature="dataZoom")
+```
+</div>
+
+## 3.3.纵轴 | 时间轴(timeline)
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.ab |>
+  group_by(type) |>
+  e_charts(month, height=400, timeline = TRUE) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_timeline_opts(axis_type = "category",
+                  top = 5) |>
+  e_legend(bottom = 'bottom', orient = 'horizontal') |>
+  e_toolbox_feature(feature = "dataView")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ axis_type：`time`, `value`,  `category`.
++ 通常默认在图形下方显示
+```
+data.ab |>
+### <b> 
+  group_by(type) |>
+  e_charts(month, height=400, timeline = TRUE) |>
+### </b>   
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>   
+  e_timeline_opts(axis_type = "category",
+                  top = 5) |>
+### </b>                   
+  e_legend(bottom = 'bottom', orient = 'horizontal') |>
+  e_toolbox_feature(feature = "dataView")
+```
+```{r}
+print(data.ab[c(1:2,13:14),])
+```
+</div>
+
+## 3.3.纵轴 - 随时间轴变动的标题
+<div style="float: left; width: 50%; ">
+```{r}
+life <- fread('./data/life-expectancy.csv')
+
+life.2 <- life[Year %in% c(
+  1800,1840,1880,1920,1951,1955,1959,1963,1967,1971,
+  1975,1979,1983,1987,1991,1995,1999,2003,2007,2011,2015), ]
+
+life.2 |>
+  group_by(Year) |>
+  e_charts(Income, timeline = TRUE) |>
+  e_scatter(
+    serie = Life_Expectancy,
+    size = Population ,
+    bind = Country,
+    itemStyle = list(opacity = 0.8),
+    scale_js = "function(data){ return 80*(Math.sqrt(data[2]/ 5e8) + 0.1);}") |>
+  e_tooltip(
+    padding = 5,
+    borderWidth = 1,
+    trigger = "item",
+    formatter = htmlwidgets::JS(
+      "function(params){
+        return('<strong>国家:' +  params.name +
+               '</strong><br />人均收入: ' + params.value[0] +'美元'+
+               '<br />人均寿命: ' + params.value[1] +'岁'+
+               '<br />总人口: ' + params.value[2])}")) |>
+  e_legend(show = FALSE) |>
+  e_x_axis(
+    type = 'log',
+    name = '人均收入',
+    max = 100000,
+    min = 300,
+    nameGap = 25,
+    nameLocation = 'middle',
+    nameTextStyle = list(fontSize = 18),
+    splitLine = list(show = FALSE),
+    axisLabel = list(formatter = '{value} $')) |>
+  e_y_axis(
+    type = 'value',
+    name = '平均寿命',
+    max = 100,
+    nameTextStyle = list(fontSize = 18),
+    splitLine = list(show = FALSE),
+    axisLabel = list(formatter = '{value} 岁')) |>
+  e_title(left = 'center', top = 10) |> 
+  e_timeline_opts(
+    autoPlay=TRUE,
+    axisType = 'category',
+    orient = 'vertical',
+    inverse = TRUE,
+    left = NULL,
+    right = 0,
+    top = 20,
+    bottom = 20,
+    width = 55,
+    height = NULL,
+    symbol = 'none',
+    checkpointStyle = list(borderWidth = 2),
+    controlStyle = list(showNextBtn = FALSE,
+                        showPrevBtn = FALSE)) |>
+  e_timeline_serie(
+    title = list(
+      list(
+        text = '各国人均寿命与GDP关系演变',
+        textStyle = list(fontWeight = 'normal',
+                           fontSize = 20),
+        subtext = '1800',
+        subtextStyle = list(fontWeight = 'bold',
+                            fontSize = 40)), 
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1840'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1880'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1920'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1951'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1955'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1959'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1963'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1967'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1971'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1975'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1979'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1983'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1987'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1991'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1995'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '1999'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '2003'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '2007'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '2011'),
+      list(text = '各国人均寿命与GDP关系演变', subtext = '2015')))|>
+  e_toolbox_feature(feature = c("dataView",'dataZoom'))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+```
+life.2 |>
+### <b>
+  group_by(Year) |>
+  e_charts(Income, timeline = TRUE) |>
+### </b>  
+  e_scatter(
+    serie=Life_Expectancy,size = Population,bind = Country,
+    itemStyle = list(opacity = 0.8),)|>
+### <b>    
+  e_timeline_opts(
+    autoPlay = TRUE,orient = 'vertical',inverse = TRUE,
+    right=0,top=20,bottom=20,width=55,symbol = 'none',
+    checkpointStyle = list(borderWidth = 2),
+    controlStyle = list(showNextBtn = FALSE,
+                        showPrevBtn = FALSE)) |>
+  e_timeline_serie(
+    title = list(
+      list(
+        text = '各国人均寿命与GDP关系演变',
+        textStyle = list(fontWeight = 'normal',
+                           fontSize = 20),
+        subtext = '1800',
+        subtextStyle = list(fontWeight = 'bold',
+                            fontSize = 40)), 
+      list(text='各国人均寿命与GDP关系演变',subtext = '1840'),
+#省略部分     
+      list(text='各国人均寿命与GDP关系演变',subtext = '2015'))) 
+### </b>      
+```
+
+</div>
+
+# 组件
+
+## 4.1.标题(Title)&图例(Legend)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### </b>   
+  e_title("图表的主标题","图表的副标题\n换行", left='center') |>
+  e_legend(right = 'right', orient = 'vertical') #右边，竖着
+#e_legend(top = 'top', orient = 'vertical') #上方正中间，竖着
+#e_legend(bottom = 'bottom', orient = 'horizontal') #下方中间，横着
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 类型(type)):'plain'/'scroll'(可滚动翻页的图例)
++ 位置： 左(left)、右(right)、上(top)、下(bottom)
++ 布局：vertical(横向)、horizontal(纵向)
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>   
+  e_title("图表的主标题", "图表的副标题\n换行", left='center') |>
+  e_legend(right = 'right', orient = 'vertical') #右边，竖着
+### </b>   
+  
+#上方正中间，竖着
+#e_legend(top = 'top', orient = 'vertical')
+
+#下方中间，横着
+#e_legend(bottom = 'bottom', orient = 'horizontal')
+
+#不显示图例
+e_legend(show = FALSE) 
+```
+</div>
+
+## 4.2.数据标签(Label)
+<div style="float: left; width: 50%; ">
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_labels(
+    fontSize = 9,#标签字体大小
+    fontWeight = "bold",#字体粗细normal/bold/bolder/lighter
+    fontStyle = "normal", #字体风格normal/italic/oblique
+    fontFamily = "serif", #字体
+    position = "top", #标签位置
+    rotate = 30, #旋转角度
+    align = "middle", #水平对齐：left/middle/right
+    verticalAlign = "bottom", #垂直对齐：top/middle/bottom
+    color = "orange" #标签颜色
+  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
++ fontSize/verticalAlign:字母S/A区分大小写
+
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>  
+  e_labels(
+    fontSize = 9,#标签字体大小
+    fontWeight = "bold",#字体粗细normal/bold/bolder/lighter
+    fontStyle = "normal", #字体风格normal/italic/oblique
+    fontFamily = "serif", #字体
+    position = "top", #标签位置
+    rotate = 30, #旋转角度
+    align = "middle", #水平对齐：left/middle/right
+    verticalAlign = "bottom", #垂直对齐：top/middle/bottom
+    color = "orange") #标签颜色
+### </b>
+
+#字体:'sans-serif','monospace','Arial','Microsoft YaHei' ...        
+#'top'/'left'/'right'/'bottom'
+#'inside'/'insideLeft'/'insideRight'
+#'insideTop'/'insideBottom'
+#'insideTopLeft'/'insideBottomLeft'
+#'insideTopRight'/'insideBottomRight'
+```
+</div>
+
+## 4.2.数据标签(Label) - 格式化文本(formatter)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_labels(formatter = '{@[1]}:a')
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 支持`\n`换行
++ {a}：系列名。
++ {b}：数据名。
++ {c}：数据值。
++ {@xxx}：数据中名为 'xxx' 的维度的值，如 {@product} 表示名为 'product' 的维度的值。
++ {@[n]}：数据中维度 n 的值，如 {@[3]} 表示维度 3 的值，从 0 开始计数。
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_labels(formatter='{@[1]}:a')
+```
+```{r}
+head(data)
+```
+
+</div>
+
+## 4.2.数据标签(Label) - [富文本(rich)](https://echarts.apache.org/examples/zh/editor.html?c=pie-nest)
+<div style="float: left; width: 50%;">
+```{r}
+df.outer <- data.frame(
+  name = c(
+    "Baidu","Direct","Email","Google",
+    "Union Ads","Bing","Video Ads","Others"),
+  value = c(1048, 335, 310, 251, 234, 147, 135, 102))
+
+df.outer |>
+  e_chart(name) |>
+  e_pie(value, radius = c("20%", "40%")) |>
+  e_labels(
+    position="outside",
+    labelLine = list(length = 30),
+    formatter = 
+      '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+    backgroundColor = '#F6F8FC',
+    borderColor = '#8C8D8E',
+    borderWidth = 1,
+    borderRadius = 4,
+    rich = list(
+      a = list(
+        color = '#6E7079',
+        lineHeight = 22,
+        align = 'center'
+      ),
+      hr = list(
+        borderColor = '#8C8D8E',
+        width = '100%',
+        borderWidth = 1,
+        height = 0
+        ),
+      b = list(
+        color = '#4C5058',
+        fontSize = 14,
+        fontWeight = 'bold',
+        lineHeight = 33
+      ),
+      per = list(
+        color = '#fff',
+        backgroundColor = '#4C5058',
+        padding = c (3, 4),
+        borderRadius = 4
+      )
+    )
+    )|>e_toolbox_feature(feature = "dataView")|>
+  e_legend(type='scroll',bottom = 'bottom')
+
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+```
+df.outer |>
+  e_chart(name) |>
+  e_pie(value, radius = c("20%", "40%")) |>
+  e_labels(
+    position="outside",
+    labelLine = list(length = 30),
+    formatter = 
+      '{a|{a}}{abg|}\n{hr|}\n  {b|{b}：}{c}  {per|{d}%}  ',
+    backgroundColor = '#F6F8FC',
+    borderColor = '#8C8D8E',
+    borderWidth = 1,
+    borderRadius = 4,
+### <b>    
+    rich = list(
+      a = list(
+        color = '#6E7079', lineHeight = 22, align ='center'),
+      hr = list(
+        borderColor = '#8C8D8E', width = '100%', 
+        borderWidth = 1, height = 0),
+      b = list(
+        color = '#4C5058', fontSize = 14, 
+        fontWeight = 'bold', lineHeight = 33),
+      per = list(
+        color = '#fff', backgroundColor = '#4C5058', 
+        padding = c (3, 4),borderRadius = 4)))|>
+### </b>        
+      e_toolbox_feature(feature = "dataView")|>
+      e_legend(type = 'scroll', bottom = 'bottom')
+```
+
+</div>
+
+## 4.3.提示框(Tooltip)
+<div style="float: left; width: 50%; ">
+
++ `e_tooltip(trigger = "item")` #数据项触发
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_tooltip(trigger = "item")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
++ `e_tooltip(trigger = "axis")` #坐标轴触发
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_tooltip(trigger = "axis")
+```
+</div>
+
+## 4.3.提示框(Tooltip) | 格式化文本(formatter)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.ab |>
+  group_by(type) |>
+  e_charts(Evaporation) |>
+  e_scatter(Precipitation, symbol_size = 10, symbol = "circle") |>
+  e_x_axis(name = "蒸发量") |>
+  e_y_axis(name = "降水量") |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS(
+      "function(params){
+        return('指标:' +
+               '<br />降水量: ' + params.value[0] +
+               '<br />蒸发量: ' + params.value[1])}"))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data.ab |>
+  group_by(type) |>
+  e_charts(Evaporation) |>
+  e_scatter(Precipitation, 
+            symbol_size = 10, 
+            symbol = "circle") |>
+  e_x_axis(name = "蒸发量") |>
+  e_y_axis(name = "降水量") |>
+### <b>  
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS(
+      "function(params){
+        return('指标:' +
+               '<br />降水量: ' + params.value[0] +
+               '<br />蒸发量: ' + params.value[1])}"))
+###</b>               
+```
+</div>
+
+## 4.4.标注点(MarkPoint)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_mark_point("蒸发量", data = list(type = "min")) |>
+  e_mark_point("蒸发量", data = list(type = "max")) |>
+  e_mark_point("降水量",
+               data = list(type = "min", symbol = "triangle")) |>
+  e_mark_point("降水量",
+               data = list(type = "max", symbolSize = 80))
+
+#'circle', 'rect', 'roundRect', 'triangle', 'diamond', 'pin', 'arrow', 'none'
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 标记形状类型(symbol)
++ 标记形状大小(symbolSize)：默认50，S区分大小写
+
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>   
+  e_mark_point("蒸发量", data = list(type = "min")) |>
+  e_mark_point("蒸发量", data = list(type = "max")) |>
+  e_mark_point("降水量", 
+               data = list(type = "min",
+               symbol = "triangle")) |>
+  e_mark_point("降水量", 
+               data = list(type = "max",
+               symbolSize = 80)) 
+### </b> 
+# 'circle', 'rect', 'roundRect', 'triangle', 
+# 'diamond', 'pin', 'arrow', 'none'
+```
+</div>
+## 4.5.标注线(MarkLine)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_mark_line("蒸发量", data = list(type = "average")) |>
+  e_mark_line("降水量", data = list(type = "average"), precision = 1) |>
+  e_mark_line("蒸发量", data = list(type = "max")) |>
+  e_tooltip(trigger = "axis")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ type：`min`、`max`、`average`
++ precision：小数点后位数
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>   
+  e_mark_line("蒸发量", data = list(type = "average")) |>
+  e_mark_line("降水量", 
+    data = list(type = "average"), precision = 1) |>
+  e_mark_line("蒸发量", data = list(type = "max")) |>
+  e_tooltip(trigger = "axis")
+### </b>   
+```
+</div>
+## 4.6.标注区域(MarkArea)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_mark_area(
+    serie = "蒸发量",
+    data = list(list(xAxis = "6月", yAxis = 100),
+                list(xAxis = "9月", yAxis = 180)),
+    itemStyle = list(color = "lightblue")
+  ) |>
+  e_mark_area(
+    serie = "降水量",
+    data = list(
+      list(xAxis = "min", yAxis = "min"),
+      list(xAxis = "max", yAxis = "average")
+    ),
+    itemStyle = list(color = "lightgreen")
+  )  |>
+  e_tooltip(trigger = "axis")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 区域范围可以填X轴、Y轴的具体数据值，也可以填min、max、average
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>   
+  e_mark_area(
+    serie = "蒸发量",
+    data = list(list(xAxis = "6月", yAxis = 100),
+                list(xAxis = "9月", yAxis = 180)),
+    itemStyle = list(color = "lightblue")) |>
+  e_mark_area(
+    serie = "降水量",
+    data = list(
+      list(xAxis = "min", yAxis = "min"),
+      list(xAxis = "max", yAxis = "average")),
+    itemStyle = list(color = "lightgreen"))  |>
+### </b>     
+  e_tooltip(trigger = "axis")
+```
+</div>
+
+## 4.6.`group_by`情况下的标注点-线-区域
+<div style="float: left; width: 50%; ">
+```{r}
+hw <- fread('./data/height-weight.csv')
+
+hw|>
+  group_by(type)|>
+  e_charts(height )|>
+  e_scatter(serie = weight,symbol_size = 10)|>
+  e_title('男性女性身高体重分布','数据来源：Heinz 2003',left='left',top=5)|>
+  e_grid(left='3%',
+         right='7%',
+         bottom='7%',
+         containLabel=TRUE)|>
+  e_tooltip(
+    trigger = 'item',
+    showDelay = 0,
+    axisPointer = list(
+      show = TRUE,
+      type = 'cross',
+      lineStyle = list(type = 'dashed',
+                       width = 1),
+      formatter=htmlwidgets::JS(
+        "function (params) {
+      if (params.value.length > 1) {
+        return (
+          params.seriesName +
+          ' :<br/>' +
+          params.value[0] +
+          'cm ' +
+          params.value[1] +
+          'kg '
+        );
+      } else {
+        return (
+          params.seriesName +
+          ' :<br/>' +
+          params.name +
+          ' : ' +
+          params.value +
+          'kg '
+        );
+      }
+    }")))|>
+  e_legend(left = 'center', bottom = 10) |>
+  e_x_axis(
+    type = 'value',
+    min = 140,
+    max = 200, 
+    axisLabel = list(formatter = '{value} cm'),
+    splitLine = list(show = FALSE))|>
+  e_y_axis(
+    type='value',
+    min = 40,
+    max = 120, 
+    axisLabel = list(formatter = '{value} kg'),
+    splitLine = list(show = FALSE))|>
+  e_mark_area(
+    silent = TRUE,
+    itemStyle = list(
+      color = 'transparent',
+      borderWidth = 1,
+      borderType = 'dashed'),
+    #serie = "Female",
+    data = list(
+      list(xAxis = "min", yAxis = "min"),
+      list(xAxis = "max", yAxis = "max"))) |> 
+  e_mark_point(data = list(type = 'min')) |>
+  e_mark_point(data = list(type = 'max')) |>
+  e_mark_line(data = list(type = 'average'),
+              lineStyle = list(type = 'solid')) |>
+  e_mark_line(serie = 'Female',
+              data = list(xAxis = 160)) |>
+  e_mark_line(serie = 'Male',
+              data = list(xAxis = 170))|>
+  e_toolbox_feature(feature = c("dataView",'dataZoom'))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+```{r}
+head(hw[c(1,261),])
+```
+```
+hw|>
+  group_by(type)|>
+  e_charts(height )|>
+  e_scatter(serie = weight,symbol_size = 10)|>
+### <b>  
+  e_mark_area(
+    silent = TRUE,
+    itemStyle = list(
+      color = 'transparent',
+      borderWidth = 1, borderType = 'dashed'),
+    #serie = "Female",
+    data = list(
+      list(xAxis = "min", yAxis = "min"),
+      list(xAxis = "max", yAxis = "max"))) |> 
+  e_mark_point(data = list(type = 'min')) |>
+  e_mark_point(data = list(type = 'max')) |>
+  e_mark_line(data = list(type = 'average'),
+              lineStyle = list(type = 'solid')) |>
+  e_mark_line(serie = 'Female',
+              data = list(xAxis = 160)) |>
+  e_mark_line(serie = 'Male',
+              data = list(xAxis = 170))
+### </b>              
+```
+</div>
+
+## 4.7.数据区域缩放(DataZoom)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation, name = "降水量")|>
+  e_datazoom(x_index = 0,
+             start = 80,
+             end = 100) |> 
+  e_datazoom(y_index = 0)
+
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 设置缩放组件时需要指定具体哪条坐标轴
+```
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation, name = "降水量")|>
+### <b>  
+  e_datazoom(x_index = 0,
+             start = 80,
+             end = 100) |> 
+  e_datazoom(y_index = 0)
+### </b>  
+```
+</div>
+## 4.7.数据区域缩放(DataZoom)
+<div style="float: left; width: 50%; ">
++  `e_datazoom(y_index = 0, type = 'slider')`
+```{r}
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation, name = "降水量")|>
+  e_datazoom(y_index = 0, type = 'slider')
+  #e_datazoom(y_index = 0, type = 'inside')
+
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ `e_datazoom(y_index = 0, type = 'inside')`
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation, name = "降水量")|>
+  #e_datazoom(y_index = 0, type = 'slider')
+  e_datazoom(y_index = 0, type = 'inside')
+```
+
+</div>
+## 4.8.刷选(Brush)&工具栏(Toolbox) | `saveAsImage`、`brush`、`restore`、`dataView`、`dataZoom`、`magicType`
+<div style="float: left; width: 50%; ">
++ `e_brush()`
+
+```{r}
+data |>
+  e_charts(month,height = 450) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_brush()
+  # e_toolbox_feature(feature = "brush") #工具栏
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ `e_toolbox_feature(feature = "dataView")`
+```{r}
+data |>
+  e_charts(month,height = 450) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_toolbox_feature(feature = "dataView") #工具栏
+```
+</div>
+
+## 4.9.视觉映射(VisualMap)
+<div style="float: left; width: 50%; ">
+
+```{r}
+iris |>
+  e_charts(Sepal.Length) |>
+  e_scatter(Petal.Length, Sepal.Width) |>
+  e_visual_map(Sepal.Width,
+               scale = e_scale,
+               dimension=3) |>
+  e_tooltip(trigger = "item")
+#dimension 0 = x, y = 1, z = 2, size = 3,color=4
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ dimension： 0 = x, y = 1, z = 2, size = 3,color=4
+
+```
+iris |>
+  e_charts(Sepal.Length) |>
+  e_scatter(Petal.Length, Sepal.Width) |>
+### <b>   
+  e_visual_map(Sepal.Width,
+               scale = e_scale,
+               dimension=3) |>
+### </b>                
+  e_tooltip(trigger = "axis")
+```
+</div>
+
+## 4.10.自定义图形(Graphic)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_text_g(
+    left = "center",
+    top = 40,
+    z = -1000,
+    style = list(text = "自定义的文字\n自定义的文字\n自定义的文字",
+                 fontSize = 12))
+ # e_draft(text="水印")
+ # e_image_g(
+ #    right = 20,
+ #    top = 20,
+ #    z = -999,
+ #    style = list(
+ #      image = "https://www.r-project.org/logo/Rlogo.png",
+ #      width = 150,
+ #      height = 150,
+ #      opacity = .6
+ #    )
+ #  )
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 增加自定义的文字
++ 增加水印、图片，但不能一起加
+
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>   
+  e_text_g(
+    left = "center",
+    top = 40,
+    z = -1000,
+    style = list(text = "自定义的文字\n自定义的文字\n自定义的文字",
+                 fontSize = 12))
+### </b>                  
+ # e_draft(text="水印")
+
+ # e_image_g(
+ #    right = 20,
+ #    top = 20,
+ #    z = -999,
+ #    style = list(
+ #      image = "https://www.r-project.org/logo/Rlogo.png",
+ #      width = 150,
+ #      height = 150,
+ #      opacity = .6 ))
+
+```
+</div>
+
+## 4.11.排列组合(Arrange)
+<div style="float: left; width: 50%;">
+
+```{r}
+e1 <- data |>
+  e_charts(month,height = 250) |>
+  e_bar(Evaporation, name = "蒸发量")
+
+e2 <- data |>
+  e_charts(month,height = 250) |>
+  e_line(Precipitation, name = "降水量")
+
+liquid <- data.frame(val = c(0.6, 0.5, 0.4))
+e3 <- liquid |>
+  e_charts(height = 250) |>
+  e_liquid(val)
+
+funnel <-
+  data.frame(stage = c("View", "Click", "Purchase"),
+             value = c(80, 30, 20))
+e4 <- funnel |>
+  e_charts(height = 250) |>
+  e_funnel(value, stage) |>
+  e_legend(show = FALSE)
+
+e_arrange(e1, e2, e3, e4, cols = 2, rows = 2)
+```
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+```
+e1 <- data |>
+  e_charts(month,height = 250) |>
+  e_bar(Evaporation, name = "蒸发量")
+
+e2 <- data |>
+  e_charts(month,height = 250) |>
+  e_line(Precipitation, name = "降水量")
+
+liquid <- data.frame(val = c(0.6, 0.5, 0.4))
+e3 <- liquid |>
+  e_charts(height = 250) |>
+  e_liquid(val)
+
+funnel <-
+  data.frame(stage = c("View", "Click", "Purchase"),
+             value = c(80, 30, 20))
+e4 <- funnel |>
+  e_charts(height = 250) |>
+  e_funnel(value, stage) |>
+  e_legend(show = FALSE)
+
+### <b>
+e_arrange(e1, e2, e3, e4, cols = 2, rows = 2)
+### </b>
+```
+</div>
+
+## 4.12.连接(Connect)
+<div style="float: left; width: 50%; ">
+
+```{r}
+e1 <- data |>
+  e_charts(month,
+           height = 200 , elementId = "图1") |>
+  e_bar(Evaporation, name = "蒸发量")
+
+e2 <- data |>
+  e_charts(month,
+           height = 200 , elementId = "图2") |>
+  e_bar(Precipitation, name = "降水量")
+
+e3 <- data |> 
+  e_charts(month,
+           height = 200) |>
+  e_line(Temperature, name = "平均温度") |>
+  e_connect(c("图1", "图2"))
+
+e_arrange(e1, e2, e3)
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 使用`e_connect`函数时需要在要连接的图中设定参数`elementId`
+```
+e1 <- data |>
+  e_charts(month,
+### <b>  
+           height = 200 , elementId = "图1") |>
+### </b>           
+  e_bar(Evaporation, name = "蒸发量")
+
+e2 <- data |>
+  e_charts(month,
+### <b>   
+           height = 200 , elementId = "图2") |>
+### </b>            
+  e_bar(Precipitation, name = "降水量")
+
+e3 <- data |> 
+  e_charts(month,
+           height = 200) |>
+  e_line(Temperature, name = "平均温度") |>
+### <b>   
+  e_connect(c("图1", "图2"))
+### </b>   
+
+### <b> 
+e_arrange(e1, e2, e3)
+### </b> 
+```
+</div>
+
+## 4.13.嵌套(add)
+<div style="float: left; width: 50%; ">
+
+```{r}
+funnel <- data.frame(
+  stage = c("View", "Click", "Purchase"),
+  value = c(80, 30, 20),
+  color = c("blue", "red", "green"))
+
+funnel |> 
+  dplyr::mutate(show = TRUE, fontSize = c(15, 10, 5)) |>
+  e_charts() |>
+  e_funnel(value, stage) |>
+  e_add_nested("label", show, fontSize) |>
+  e_add_nested("itemStyle", color) |>
+  e_labels(position = "outside",
+           formatter = "{b} : {c}") |>
+  e_tooltip()
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 漏斗图可以采用嵌套的方式来增加图形属性
+```
+funnel <- data.frame(
+  stage = c("View", "Click", "Purchase"),
+  value = c(80, 30, 20),
+  color = c("blue", "red", "green"))
+
+funnel |>
+  dplyr::mutate(show = TRUE, fontSize = c(15, 10, 5)) |>
+  e_charts() |>
+  e_funnel(value, stage) |>
+### <b>  
+  e_add("label", show, fontSize) |>
+  e_add("itemStyle", color) |>
+### </b>  
+  e_labels(position = "outside",
+           formatter = "{b} : {c}") |>
+  e_tooltip()
+  
+#e_add_nested/e_add_unnested  
+```
+
+</div>
+# 坐标系
+
+## 5.1.直角坐标系(Grid)&轴(Axis)
+
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation,
+         name = "降水量",
+         x_index = 1,
+         y_index = 1) |> 
+  e_grid(height = "35%") |>
+  e_grid(height = "35%", top = "60%") |>
+  e_y_axis(
+    gridIndex = 1,
+    name = "主Y轴",
+    nameLocation = "center",
+    nameGap = 30) |>
+  e_x_axis(gridIndex = 1,
+           name = "主X轴",
+           nameLocation = "end") |>
+  e_y_axis(
+    index = 1,
+    name = '次Y轴',
+    nameLocation = "center",
+    nameGap = 15) |>
+  e_x_axis(index = 1,
+           name = "次X轴",
+           nameLocation = "end")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation,
+         name = "降水量",
+### <b>         
+         x_index = 1,
+         y_index = 1) |> 
+  e_grid(height = "35%") |>
+  e_grid(height = "35%", top = "60%") |>
+  e_y_axis(
+    gridIndex = 1,
+    name = "主Y轴", #坐标轴名称
+    nameLocation = "center", #坐标轴名称的位置
+    nameGap = 30) |>
+  e_x_axis(gridIndex = 1,
+           name = "主X轴",
+           nameLocation = "end") |>
+  e_y_axis(
+    index = 1,
+    name = '次Y轴',
+    nameLocation = "center",
+    nameGap = 15) |> #坐标轴名称与轴线之间的距离
+  e_x_axis(index = 1,
+           name = "次X轴",
+           nameLocation = "end")
+### </b>              
+```
+</div>
+
+## 5.1.直角坐标系(Grid)&轴(Axis)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation,
+         name = "降水量",
+         x_index = 1 ,
+         y_index = 1)  |>
+  e_grid(width = "30%")  |>
+  e_grid(width = "30%", left = "50%")  |>
+  e_y_axis(gridIndex = 1)  |>
+  e_x_axis(gridIndex = 1)
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>
+  e_line(Evaporation, name = "蒸发量") |>
+### <b>  
+  e_line(Precipitation,
+         name = "降水量",
+         x_index = 1 ,
+         y_index = 1)  |>
+  e_grid(width = "30%")  |>
+  e_grid(width = "30%", left = "50%")  |>
+  e_y_axis(gridIndex = 1)  |>
+  e_x_axis(gridIndex = 1)
+### </b>  
+```
+</div>
+
+## 5.2.极坐标系(Polar) | 把横轴折起来
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_polar() |>
+  e_angle_axis(month) |> 
+  e_radius_axis() |>
+  e_bar(Evaporation, name = "蒸发量", coord_system = "polar") |>
+  e_line(Precipitation, name = "降水量", coord_system = "polar")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 极坐标系中`e_angle_axis`为角度轴，即被折起来的轴，`e_radius_axis`为径向(半径)轴
+```
+data|>
+  e_charts(month) |>
+### <b>   
+  e_polar() |>
+  e_angle_axis(month) |> 
+  e_radius_axis() |>
+### </b>  
+  e_bar(Evaporation, name = "蒸发量", 
+### <b>  
+    coord_system = "polar") |>
+### </b>    
+  e_line(Precipitation, name = "降水量", 
+### <b>  
+    coord_system = "polar")
+### </b>    
+```
+</div>
+
+## 5.2.极坐标系(Polar) | 把纵轴折起来
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_polar() |>
+  e_angle_axis() |>
+  e_radius_axis(month, axisLabel = list(interval = 0)) |>
+  e_bar(Evaporation,
+        name = "蒸发量",
+        coord_system = "polar",
+        stack = "堆一堆") |>
+  e_bar(
+    Precipitation,
+    name = "降水量",
+    coord_system = "polar",
+    stack = "堆一堆"
+  ) 
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ 极坐标系中`e_angle_axis`为角度轴，即被折起来的轴，`e_radius_axis`为径向(半径)轴
+```
+data |>
+  e_charts(month) |>
+### <b>  
+  e_polar() |>
+  e_angle_axis() |>
+  e_radius_axis(month, axisLabel = list(interval = 0)) |>
+### </b>  
+  e_bar(Evaporation,
+        name = "蒸发量",
+### <b>        
+        coord_system = "polar",
+### </b>
+        stack = "堆一堆") |>
+  e_bar(
+    Precipitation,
+    name = "降水量",
+### <b>    
+    coord_system = "polar",
+### </b>
+    stack = "堆一堆") 
+```
+</div>
+## 5.2.极坐标系(Polar) | 雷达图(radar)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_radar(Evaporation,
+          max = 200, #最大值
+          name = "蒸发量") |>
+  e_radar(Precipitation,
+          max = 200, #最大值
+          name = "降水量") |>
+  e_radar_opts(splitNumber = 4,
+               #指示器轴的分割段数
+               shape = "polygon",
+               #类型，还可以是circle
+               radius = "60%") |> #半径
+  e_tooltip(trigger = "item")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>
+### <b>  
+  e_radar(Evaporation,
+          max = 200, #最大值
+          name = "蒸发量") |>
+  e_radar(Precipitation,
+          max = 200, #最大值
+          name = "降水量") |>
+  e_radar_opts(splitNumber = 4,
+               #指示器轴的分割段数
+               shape = "polygon",
+               #类型，还可以是circle
+               radius = "60%") |> #半径
+### </b>               
+  e_tooltip(trigger = "item")
+```
+</div>
+
+## 5.3.单轴(SingleAxis)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month, height=100) |>
+  e_single_axis(bottom = 20) |>
+  e_scatter(Evaporation,
+            name = "蒸发量",
+            Temperature,
+            coord_system = "singleAxis")
+
+  #e_scatter(value,size,coord_system = "singleAxis")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month, height=100) |>
+### <b>  
+  e_single_axis(bottom = 20) |>
+### </b>  
+  e_scatter(Evaporation,
+            name = "蒸发量",
+            Temperature,
+### <b>            
+            coord_system = "singleAxis")
+### </b>            
+
+  #e_scatter(value,size,coord_system = "singleAxis")
+```
+</div>
+
+## 5.3.单轴(SingleAxis)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data.2<-data.frame(
+  hours=c('12a', '1a', '2a', '3a', '4a', '5a',
+          '6a', '7a', '8a', '9a', '10a', '11a',
+          '12p', '1p', '2p', '3p', '4p', '5p',
+          '6p', '7p', '8p', '9p', '10p', '11p'),
+  Saturday_value = c(1:24),
+  Saturday_size = sample(0:14, 24, replace = TRUE),
+  Friday_value = c(1:24),
+  Friday_size = sample(0:14, 24, replace = TRUE),
+  Thursday_value = c(1:24),
+  Thursday_size = sample(0:14, 24, replace = TRUE),
+  Wednesday_value = c(1:24),
+  Wednesday_size = sample(0:14, 24, replace = TRUE),
+  Tuesday_value = c(1:24),
+  Tuesday_size = sample(0:14, 24, replace = TRUE),
+  Monday_value = c(1:24),
+  Monday_size = sample(0:14, 24, replace = TRUE),
+  Sunday_value = c(1:24),
+  Sunday_size = sample(0:14, 24, replace = TRUE))
+
+e1 <- data.2 |>
+  #`height = 100`用来设置图形高度
+  e_charts(hours, height = 100) |> #横轴
+  #`bottom = 20`用来设置single组件距离容器下侧的距离
+  #`left=150`用来设置single组件距离容器左侧的距离
+  #`axisLabel=list(interval=2)`用来限定single组件单轴的显示间隔
+  e_single_axis(bottom = 20, left=100, axisLabel=list(interval=2)) |>
+  e_scatter(Saturday_value, #纵轴
+            Saturday_size, #气泡大小
+            #写入JavaScript语言的缩放函数
+            scale_js = 'function (dataItem) {return dataItem[2] * 4;}',
+            color = "#5470c6", #气泡颜色
+            coord_system = "singleAxis") |>
+  e_legend(show = FALSE) |>
+  e_title("Saturday", left = "left", top='middle')
+
+e2 <- data.2 |>
+  e_charts(hours, height = 100) |>
+  e_single_axis(bottom = 20, left=100, axisLabel=list(interval=2)) |>
+  e_scatter(Friday_value,
+            Friday_size,
+            scale_js = 'function (dataItem) {return dataItem[2] * 4;}',
+            color = "#91cc75",
+            coord_system = "singleAxis") |>
+  e_legend(show = FALSE) |>
+  e_title("Friday", left = "left", top='middle')
+
+e3 <- data.2 |>
+  e_charts(hours, height = 100) |>
+  e_single_axis(bottom = 20, left=100, axisLabel=list(interval=2)) |>
+  e_scatter(Thursday_value,
+            Thursday_size,
+            color = "#fac858",
+            scale_js = 'function (dataItem) {return dataItem[2] * 4;}',
+            coord_system = "singleAxis") |>
+  e_legend(show = FALSE) |>
+  e_title("Thursday", left = "left", top='middle')
+
+e4 <- data.2 |>
+  e_charts(hours, height = 100) |>
+  e_single_axis(bottom = 20, left=100, axisLabel=list(interval=2)) |>
+  e_scatter(Wednesday_value,
+            Wednesday_size,
+            color = "#ee6666",
+            scale_js = 'function (dataItem) {return dataItem[2] * 4;}',
+            coord_system = "singleAxis") |>
+  e_legend(show = FALSE) |>
+  e_title("Wednesday", left = "left", top='middle')
+
+e5 <- data.2 |>
+  e_charts(hours, height = 100) |>
+  e_single_axis(bottom = 20, left=100, axisLabel=list(interval=2)) |>
+  e_scatter(Tuesday_value,
+            Tuesday_size,
+            color = "#73c0de",
+            scale_js = 'function (dataItem) {return dataItem[2] * 4;}',
+            coord_system = "singleAxis") |>
+  e_legend(show = FALSE) |>
+  e_title("Tuesday", left = "left", top='middle')
+
+
+e_arrange(e1, e2, e3, e4, e5, cols = 1)
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+e1 <- data.2 |>
+  #`height = 100`用来设置图形高度
+  e_charts(hours, height = 100) |> #横轴
+  #`bottom = 20`用来设置single组件距离容器下侧的距离
+  #`left=150`用来设置single组件距离容器左侧的距离
+  #`axisLabel=list(interval=2)`用来限定single组件单轴的显示间隔
+### <b>  
+  e_single_axis(bottom = 20, left=100, 
+    axisLabel=list(interval=2)) |>
+  e_scatter(Saturday_value, #纵轴
+            Saturday_size, #气泡大小
+            #写入JavaScript语言的缩放函数
+            scale_js = 'function (dataItem)
+                       {return dataItem[2] * 4;}',
+            color = "#5470c6", #气泡颜色
+            coord_system = "singleAxis") |>
+### </b>            
+  e_legend(show = FALSE) |>
+  e_title("Saturday", left = "left", top='middle')
+
+e_arrange(e1, e2, e3, e4, e5, cols = 1)  
+```
+</div>
+
+
+## 5.4.日历(Calendar)
+<div style="float: left; width: 25%; ">
+
+```{r}
+dates <-
+  seq.Date(as.Date("2021-09-01"), as.Date("2021-10-31"), by = "day")
+values <- rnorm(length(dates), 20, 6)
+
+year <- data.frame(date = dates, values = values)
+
+year |>
+  e_charts(date) |>
+  e_calendar(range = "2021-09", orient = 'vertical') |>
+  e_heatmap(values, coord_system = "calendar") |>
+  e_visual_map(max = 30) 
+```
+</div>
+<div style="float: left; width: 30%; ">
+
+```{r}
+year |>
+  e_charts(date) |>
+  e_calendar(range = c("2021-09", "2021-11"), orient = 'horizontal') |>
+  e_heatmap(values, coord_system = "calendar") |>
+  e_visual_map(max = 30) 
+```
+</div>
+
+<div style="float: right; width:45%; text-align: left;">
+
+```
+dates <-
+  seq.Date(as.Date("2021-09-01"), 
+           as.Date("2021-10-31"), by = "day")
+values <- rnorm(length(dates), 20, 6)
+
+year <- data.frame(date = dates, values = values)
+
+#左图
+year |>
+  e_charts(date) |>
+### <b>  
+  e_calendar(range = "2021-09", 
+             orient = 'vertical') |>
+  e_heatmap(values, coord_system = "calendar") |>
+### </b>  
+  e_visual_map(max = 30)
+
+#右图
+year |>
+  e_charts(date) |>
+### <b>  
+  e_calendar(range = c("2021-09", "2021-11"), 
+             orient = 'horizontal') |>
+  e_heatmap(values, coord_system = "calendar") |>
+### </b>  
+  e_visual_map(max = 30)   
+```
+</div>
+
+## 5.5.地理坐标系(Geo)
+<div style="float: left; width: 50%; ">
+
+```{r}
+#un.name.zh  #country.name.en
+# cns <- countrycode::codelist$country.name.en
+# cns <- data.frame(country = cns,
+#                   value = runif(length(cns), 1, 100))
+# 
+# cns |>
+#   e_charts(country) |>
+#   e_map(value) |>
+#   e_visual_map(value)
+
+# install.packages("remotes")
+# remotes::install_github('JohnCoene/echarts4r.maps')
+library(echarts4r.maps)
+
+df <- data.frame(region = c("湖北", "浙江", "北京", "广东"),
+                 value = c(1, 2, 3, 4))
+
+df |>
+  e_charts(region) |>
+  em_map("China") |>
+  e_map(value, map = "China") |>
+  e_visual_map(value) |>
+  e_theme("infographic")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+# install.packages("remotes")
+# remotes::install_github('JohnCoene/echarts4r.maps')
+library(echarts4r.maps)
+
+df <- data.frame(region = c("湖北", "浙江", "北京", "广东"),
+                 value = c(1, 2, 3, 4))
+
+df |>
+  e_charts(region) |>
+  em_map("China") |>
+  e_map(value, map = "China") |>
+  e_visual_map(value) |>
+  e_theme("infographic")
+```
+</div>
+ 
+## 5.5.地理坐标系(Geo)
+<div style="float: left; width: 50%; ">
+
+```{r}
+ library(dplyr)
+# # data("cities")
+# # cc <- cities |> filter(country == "CN")
+lines <- data.frame(
+  source_lat = c(39.9075, 39.9075, 31.22222, 31.22222),
+  source_lon = c(116.3972, 116.3972, 121.4581, 121.4581),
+  source_name = c("北京", "北京", "上海", "上海"),
+  target_lat = c(31.22222, 22.1823, 39.9075, 22.1823),
+  target_lon = c(121.4581, 111.1179, 116.3972, 111.1179),
+  target_name = c("上海", "深圳", "北京", "深圳"),
+  cnt = sample(1:10, 2))
+
+lines |>
+  e_charts() |>
+  e_geo(map = "China") |>
+  e_lines(
+    source_lon,
+    source_lat,
+    target_lon,
+    target_lat,
+    source_name,
+    target_name,
+    cnt,
+    coord_system = "geo",
+    name = "线的名字",
+    lineStyle = list(normal = list(
+      curveness = 0.3,
+      color = "red",
+      width = 2))) |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS(
+      "function(params){
+        return(
+          params.seriesName +'<br />' +
+          params.data.source_name + ' -> ' +
+          params.data.target_name + ':'+ params.value)}")) |>
+  e_toolbox_feature(feature = c("dataView", "saveAsImage"))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+# data("cities")
+# cc <- cities |> filter(country == "CN")
+lines |>
+  e_charts() |>
+  e_geo(map = "China") |>
+### <b>  
+  e_lines(
+    source_lon, source_lat, target_lon, target_lat,
+    source_name, target_name, cnt,
+    coord_system = "geo", #地理坐标系
+    name = "线的名字",
+    lineStyle = list(normal = list(
+      curveness = 0.3, #线的弯曲度
+      color = "red",
+      width = 2))) |>
+### </b>      
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS(
+      "function(params){
+        return(
+          params.seriesName +'<br />' +
+          params.data.source_name + ' -> ' +
+          params.data.target_name + ':'+ params.value)}"))|>
+  e_toolbox_feature(feature = c("dataView", "saveAsImage"))
+```
+</div>
+## 5.6.平行坐标系(parallel)
+<div style="float: left; width: 50%; ">
+```{r}
+parallel<-fread('data/parallel.csv')
+
+parallel |>
+  group_by(type) |>
+  e_charts() |>
+  e_parallel(date,
+             AQIindex,
+             PM25,
+             PM10,
+             CO,
+             NO2,
+             SO2 ,
+             level,
+             opts = list(smooth = FALSE)) |>
+  e_legend(show = TRUE)|>
+  e_toolbox_feature(feature = "dataView")
+```
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ `group_by(type)`没起作用
+```
+parallel |>
+  group_by(type) |>
+  e_charts() |>
+### <b>  
+  e_parallel(date,
+             AQIindex,
+             PM25,
+             PM10,
+             CO,
+             NO2,
+             SO2 ,
+             level,
+             opts = list(smooth = FALSE)) |>
+### </b>             
+  e_legend(show = TRUE)|>
+  e_toolbox_feature(feature = "dataView")
+```
+
+</div>
+# 主题 | 大坑，慎入
+
+## 6.1.选择主题(theme)
+<div style="float: left; width: 50%; ">
++ e_theme("inspired")
+```{r}
+data.inverse |>
+  e_charts(month) |>
+  e_bar(Precipitation, stack = "group1", name = "右") |>
+  e_area(Evaporation_i, stack = "group1", name = "左") |>
+  e_flip_coords() |>
+  e_theme("inspired")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ e_theme("dark-fresh-cut")
+```{r}
+data.inverse |>
+  e_charts(month) |>
+  e_bar(Precipitation, stack = "group1", name = "右") |>
+  e_area(Evaporation_i, stack = "group1", name = "左") |>
+  e_flip_coords() |>
+  e_theme("dark-fresh-cut")
+```
+</div>
+
+## 6.2.背景颜色
+<div style="float: left; width: 50%; ">
+
++ e_color(background = "black") #指定背景颜色，标签与网格线会自动改变
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_labels() |>
+  e_color(background = "black")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
++ e_color("orange", "lightgrey") #第一个引号里指定的是图形的颜色，第二个引号里指定的是背景的颜色
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_labels() |>
+  e_color("orange", "lightgrey")
+```
+</div>
+
+## 6.3.线 - 坐标轴轴线
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_y_axis(name = "Y轴",
+           axisLine = list(
+# 显示坐标轴轴线
+             show = TRUE, 
+#只在轴线末端显示箭头，默认symbol="none"即不显示箭头，symbol="arrow"即两端都显示箭头
+             symbol = c("none", "arrow") ,
+#箭头的大小，第一个数字表示宽度（垂直坐标轴方向），第二个数字表示高度（平行坐标轴方向）
+             symbolSize = c(20, 15),
+             lineStyle=list(
+               color="red", #轴线的颜色
+               width=2, #轴线的线宽
+               type="dashed", #solid为实线,dashed为虚线,dotted为点线
+               opacity=0.5 #轴线的透明度
+             )
+))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ `symbol = c("none", "arrow")`表示只在轴线末端显示箭头，默认symbol="none"即不显示箭头，symbol="arrow"即两端都显示箭头
++ `symbolSize = c(20, 15)`箭头的大小，第一个数字表示宽度（垂直坐标轴方向），第二个数字表示高度（平行坐标轴方向）
+```
+data |> e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+### <b>  
+  e_y_axis(name = "Y轴",
+           axisLine = list(
+             show = TRUE, # 显示坐标轴轴线
+             symbol = c("none", "arrow") ,
+             symbolSize = c(20, 15),
+             lineStyle = list(
+               color = "red", #轴线的颜色
+               width = 2, #轴线的线宽
+          type = "dashed", #solid实线,dashed虚线,dotted点线
+               opacity = 0.5))) #轴线的透明度
+### </b>             
+```
+</div>
+
+## 6.3.线 - 坐标轴刻度线
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_y_axis(
+    name = "Y轴",
+    axisLine = list(show = TRUE),
+    axisTick = list(
+      show = TRUE, #显示坐标轴刻度
+      inside = TRUE, #刻度朝内，默认朝外
+      length = 10,  #刻度的长度
+      lineStyle = list(
+        color = "red", #刻度线的颜色
+        width = 5, #刻度线的线宽
+        type = "solid", #刻度线的类型
+        opacity = 0.5 #刻度线的透明度
+      ))) |>
+  e_x_axis(boundaryGap = TRUE,
+           axisTick = list(alignWithLabel = TRUE))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ `alignWithLabel = TRUE` 使刻度线和标签对齐，在`boundaryGap=true` 的时候有效
+
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+### <b>  
+  e_y_axis(
+    name = "Y轴",
+    axisLine = list(show = TRUE),
+    axisTick = list(
+      show = TRUE, #显示坐标轴刻度
+      inside = TRUE, #刻度朝内，默认朝外
+      length = 10,  #刻度的长度
+      lineStyle = list(
+        color = "red", #刻度线的颜色
+        width = 5, #刻度线的线宽
+        type = "solid", #刻度线的类型
+        opacity = 0.5 #刻度线的透明度
+      ))) |>
+  e_x_axis(boundaryGap = TRUE,
+           axisTick = list(alignWithLabel = TRUE))
+### </b>           
+```
+</div>
+## 6.3.线 - 坐标轴分割线
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_y_axis(
+    name = "Y轴",
+    axisLine = list(show = TRUE),
+    splitLine = list(
+      show = TRUE, #显示坐标轴分割线
+      lineStyle = list(
+        color = "red",  #分割线的颜色
+        width = 2, #分割线的线宽
+        type = "dashed", #分割线的类型
+        opacity = 0.5 #分割线的透明度
+      ))) |>
+  e_x_axis(
+      type = "category", #类目轴
+      splitLine = list(
+      show = TRUE, #显示坐标轴分割线
+      interval = 1, #坐标轴分隔线的显示间隔
+      lineStyle = list(
+        color = "red",  #分割线的颜色
+        width = 2, #分割线的线宽
+        type = "dashed", #分割线的类型
+        opacity = 0.5 #分割线的透明度
+      )))
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+data |>
+  e_charts(month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+### <b>  
+  e_y_axis(
+    name = "Y轴",
+    axisLine = list(show = TRUE),
+    splitLine = list(
+      show = TRUE, #显示坐标轴分割线
+      lineStyle = list(
+        color = "red",  #分割线的颜色
+        width = 2, #分割线的线宽
+        type = "dashed", #分割线的类型
+        opacity = 0.5 #分割线的透明度
+      ))) |>
+  e_x_axis(
+      splitLine = list(
+      show = TRUE, #显示坐标轴分割线
+      interval = 1, #坐标轴分隔线的显示间隔
+      lineStyle = list(
+        color = "red",  #分割线的颜色
+        width = 2, #分割线的线宽
+        type = "dashed", #分割线的类型
+        opacity = 0.5))) #分割线的透明度
+      
+### </b>      
+```
+</div>
+
+## 6.3.线 - 数据标签的引导线(LabelLine)
+<div style="float: left; width: 50%; ">
+
+```{r}
+data |>
+  e_charts(month) |>
+  e_pie(Evaporation,
+        name = "蒸发量",
+        radius = "40%") |>
+  e_labels(
+    position = "outside",
+    fontSize = 9,
+    alignTo = "edge",
+    formatter = "名称：{b} \n 值：{c} 单位",
+    minMargin = 5,
+    edgeDistance = 10,
+    lineHeight = 15,
+    distanceToLabelLine = 1,
+    labelLine = list(
+      length = 20,
+      length2 = 0,
+      maxSurfaceAngle = 80)) |>
+  e_legend(type = "scroll")
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
++ `maxSurfaceAngle`设置为小于 90 度的值保证引导线不会和扇区交叉。
++ 也可以在`labelLine()`通过设置`lineStyle=list()`改变引导线的颜色、线宽、类型、透明度等等属性。
+```
+data |>
+  e_charts(month) |>
+  e_pie(Evaporation,
+        name = "蒸发量",
+        radius = "40%") |>
+### <b>        
+  e_labels(
+    position = "outside", #显示视觉引导线
+    fontSize = 9,
+    alignTo = "edge",
+    formatter = "名称：{b} \n 值：{c} 单位",
+    minMargin = 5,
+    edgeDistance = 10, #文字边距
+    lineHeight = 15, #行高
+    distanceToLabelLine = 5, #文字与引导线之间的距离
+    labelLine = list(
+      length = 20, #引导线第一段的长度
+      length2 = 0, #引导线第二段的长度
+      maxSurfaceAngle = 80)) |>
+### </b>      
+  e_legend(type = "scroll")
+```
+</div>
+
+
+
+## 6.4.文字 | 坐标轴标题；坐标轴标签；图表标题；图例；数据标签；提示框
+<div style="float: left; width: 40%; text-align: left;">
+
+```{r}
+data |>
+  e_charts(month, height = 400) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation, name = "降水量", color="red") |>
+  e_x_axis(
+    name = "X轴的名称", nameLocation="center",
+    nameTextStyle = list(color = "red"),
+    #修改坐标轴标题的文字属性
+    axisLabel = list(color = "orange")) |> #修改坐标轴标签的文字属性
+  e_y_axis(
+    name = "Y轴的名称",
+    nameTextStyle = list(color = "red"),
+    #修改坐标轴标题的文字属性
+    axisLabel = list(color = "orange")) |> #修改坐标轴标签的文字属性
+  e_title(text = "主标题", 
+          textStyle = list(color = "lightblue")) |> #修改图表标题的文字属性
+  e_legend(
+    textStyle = list(color = "lightgreen"),#修改图例的文字属性
+    itemStyle = list(color = "grey"),#修改图例的图形属性
+    lineStyle = list(color = "red") #修改图例的图形中线的属性
+  ) |>
+  e_labels(show = TRUE,
+           position = "top",
+           color = "green") |>
+  e_tooltip(
+    show = TRUE,
+    trigger = "axis",
+    textStyle = list(color = "pink"))
+```
+
+</div>
+
+<div style="float: right; width:60%; text-align: left;">
+
+```
+data |>
+  e_charts(month, height = 400) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_line(Precipitation, name = "降水量", color="red") |>
+### <b>  
+  e_x_axis(
+    name = "X轴的名称", nameLocation="center",
+    nameTextStyle = list(color = "red"), #修改坐标轴标题的文字属性
+    axisLabel = list(color = "orange")) |> #修改坐标轴标签的文字属性
+  e_y_axis(
+    name = "Y轴的名称",
+    nameTextStyle = list(color = "red"), #修改坐标轴标题的文字属性
+    axisLabel = list(color = "orange")) |> #修改坐标轴标签的文字属性
+  e_title(text = "主标题", 
+          textStyle = list(color = "lightblue")) |> #修改图表标题的文字属性
+  e_legend(
+    textStyle = list(color = "lightgreen"), #修改图例的文字属性
+    itemStyle = list(color = "grey"), #修改图例的图形属性
+    lineStyle = list(color = "red"))|>  #修改图例的图形中线的属性
+  e_labels(show = TRUE, position = "top",
+           color = "green") |>  #修改数据标签的文字属性
+  e_tooltip(show = TRUE, trigger = "axis",
+    textStyle = list(color = "pink")) #修改提示框中的文字属性
+### </b>    
+```
+</div>
+
+## 6.4.文字 | <b>以坐标轴标题为例</b>
+<div style="float: left; width: 40%; ">
+
+```{r}
+data |>
+  e_charts(month, height = 400) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_x_axis(
+    name = "X轴\n的名称",
+    nameLocation = "center",
+    nameGap = 45,
+    nameTextStyle = list(
+      color = "red",
+      #颜色
+      fontStyle = "normal",
+      #字体风格，还有italic/oblique
+      fontWeight = "bolder",
+      #字体粗细，还有normal/bold/lighter
+      fontFamily = "Microsoft YaHei",
+      #字体系列
+      fontSize = 12,
+      #字体大小
+      align = "center",
+      #字体水平对齐方式，还有left/right
+      verticalAlign = "middle",
+      #字体垂直对齐方式，还有top/bottom
+      lineHeight = 20,
+      #字体行高，默认56
+      backgroundColor = "grey",
+      #文字块背景颜色
+      borderColor = "blue",
+      #文字块边框颜色
+      borderWidth = 2,
+      #文字块边框宽度
+      borderType = "dashed", #文字块边框描边类型
+      borderDashOffset=0 #虚线偏移量
+    )
+  )
+```
+
+</div>
+
+<div style="float: right; width:60%; text-align: left;">
+```
+data |>
+  e_charts(month, height = 400) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_x_axis(
+    name = "X轴\n的名称", #支持`\n`换行
+    nameLocation = "center",
+    nameGap = 45,
+### <b>    
+    nameTextStyle = list(
+      color = "red", #颜色
+      fontStyle = "normal", #字体风格，还有italic/oblique
+      fontWeight = "bolder", #字体粗细，还有normal/bold/lighter
+      fontFamily = "Microsoft YaHei", #字体系列
+      fontSize = 12, #字体大小
+      align = "center", #字体水平对齐方式，还有left/right
+      verticalAlign = "middle", #字体垂直对齐方式，还有top/bottom
+      lineHeight = 20, #字体行高，默认56
+      backgroundColor = "grey", #字块背景颜色
+      borderColor = "blue", #文字块边框颜色
+      borderWidth = 2, #文字块边框宽度
+      borderType = "dashed" #文字块边框描边类型
+### </b>
+    ))
+```
+</div>
+## 6.4.文字 | <b>以坐标轴标题为例</b>
+<div style="float: left; width: 40%; text-align: left;">
+
+```{r}
+data |>
+  e_charts(month, height = 400) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_x_axis(
+    name = "X轴的名称",
+    nameLocation = "center",
+    nameGap = 45,
+    nameTextStyle = list(
+      backgroundColor = "lightgrey",
+      #字块背景颜色
+      borderRadius = 20,
+      #文字块的圆角
+      padding = c(1, 2, 3, 6),
+      #文字块的内边距,(上，右，下，左)
+      shadowColor = "red",
+      #文字块背景阴影颜色
+      shadowBlur = 2,
+      #文字块背景阴影长度
+      shadowOffsetX = 1,
+      #文字块背景阴影X偏移
+      shadowOffsetY = 1,
+      #文字块背景阴影Y偏移
+      width = 20,
+      #文字本身的显示宽度
+      height = 10,
+      #文字本身的显示高度
+      textBorderColor = "blue",
+      #文字本身的描边颜色
+      textBorderWidth = 0.2,
+      #文字本身的描边宽度
+      textBorderType = "solid",
+      #文字本身的描边类型
+      textBorderDahOffset = 0 #文字本身虚线描边时的偏移量
+    )
+  )
+```
+
+</div>
+
+<div style="float: right; width:60%; text-align: left;">
+
+```
+data |>
+  e_charts(month, height = 400) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_x_axis(
+    name = "X轴的名称", nameLocation = "center", nameGap = 45,
+### <b>    
+    nameTextStyle = list(
+      backgroundColor = "lightgrey", #字块背景颜色
+      borderRadius = 20, #文字块的圆角
+      padding = c(1, 2, 3, 6), #文字块的内边距,(上，右，下，左)
+      shadowColor = "red", #文字块背景阴影颜色
+      shadowBlur = 2, #文字块背景阴影长度
+      shadowOffsetX = 1, #文字块背景阴影X偏移
+      shadowOffsetY = 1, #文字块背景阴影Y偏移
+      width = 20, #文字本身的显示宽度
+      height = 10, #文字本身的显示高度
+      textBorderColor = "blue", #文字本身的描边颜色
+      textBorderWidth = 0.2, #文字本身的描边宽度
+      textBorderType = "solid", #文字本身的描边类型
+      textBorderDahOffset = 0)) #文字本身虚线描边时的偏移量
+### </b>      
+#textShadowColor文字本身的阴影颜色/textShadowBlur文字本身的阴影长度
+#testShadowOffsetX文字本身的阴影X偏移/testShadowOffsetY文字本身的阴影Y偏移
+#文字超出宽度是否截断或换行：overflow
+https://echarts.apache.org/zh/option.html#xAxis.nameTextStyle.overflow
+```
+</div>
+
+# 示例
+
+## 例子
+
+<div style="float: left; width: 50%; text-align: left;">
+
+```{r}
+e_charts(data, month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_line(Temperature, name = "平均温度", y_index = 1) |>
+  e_x_axis(axisLabel = list(interval = 0))|>
+  e_y_axis(
+    min = 0,
+    max = 250,
+    interval = 50,
+    name = "水量",
+    formatter = '{value} ml',
+    axisLine = list(show = TRUE),
+    axisTick = list(show = TRUE,
+                    inside = TRUE)
+  ) |>
+  e_y_axis(
+    index = 1,
+    min = 0,
+    max = 25,
+    interval = 5,
+    name = "温度",
+    formatter = '{value} °C'
+  ) |>
+  e_title('图表的主标题') |>
+  e_tooltip(trigger = "axis") |>
+  e_legend(bottom = 'bottom', orient = 'horizontal') |>
+  e_labels(fontSize = 9,
+           position = "top") |>
+  e_datazoom(y_index = 1, type = "inside") |>
+  e_mark_point("平均温度", data = list(type = "min")) |>
+  e_mark_point("平均温度", data = list(type = "max")) |>
+  e_mark_line("平均温度", data = list(type = "average")) |>
+  e_mark_area(
+    serie = "蒸发量",
+    data = list(list(xAxis = "6月", yAxis = 100),
+                list(xAxis = "9月", yAxis = 180)),
+    itemStyle = list(color = "lightblue")
+  ) |>
+  e_toolbox_feature(feature = c("dataView", "brush")) 
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+e_charts(data, month) |>
+  e_bar(Evaporation, name = "蒸发量") |>
+  e_bar(Precipitation, name = "降水量") |>
+  e_line(Temperature, name = "平均温度", y_index = 1) |>
+  e_x_axis(axisLabel = list(interval = 0))|>
+  e_y_axis(
+    min = 0, max = 250, interval = 50,
+    name = "水量", formatter = '{value} ml',
+    axisLine = list(show = TRUE),
+    axisTick = list(show = TRUE, inside = TRUE)) |>
+  e_y_axis(
+    index = 1, min = 0, max = 25, interval = 5,
+    name = "温度", formatter = '{value} °C') |>
+  e_title('图表的主标题') |>
+  e_tooltip(trigger = "axis") |>
+  e_legend(bottom = 'bottom', orient = 'horizontal') |>
+  e_labels(fontSize = 9, position = "top") |>
+  e_datazoom(y_index = 1, type = "inside") |>
+  e_mark_point("平均温度", data = list(type = "min")) |>
+  e_mark_point("平均温度", data = list(type = "max")) |>
+  e_mark_line("平均温度", data = list(type = "average")) |>
+  e_mark_area(
+    serie = "蒸发量",
+    data = list(list(xAxis = "6月", yAxis = 100),
+                list(xAxis = "9月", yAxis = 180)),
+    itemStyle = list(color = "lightblue")) |>
+  e_toolbox_feature(feature = c("dataView", "brush")) 
+```
+</div>
+
+
+# 完结·撒花 | To be continued···
+
+## Echarts中的JS<-->echarts4r中的R | 举个栗子
+
+<div style="float: left; width: 50%; text-align: left;">
+
+```
+xAxis: [
+    {
+      type: 'category',
+### <b>      
+      axisTick: { show: false },
+      nameTextStyle: { padding: [3, 4, 5, 6] }
+### </b>      
+    }
+  ]
+ 
+visualMap: [
+        {
+          show: false,
+          dimension: 3,
+          categories: data.counties,
+### <b>          
+          inRange: {
+            color: (function () {
+              // prettier-ignore
+              var colors = ['#51689b', '#ce5c5c'];
+              return colors.concat(colors);
+            })()
+          }
+### </b>          
+        }
+      ]  
+  
+```
+
+</div>
+
+<div style="float: right; width:50%; text-align: left;">
+
+```
+e_x_axis(
+  type = "category",
+### <b>  
+  axisTick = list(show = TRUE),
+  nameTextStyle = list(
+    padding = c(1, 1, 5, 6)
+### </b>
+    )
+)
+
+e_visual_map(
+    show = FALSE,
+    dimension = 3,
+    categories = c(
+      'Australia','Canada','China','Cuba','Finland','France',
+      ···
+      'United States'),
+### <b>      
+    inRange = list(
+      color = htmlwidgets::JS(
+        "(function () {
+              // prettier-ignore
+              var colors = ['#51689b', '#ce5c5c'];
+              return colors.concat(colors);
+            })()"
+      )
+### </b>      
+      ))
+```
+</div>
+

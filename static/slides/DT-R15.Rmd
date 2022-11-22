@@ -1,0 +1,1204 @@
+---
+title: "DT：给交互式表格设置静态样式"
+author: "袁凡"
+date: '2022-11-25'
+output: 
+  ioslides_presentation: 
+    widescreen: true
+    smaller: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{css}
+h1,h2{
+  font-family: 'Microsoft YaHei';
+  font-size: 36px;
+}
+
+body, p, table, th, td, pre, em ,li, ol{
+  font-family: 'Microsoft YaHei';
+  font-size: 16px;
+  color:black; }
+
+h4{font-size: 18px;}
+h5{font-size: 16px;}
+h6{font-size: 12px;}
+
+strong {color: black}
+a {color:green;font-size:18px;}
+b {color:black;font-size:12px;}
+u {color:blue;}
+
+pre {
+font-family: 'Source Code Pro', 'Courier New', monospace;
+font-size: 16px;
+line-height: 20px;
+padding: 0px 0 10px 10px;
+letter-spacing: -px;
+margin-bottom: 20px;
+width: 106%;
+left: 0px;
+position: relative;
+-webkit-box-sizing: border-box;
+-moz-box-sizing: border-box;
+box-sizing: border-box;
+}
+
+.prettyprint {
+background-color: #fff;
+}
+
+code {
+font-size: 12px;
+font-family: 'Source Code Pro', 'Courier New', monospace;
+color: black;
+}
+```
+
+## 原起
+
+R 中的交互式表格包：
+
++ DT（[相关文档](https://cran.r-project.org/web/packages/DT/DT.pdf)、[官方网站](https://rstudio.github.io/DT/)），源于 jQuery 表格插件 DataTables。
+
++ reactable（[相关文档](https://cloud.r-project.org/web/packages/reactable/reactable.pdf)、[官方网站](https://glin.github.io/reactable/index.html)） + reactablefmtr（[相关文档](https://kcuilla.github.io/reactablefmtr/index.html)、[官方网站](https://kcuilla.github.io/reactablefmtr/index.html)），源于 JavaScript 库 react。
+
++ rhandsontable（[相关文档](https://cran.r-project.org/web/packages/rhandsontable/rhandsontable.pdf)、[官方网站](https://jrowen.github.io/rhandsontable/)），源于 Handsontable.js。
+
+## 目录
+
+1.丰富数据元素
+
+往表格里插入 Unicode 字符、图片、超链接、字体图标（icon）、迷你图（sparkline）等。
+
+2.丰富表格元素
+
+多行表头、表格标题、表格脚注。
+
+3.设置静态样式
+
+自定义样式、formatStyle 函数、引入 JS。
+
+## DT 的基本样式
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+library(DT)
+
+set.seed(2022)
+data <- data.frame(
+  type1 = sort(rep(LETTERS[1:20], 2)), 
+  type2 = rep(c('NO', 'YES'), 20),
+  value1 = sample(200:2000, 40),
+  value2 = sample(200:2000, 40),
+  level = sample(1:5, 40, replace = TRUE)
+)
+
+options(DT.options = list(dom = 'lftp'))
+
+datatable(data)
+```
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
+```r
+library(DT)
+
+set.seed(2022)
+
+data <- data.frame(
+  type1 = sort(rep(LETTERS[1:20], 2)), 
+  type2 = rep(c('NO', 'YES'), 20),
+  value1 = sample(200:2000, 40),
+  value2 = sample(200:2000, 40),
+  level = sample(1:5, 40, replace = TRUE)
+)
+
+# 设置全局选项
+options(DT.options = list(dom = 'lftp'))
+
+datatable(data)
+
+```
+
+</div>
+
+# 1.丰富数据元素| 插入Unicode 字符、图片、超链接、字体图标、迷你图
+
+## 1.1.插入 Unicode 字符
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+datatable(data) |>
+  formatCurrency(
+    columns = c('value1', 'value2'),
+    currency = '\u2714',
+    before = FALSE,
+    digits = 2,
+    rows = c(1:2)) |>
+  formatString(
+    columns = 2,
+    prefix = '￥',
+    suffix = '\u2716',
+    rows = seq(
+      from = 1,
+      to = nrow(data),
+      by = 2))
+```
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ 填入适于 JS 的[Unicode 编码](https://www.cnblogs.com/lsgxeva/p/10120275.html)，详细参数介绍见备注（按 P 键）。
+
+```r
+datatable(data) |>
+  formatCurrency(
+    columns = c('value1', 'value2'),
+    currency = '\u2714',
+    before = FALSE,
+    digits = 2,
+    rows = c(1:2)) |>
+  formatString(
+    columns = 2,
+    prefix = '￥',
+    suffix = '\u2716',
+    rows = seq(
+      from = 1,
+      to = nrow(data),
+      by = 2))
+```
+
+</div>
+
+<div class="notes">
+formatCurrency()：为表格中的数字列添加货币符号（UNICODE 编码对应的符号），或者字符串。
+
+columns：指定格式化的一列或者多列，可以填入数字或者列名。填入列名称时，须填入数据中的原始列名，填入重命名后的列名无效。
+
+interval：填入一个数字，当数字每间隔多少位后添加一个标记，默认为3。
+
+mark：指定间隔符号，默认“,”。
+
+zero.print：填入一个字符串，替换数字列中的0，默认为 NULL。
+
+currency：填入适用于 JS的UNICODE编码，或者一个普通的字符串。如填入’0AC’，显示为€；填入’1AC’，显示为↬；填入’714’，显示为✔。
+
+before：指定货币单元是否放在数字前面，默认参数值为 TRUE。
+
+digits：当目标列为数字格式时，指定小数点后位数，默认保留2位。
+
+rows：指定目标列中的目标行，仅仅指定行的数据格式会改变。
+
+formatString(table, columns, prefix = "", suffix = "", rows = NULL)。
+prefix/suffix：填入放在一列数据值之前、之后的字符串，同formatCurrency()函数中的 currency 参数一样，除了可以填入普通的字符串，还可以填入 UNICODE 编码来展示特殊字符。
+</div> 
+
+## 1.2.插入图片
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+imgvalue <- c(rep('China', 2), rep('USA', 2)) # 图片名字
+imgdata <- cbind(data, imgvalue)
+
+# 由于图片名字在表中第6列，所以列渲染时写row[6]
+datatable(imgdata,
+          options = list(
+            pageLength = 5,
+            columnDefs = list(
+              list(targets = 1,
+                   render = JS("function(data, type, row, meta) {
+                  return  '<img src=\"images/' + row[6] + '.png\" />' + data
+                  }")), 
+         list(targets = 6, visible = FALSE))))
+```
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ `<img class="自定义 css 样式" src="图片链接" alt="图片alt">`
+
+```r
+# 图片名字
+imgvalue <- c(rep('China', 2), rep('USA', 2)) 
+imgdata <- cbind(data, imgvalue)
+
+# 由于图片名字在表中第6列，所以列渲染时写row[6]
+datatable(imgdata,
+          options = list(
+            pageLength = 5,
+            columnDefs = list(
+              list(targets = 1,
+                   render = JS("
+           function(data, type, row, meta) {
+return  '<img src=\"images/' 
+             + row[6] + '.png\" />' 
+             + data}")), 
+     list(targets = 6, visible = FALSE))))
+```
+
++ `<img src="images/imgvalue.png">`
+
+</div>
+
+## 1.2.插入图片 --> 改变图片样式
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{css}
+.team-flag {
+  height: 1.3rem;
+  border: 1px solid #f0f0f0;
+}
+
+.team-name {
+  margin-left: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.team-record {
+  margin-left: 0.35rem;
+  color: hsl(0, 0%, 45%);
+  font-size: 0.8125rem;
+}
+```
+
+
+```{r}
+imgvalue <- c(rep('China', 2), rep('USA', 2)) # 图片名字
+imgdata <- cbind(data, imgvalue)
+
+# 由于图片名字在表中第6列，所以列渲染时写row[6]
+datatable(imgdata,
+          options = list(
+            columnDefs = list(
+              list(targets = 1,
+                   render = JS("function(data, type, row, meta) {
+return  '<img class=\"team-flag\" src=\"images/' + row[6] + '.png\" />'
+                  +'<span class=\"team-name\">'+data
+                  +'<span/><span class=\"team-record\">' 
+                  + row[5] + 'level'+'<span/>'
+                  }")), 
+              list(targets = 6, visible = FALSE))))
+```
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ 所引入的 css 样式 team-flag、team-name、team-record 见备注（按P键）。
+
+```r
+datatable(imgdata,
+          options = list(
+            columnDefs = list(
+              list(targets = 1,
+                   render = JS("
+  function(data, type, row, meta) {
+return '<img class=\"team-flag\" src=\"images/' 
+         + row[6] + '.png\" />'
+         +'<span class=\"team-name\">'+data
+         +'<span/><span class=\"team-record\">' 
+         + row[5] + 'level'+'<span/>' }")), 
+      list(targets = 6, visible = FALSE))))
+```
+
++ `<img class = "team-flag" src = "images/imgvalue.png">`
++ `<span class = "team-name"> type1 </span>`
++ `<span class = "team-record"> level 'level' </span>`
+
+<div class="notes">
+
+```css
+.team-flag {
+  height: 1.3rem;
+  border: 1px solid #f0f0f0;
+}
+
+.team-name {
+  margin-left: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.team-record {
+  margin-left: 0.35rem;
+  color: hsl(0, 0%, 45%);
+  font-size: 0.8125rem;
+}
+```
+
+</div> 
+
+## 1.3.插入超链接
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+# 准备一些超链接所指向的地址
+hrefvalue = c(rep("https://yufree.cn/cn/", 2),
+              rep("https://xiangyun.rbind.io/post/", 2)) 
+hrefdata <- cbind(data, hrefvalue) # hrefvalue 作为第6列
+
+datatable(hrefdata,
+          options = list(columnDefs = list(
+            list(
+              targets = 2,
+              render = JS(
+                "function(data, type, row, meta) {
+                  return  '<a href=' + row[6] + '>' + data + '</a>'
+                  }"
+              )
+            ), list(targets = 6, visible = FALSE) 
+          )))
+```
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ `<a class="自定义 css 样式" href="超链接地址">超链接显示名</a>`
+
+```r
+hrefvalue = c(rep("https://yufree.cn/cn/", 2),
+   rep("https://xiangyun.rbind.io/post/", 2)) 
+hrefdata <- cbind(data, hrefvalue) 
+
+datatable(hrefdata,
+          options = list(columnDefs = list(
+            list(
+              targets = 2,
+              render = JS(
+    "function(data, type, row, meta) {
+return  '<a href=' + row[6] + '>' 
+          + data + '</a>'}")),
+    list(targets = 6, visible = FALSE) 
+          )))
+```
+
++ `row[6]`表示取数据中第6列中的值。
+
+</div>
+
+## 1.4.插入字体图标 --> 插入一个小图标
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+library(fontawesome)
+library(data.table)
+
+icon1data <- as.data.table(data)
+
+icon1data <- icon1data[, ':='(icon1 = ifelse(
+  type2 == "YES",
+  fontawesome::fa(name = "thumbs-up"),
+  fontawesome::fa(name = "thumbs-down")
+))]
+
+datatable(icon1data, escape = FALSE)
+```
+
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ shiny 包中有个函数`icon()`可以方便地从字体图标库 [Font Awesome](https://fontawesome.com/icons) 或 [Bootstrap Glyphicons](https://getbootstrap.com/docs/3.3/components/) 引入小图标。其中，Font Awesome 库在 R 中也有对应的 R 包 fontawesome。
+
+```r
+library(fontawesome)
+library(data.table)
+
+icon1data <- as.data.table(data)
+
+icon1data <- icon1data[, ':='(icon1 = ifelse(
+  type2 == "YES",
+  fontawesome::fa(name = "thumbs-up"),
+  fontawesome::fa(name = "thumbs-down")
+))]
+
+datatable(icon1data, escape = FALSE)
+```
+
+</div>
+
+## 1.4.插入字体图标 --> 插入多个小图标
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+icon2data <- as.data.table(data)
+
+icon2data$level <- sapply(icon2data$level , function(level) {
+  paste(rep(fontawesome::fa(name = "heart"), level), collapse = "")
+})
+
+datatable(icon2data, escape = FALSE)
+```
+
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ 插入多个小图标就是把单个小图标拼接在一起。
+
+```r
+icon2data <- as.data.table(data)
+
+icon2data$level <- sapply(icon2data$level ,
+function(level) {
+  paste(
+   rep(fontawesome::fa(name = "heart"), level), 
+   collapse = "")
+})
+
+datatable(icon2data, escape = FALSE)
+```
+
+</div>
+
+## 1.5.插入迷你图 --> 基本方法
+
+```{r}
+library(sparkline)
+dt <- as.data.table(data)
+
+dt.DT1 <- dt[, .(
+  '面积图' = as.character(htmltools::as.tags(
+    sparkline(
+      value1,
+      type = "line", # 面积图
+      width = 100, # 指定迷你图的宽度
+      height = 100 # 指定迷你图的高度
+    )
+  )),
+  '柱状图' = as.character(htmltools::as.tags(
+    sparkline(
+      value1,
+      type = "bar", # 柱状图
+      width = 100, height = 100
+    )
+  )),
+  '折线图' = as.character(htmltools::as.tags(
+    sparkline(
+      value1,
+      type = "line",
+      lineColor = "red", # 折线的颜色
+      fillColor = FALSE, # 不展示折线下的面积
+      width = 100, height = 100
+    )
+  )),
+  '柱状图2' = as.character(htmltools::as.tags(
+    sparkline(
+      value1,
+      type = "bar", # 柱状图
+      barColor = "green", # 指定数值为正数的柱子的颜色
+      width = 100, height = 100
+    )
+  )),
+  '箱图' = as.character(htmltools::as.tags(
+    sparkline(
+      value1,
+      type = "box", 
+      width = 100, height = 100
+    )
+  ))
+), keyby = .(type2)]
+
+datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
+```
+
+```r
+library(sparkline)
+dt <- as.data.table(data)
+dt.DT1 <- dt[, .( # 部分参数含义见备注（按P键）。
+  '面积图' = as.character(htmltools::as.tags(sparkline(value1, type = "line", width = 100, height = 100))),
+  '柱状图' = as.character(htmltools::as.tags(sparkline(value1, type = "bar", width = 100, height = 100))),
+  '折线图' = as.character(htmltools::as.tags(sparkline(value1, type = "line", lineColor = "red", fillColor = FALSE,
+  width = 100, height = 100))),
+  '柱状图2' = as.character(htmltools::as.tags(sparkline(value1, type = "bar", barColor = "green", 
+  width = 100, height = 100))),
+  '箱图' = as.character(htmltools::as.tags(sparkline(value1, type = "box", 
+  width = 100, height = 100)))),  keyby = .(type2)]
+
+datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
+```
+
+<div class="notes">
+
+笔者更习惯在处理数据时用 data.table，有一篇笔记记录了分别在 DT/reactable/formattable 中使用 sparkline 的笔记，且代码分为 tidy 版本和 data.table 版本，见<https://yuanfan.rbind.io/project/r-sparkline/>。
+
+type = "line", # 面积图
+
+width = 100, # 指定迷你图的宽度
+
+height = 100 # 指定迷你图的高度
+
+lineColor = "red", # 折线的颜色
+
+fillColor = FALSE, # 不展示折线下的面积
+      
+type = "bar", # 柱状图
+
+barColor = "green", # 指定数值为正数的柱子的颜色
+</div> 
+
+## 1.5.插入迷你图 --> 分页重新渲染
+
+```{r}
+dt.DT2 <-
+  dt[, .('饼图' = as.character(htmltools::as.tags(
+    sparkline(
+      value1,
+      type = "pie", # 饼图
+      sliceColors = c("red", "green"), # 指定饼图中各个扇形的颜色。
+      offset = 90, # 指定饼图的旋转角度
+      width = 50,
+      height = 50
+    )
+  ))), keyby = .(type1)]
+
+datatable(dt.DT2,
+          escape = FALSE,
+          options = list(
+            pageLength=2,
+            dom = 'tp',
+            # 每次分页重新渲染，不加这个的话只有第一页有图
+            drawCallback = JS('function(s) { HTMLWidgets.staticRender(); }') 
+          )) |> spk_add_deps()
+```
+
+```r
+dt.DT2 <-
+  dt[, .('饼图' = as.character(htmltools::as.tags(
+    sparkline(value1, type = "pie", sliceColors = c("red", "green"), offset = 90, width = 50,height = 50)))
+  ), keyby = .(type1)]
+
+datatable(dt.DT2,
+          escape = FALSE,
+          options = list(
+            pageLength=2,
+            dom = 'tp',
+            # 每次分页重新渲染，不加这个的话只有第一页有图
+            drawCallback = JS('function(s) { HTMLWidgets.staticRender(); }') 
+          )) |> spk_add_deps()
+```
+
++ 部分参数含义见备注（按P键）。
+
+<div class="notes">
+type = "pie", # 饼图
+
+sliceColors = c("red", "green"), # 指定饼图中各个扇形的颜色。
+
+offset = 90, # 指定饼图的旋转角度
+</div> 
+
+## 1.5.插入迷你图 --> 组合多个迷你图
+
+```{r}
+dt.DT <- dt[, .("两条折线" = as.character(htmltools::as.tags(spk_composite(
+  sparkline(
+    value1,
+    type = "line",
+    fillColor = FALSE,
+    lineColor = 'red', # 指定折线的颜色
+    width = 300,
+    height = 100
+  ),
+  sparkline(
+    value2,
+    type = "line",
+    fillColor = FALSE,
+    lineColor = 'green',
+    width = 300,
+    height = 100
+  )
+)))), keyby = .(type2)]
+
+datatable(dt.DT, escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
+```
+
+```
+dt.DT <- dt[, .(
+"两条折线" = as.character(htmltools::as.tags(spk_composite(
+  sparkline(value1, type = "line", fillColor = FALSE, lineColor = 'red', width = 300, height = 100),
+  sparkline(value2, type = "line", fillColor = FALSE, lineColor = 'green', width = 300, height = 100))))
+  ), keyby = .(type2)]
+
+datatable(dt.DT, escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
+```
+
++ 基本方法就是把多个单独的 `sparkline()` 一起写入 `spk_composite()` 中。
+
+# 2.丰富表格元素|标题、脚注、多行表头
+
+## 2.1.设置标题、脚注 --> 用标题（caption）参数
+
+```{r}
+datatable(
+  data,
+  options = list(dom = 'tp', pageLength = 3),
+  caption = htmltools::tags$caption(
+    style = 'caption-side: top; text-align: center;',
+    htmltools::h5(class = 'font-size:24px;', '标题1：这是表格的主标题'),
+    htmltools::h6(class = 'font-size:18px;', '标题2：这是表格的副标题')
+  )
+)
+```
+
+```r
+datatable(data, caption = '一个表格的标题')
+
+datatable(
+  data,
+  options = list(dom = 'tp', pageLength = 3),
+  caption = htmltools::tags$caption(
+    style = 'caption-side: top; text-align: center;',
+    htmltools::h5(class = 'font-size:24px;', '标题1：这是表格的主标题'),
+    htmltools::h6(class = 'font-size:18px;', '标题2：这是表格的副标题')
+  )
+)
+```
+
+## 2.1.设置标题、脚注 --> 用表格容器（container）
+
+```{css}
+.top{
+caption-side: top;
+text-align:left;
+}
+
+.bottom{
+caption-side: bottom;
+text-align:left;
+line-height:90%;
+}
+```
+
+
+```{r}
+sketch1 = htmltools::withTags(table(
+  caption(class = 'top', h4('主标题：这里写主标题'), h5('副标题：这里写副标题')),
+  caption(class = 'bottom', h6('注1：数据来源'), h6('注2：其他说明')),
+  thead(tr(th('客户范围'),th('有无'),th('留存人数'),th('流失人数'),th('等级')))))
+
+datatable(
+  data,
+  container = sketch1,
+  rownames = FALSE,
+  options = list(dom = 'tp', pageLength = 3)
+)
+```
+
+```css
+.top{caption-side: top; text-align:left;}
+.bottom{caption-side: bottom; text-align:left; line-height:90%;}
+```
+
+```r
+sketch1 = htmltools::withTags(table(
+  caption(class = 'top', h4('主标题：这里写主标题'), h5('副标题：这里写副标题')),
+  caption(class = 'bottom', h6('注1：数据来源'), h6('注2：其他说明')),
+  thead(tr(th('客户范围'), th('有无'), th('留存人数'), th('流失人数'), th('等级')))))
+
+datatable(data, container = sketch1, rownames = FALSE, 
+  options = list(dom = 'tp', pageLength = 3))
+```
+
+## 2.1.设置标题、脚注 --> 把表格放在 div 框中
+
+```{r}
+tbl <- datatable(data,
+                 options = list(dom = 'tp', pageLength = 3))
+
+htmltools::div(
+  htmltools::div(
+    htmltools::h4("主标题：这是表格的副标题"),
+    htmltools::h5("副标题：这是表格的副标题")
+  ),
+  tbl,
+  htmltools::div(htmltools::h6("注1：数据来源"), htmltools::h6("注2：其他说明"))
+)
+```
+
+```r
+tbl <- datatable(data,
+                 options = list(dom = 'tp', pageLength = 3))
+
+htmltools::div(
+  htmltools::div(
+    htmltools::h4("主标题：这是表格的副标题"),
+    htmltools::h5("副标题：这是表格的副标题")
+  ),
+  tbl,
+  htmltools::div(htmltools::h6("注1：数据来源"), htmltools::h6("注2：其他说明"))
+)
+```
+
+## 2.2.多行表头
+
+```{css}
+.firstHead th{
+font-size:20px;
+font-weight:bold;
+background-color: #000;
+color: #fff;
+}
+
+.secondHead th{
+font-size:14px;
+font-weight:normal;
+}
+```
+
+```{r}
+sketch2 = htmltools::withTags(table(
+  thead(
+  tr(class = 'firstHead',
+    th(rowspan = 2, colspan = 1, '客户范围'),
+    th(rowspan = 2, colspan = 1, '有无'),
+    th(rowspan = 1, colspan = 2, '总客户数'),
+    th(rowspan = 2, colspan = 1, '等级')
+  ),
+  tr(class = 'secondHead',
+    th(rowspan = 1, colspan = 1, '留存人数'),
+    th(rowspan = 1, colspan = 1, '流失人数')
+  )
+)))
+
+datatable(
+  data,
+  container = sketch2,
+  options = list(
+    dom = 'tp',
+    pageLength = 3
+  ),
+  rownames = FALSE,
+  escape = FALSE
+)
+```
+
+```r
+sketch2 = htmltools::withTags(table(
+  thead(tr(class = 'firstHead',
+    th(rowspan = 2, colspan = 1, '客户范围'),
+    th(rowspan = 2, colspan = 1, '有无'),
+    th(rowspan = 1, colspan = 2, '总客户数'),
+    th(rowspan = 2, colspan = 1, '等级')),
+  tr(class = 'secondHead',
+    th(rowspan = 1, colspan = 1, '留存人数'),
+    th(rowspan = 1, colspan = 1, '流失人数')))))
+
+datatable(
+  data, container = sketch2, options = list(dom = 'tp', pageLength = 3),
+  rownames = FALSE, escape = FALSE)
+```
+
++ 具体 css 样式设置内容见备注（按P键）。
+
+<div class="notes">
+```css
+.firstHead th{
+font-size:20px;
+font-weight:bold;
+background-color: #000;
+color: #fff;
+}
+
+.secondHead th{
+font-size:14px;
+font-weight:normal;
+}
+```
+</div> 
+
+# 3.设置静态样式|字体（字体大小、字体颜色、字体粗细、对齐方式）、边框、背景（背景颜色、背景填充）
+
+## 3.1.自定义样式
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{css}
+.ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 1px solid #555;
+  border-radius: 50%;
+  color: #000;
+  font-size: 0.8125rem;
+  letter-spacing: -1px;
+}
+
+.className1 {
+  font-size: 18px;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  border-right: 1px solid #555;
+  background-color: lightgrey;
+}
+
+.className2 {
+  min-width: 100px;
+  text-align: center;
+}
+```
+
+```{r}
+datatable(data, options = list(
+  pageLength = 5,
+  columnDefs = list(
+    list(targets = 1, class = 'ring'),
+    list(targets = 2, class = 'className1'),
+    list(targets = c(3, 4), class = 'className2'),
+    list(targets = 5, className = 'dt-head-left'),
+    list(targets = 5, className = 'dt-body-center')
+  )
+))
+```
++ 具体的 css 样式设置见备注（按P键）。
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ 此方法会同时改变目标列的表头和表格主体的样式，更多[css 背景形状](https://www.cnblogs.com/hellocd/p/14285088.html)。
+
+```r
+datatable(data, options = list(
+ pageLength = 5,
+columnDefs = list(
+# 引入自定义的 css 样式  
+  list(targets = 1, class = 'ring'),
+  list(targets = 2, class = 'className1'),
+  list(targets = c(3, 4), class = 'className2'),
+# 如'dt-[head|body]-center'等官方定义的样式
+# 可分别定义表头和表格主体的文本居中方式
+  list(targets = 5, className = 'dt-head-left'),
+list(targets = 5, className = 'dt-body-center')
+  )
+))
+```
+</div>
+
+<div class="notes">
+```css
+.ring {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  width: 1.875rem;
+  height: 1.875rem;
+  border: 1px solid #555;
+  border-radius: 50%;
+  color: #000;
+  font-size: 0.8125rem;
+  letter-spacing: -1px;
+}
+
+.className1 {
+  font-size: 18px;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+  border-right: 1px solid #555;
+  background-color: lightgrey;
+}
+
+.className2 {
+  min-width: 100px;
+  text-align: center;
+}
+```
+</div> 
+
+## 3.2.formatStyle 函数 --> 为列
+
+<div style="float: left; width: 50%; text-align: left;">
+
+```{r}
+datatable(data, options = list(pageLength = 5,
+  columnDefs = list(
+    list(targets = '_all', className = 'dt-head-center')))) |> 
+  formatStyle(
+    columns = 1,
+    'display' = 'flex',
+    'align-items' = 'center',
+    'justify-content' = 'center',
+    'margin' = 'auto',
+    'width' = '1.875rem',
+    'height' = '1.875rem',
+    'border' = '0.5px solid #555',
+    'border-radius' = '50%',
+    'color' = '#000',
+    'font-size' = '0.8125rem',
+    'letter-spacing' = '-1px') |>
+  formatStyle(
+    columns = 2,
+    'font-size' = '18px',
+    'color' = 'red',
+    'font-weight' = 'bold',
+    'text-align' = 'center',
+    'border-right' = '1px solid #555',
+    'background-color' = 'lightgrey') |>
+  formatStyle(
+    columns = c(3, 4),
+    'min-width' = '100px',
+    'text-align' = 'center') |>
+  formatStyle(columns = 5, 'text-align' = 'center')
+```
+
++ 通过`formatStyle()`函数设定的样式只对目标列的表格主体起作用。
+
++ `list(targets = '_all', className = 'dt-head-center')`表示设置所有列的表格表头居中。
+
+</div>
+
+<div style="float: right; width:49%; text-align: left;border:0.5px black solid;">
+```r
+datatable(data, options = list(pageLength = 5,
+  columnDefs = list(
+    list(targets = '_all', className = 'dt-head-center')))) |> 
+  formatStyle(
+    columns = 1,
+    'display' = 'flex',
+    'align-items' = 'center',
+    'justify-content' = 'center',
+    'margin' = 'auto',
+    'width' = '1.875rem',
+    'height' = '1.875rem',
+    'border' = '0.5px solid #555',
+    'border-radius' = '50%',
+    'color' = '#000',
+    'font-size' = '0.8125rem',
+    'letter-spacing' = '-1px') |>
+  formatStyle(
+    columns = 2, 'font-size' = '18px',
+    'color' = 'red', 'font-weight' = 'bold',
+    'text-align' = 'center',
+    'border-right' = '1px solid #555',
+    'background-color' = 'lightgrey') |>
+  formatStyle(
+    columns = c(3, 4), 'min-width' = '100px',
+    'text-align' = 'center') |>
+  formatStyle(columns = 5, 'text-align' = 'center')
+```
+</div>
+
+## 3.2.formatStyle 函数 --> 为行
+
+<div style="float: left; width: 50%; text-align: left;">
+
+```{r}
+#为目标列'value1'准备填充渐变颜色所需的分段向量、颜色向量，当数值由小到大，颜色由白到红
+brks <-
+  quantile(data$value1, probs = seq(.05, .95, .05), na.rm = TRUE)
+clrs <- colorRampPalette(c("white", "red"))(length(brks) + 1)
+
+datatable(data, options = list(pageLength = 5,
+  columnDefs = list(
+    list(targets = '_all', className = 'dt-head-center')))) |>
+  formatStyle(
+    columns = 1,
+    valueColumns = 'value1',
+    'background-color' = styleInterval(cuts = brks, values = clrs),
+    'display' = 'flex',
+    'align-items' = 'center', 'justify-content' = 'center',
+    'margin' = 'auto',
+    'width' = '1.875rem', 'height' = '1.875rem',
+    'border' = '0.5px solid rgb(0,0,0,0.1)',
+    'border-radius' = '50%',
+    'color' = '#000',
+    'font-size' = '0.8125rem',
+    'letter-spacing' = '-1px') |>
+  formatStyle(
+    columns = 2,
+    'color' = styleEqual(
+      levels = c('YES', 'NO'),
+      values = c('green', 'red')
+    )
+  ) |>
+  formatStyle(columns = 3,
+              background = styleColorBar(data$value1, 'steelblue'),
+              textAlign='right')
+```
+
++ 为不同行填充不同 css 属性的函数的介绍见备注（按P键）。
+
+</div>
+
+<div style="float: right; width:49%; text-align: left;border:0.5px black solid;">
+```r
+#为目标列'value1'准备填充渐变颜色所需的分段向量、颜色向量
+brks <- quantile(data$value1, 
+    probs = seq(.05, .95, .05), na.rm = TRUE)
+clrs <- 
+  colorRampPalette(c("white", "red"))(length(brks) + 1)
+
+datatable(data, options = list(pageLength = 5,
+  columnDefs = list(
+list(targets = '_all', className = 'dt-head-center')))) |>
+  formatStyle(
+    columns = 1,
+    valueColumns = 'value1',
+'background-color' = 
+       styleInterval(cuts = brks, values = clrs),
+    'display' = 'flex', 'margin' = 'auto',
+    'align-items' = 'center', 'justify-content' = 'center',
+    'width' = '1.875rem', 'height' = '1.875rem',
+    'border' = '0.5px solid rgb(0,0,0,0.1)',
+    'border-radius' = '50%', 'color' = '#000',
+    'font-size' = '0.8125rem', 'letter-spacing' = '-1px')|>
+  formatStyle(columns = 2,
+'color' = styleEqual(levels = c('YES', 'NO'), 
+                  values = c('green', 'red'))) |>
+  formatStyle(columns = 3,
+background = styleColorBar(data$value1, 'steelblue'),
+              textAlign='right')
+```
+</div>
+
+<div class="notes">
+
+styleInterval(cuts, values)：参数 cuts 和 values 须填入两个向量，前者表示可将指定列的数据值划分成 N 个分段，后者表示为 N 个分段填入 N+1 个不同的 css 属性的参数值。
+
+styleEqual(levels, values, default = NULL)：与上参数 levels 和 values 须填入两个向量，前者表示可将指定列的数据值划分成 N 个等级，后者表示为 N 个等级填入 N 个不同的 css 属性的参数值。
+
+styleValue()：使用指定列中单元格的具体数据值作为 css 属性的参数值。
+
+styleColorBar(data, color, angle = 90)：为单元格填充带有颜色的条形图，条形的宽度与单元格中数据值大大小成正比，其中 angle 参数用于设定旋转角度。
+
+styleRow(rows, values, default = NULL)：为目标行设定 css 属性，使用前提是在 formatStyle 函数中设定`target = 'row'`。
+</div> 
+
+## 3.3.引入 JS --> 全表的表头与表格主体
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+datatable(data, options = list(
+  initComplete = JS(
+    "function(settings, json) {
+    $(this.api().table().header()).css({'background-color': 'lightblue'});
+    $(this.api().table().body()).css({'background-color': 'lightgrey'});
+    }")
+))
+```
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ 在 initComplete 初始化回调函数里引入 JS 函数，调用 Data API 分别为整个表格的表头 `table().header()`和表格主体`tables().body()`设置 css 样式。大括号里本来能够以逗号分隔的形式写入多个 css 样式，但是生成 isolides 幻灯片后有问题，所以只写了一个。
+
+```r
+datatable(data, options = list(
+  initComplete = JS(
+    "function(settings, json) {
+    $(this.api().table().header()).css({
+       'background-color': 'lightblue'});
+    $(this.api().tables().body()).css({
+       'background-color': 'lightgrey'});
+    }")
+))
+```
+</div>
+
+## 3.3.引入 JS --> 单列的表头与表格主体
+
+<div style="float: left; width: 60%; text-align: left;">
+
+```{r}
+datatable(data,
+          options = list(
+            pageLength = 5,
+            initComplete = JS(
+              "function(settings, json) {
+    $(this.api().column(3).header()).css({'color': 'green','font-size':'24px'});
+    $(this.api().column(3).nodes()).css({'display': 'flex',
+  'align-items': 'center',
+  'justify-content': 'center',
+  'margin': 'auto',
+  'width': '1.875rem',
+  'height': '1.875rem',
+  'border': '1px solid #555',
+  'border-radius': '50%',
+  'color': '#000',
+  'font-size': '0.8125rem',
+  'letter-spacing': '-1px'});
+    }"
+            )
+          ))
+```
+
+</div>
+
+<div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
+
++ `column(3).header()`表示第三列的表头，`column(3).nodes()`表示第三列的表格主体。
+
+```r
+datatable(data,
+          options = list(
+            pageLength = 5,
+            initComplete = JS(
+              "function(settings, json) {
+    $(this.api().column(3).header()).css({
+      'color': 'green','font-size':'24px'});
+    $(this.api().column(3).nodes()).css({
+      'display': 'flex',
+      'align-items': 'center',
+      'justify-content': 'center',
+      'margin': 'auto',
+      'width': '1.875rem',
+      'height': '1.875rem',
+      'border': '1px solid #555',
+      'border-radius': '50%',
+      'color': '#000',
+      'font-size': '0.8125rem',
+      'letter-spacing': '-1px'}); }"
+            )
+          ))
+```
+</div>
+
+## 3.4.样式冲突
+
+1.`class/className`：先定义好 css 样式和样式名，通过`class='样式名'`引入样式，一般情况下会对表格表头和表格主体同时起作用，仅对齐方式如`className = 'dt-[head|body]-center'`可分别对表头或表格主体进行设置。
+
+2.`formatStyle()`：在`formatStyle()`函数中直接写入需要设置的各样式属性和具体属性值，可对表格的列或行进行设置，可应用`styleInterval()`等函数为不同行设置不同样式。
+
+3.`initComplete = JS()`：通过调用 DataTables API 对全表或单独一列的表头或表格主体设置样式。
+
+4.如第一章改变图片样式时，单独对一列插入图片且设定了样式。同理，可对单独一列或多列如此设定样式。
+
+```r
+datatable(
+  data,
+  options = list(columnDefs = list(list(
+    targets = columns,
+    render = JS("function(data, type, row, meta){
+              return '<div class=\"className\">' + data + '</div>'
+              }"))
+```
+
+5.在设定表格标题、脚注或多行表头时，也可设置样式。
+
+# 完结 ✿✿ヽ(°▽°)ノ✿
