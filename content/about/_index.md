@@ -14,6 +14,8 @@ title: About Me
     - 探索定西市的 Sci-Hub 流量之谜（[文章](https://cosx.org/2022/05/scihub-traffic-analysis/)，[幻灯片](https://yuanfan.rbind.io/slides/sci-hub202206.html#1)，[B站视频](https://www.bilibili.com/video/BV1nF411c7Ro/?spm_id_from=333.337.search-card.all.click)）
     
     - Echarts4r 挥发化飞花（[文章](https://cosx.org/2022/04/echarts4r-flower/)）
+    
+    - DT 速查手册（[DT：给交互式表格设置静态样式](https://yuanfan.rbind.io/slides/dt-r15#1)）
   
 + 我喜欢一切美好事物，愿意探循宇宙天地万物的规律。无论人、事、物，总是想要弄清楚背后的行事逻辑、因果。倒也不强求，当下不明白的事情放一放，积累够了，某天碰到一个该明白的时机自然就明白了。
   
