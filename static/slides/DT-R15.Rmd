@@ -216,8 +216,8 @@ datatable(imgdata,
             columnDefs = list(
               list(targets = 1,
                    render = JS("function(data, type, row, meta) {
-                  return  '<img src=\"images/' + row[6] + '.png\" />' + data
-                  }")), 
+                  return  '<img src=\"https://yuanfan.rbind.io/images/' + row[6] + '.png\" />' 
+       + data}")), 
          list(targets = 6, visible = FALSE))))
 ```
 
@@ -239,14 +239,14 @@ datatable(imgdata,
             columnDefs = list(
               list(targets = 1,
                    render = JS("
-           function(data, type, row, meta) {
-return  '<img src=\"images/' 
+    function(data, type, row, meta) {return  
+'<img src=\"https://yuanfan.rbind.io/images/' 
              + row[6] + '.png\" />' 
              + data}")), 
      list(targets = 6, visible = FALSE))))
 ```
 
-+ `<img src="images/imgvalue.png">`
++ `<img src="https://yuanfan.rbind.io/images/imgvalue.png">`
 
 </div>
 
@@ -284,7 +284,7 @@ datatable(imgdata,
             columnDefs = list(
               list(targets = 1,
                    render = JS("function(data, type, row, meta) {
-return  '<img class=\"team-flag\" src=\"images/' + row[6] + '.png\" />'
+return  '<img class=\"team-flag\" src=\"https://yuanfan.rbind.io/images/' + row[6] + '.png\" />'
                   +'<span class=\"team-name\">'+data
                   +'<span/><span class=\"team-record\">' 
                   + row[5] + 'level'+'<span/>'
@@ -304,8 +304,9 @@ datatable(imgdata,
             columnDefs = list(
               list(targets = 1,
                    render = JS("
-  function(data, type, row, meta) {
-return '<img class=\"team-flag\" src=\"images/' 
+function(data, type, row, meta) {return 
+'<img class=\"team-flag\" 
+        src=\"https://yuanfan.rbind.io/images/' 
          + row[6] + '.png\" />'
          +'<span class=\"team-name\">'+data
          +'<span/><span class=\"team-record\">' 
@@ -313,7 +314,8 @@ return '<img class=\"team-flag\" src=\"images/'
       list(targets = 6, visible = FALSE))))
 ```
 
-+ `<img class = "team-flag" src = "images/imgvalue.png">`
++ 这段代码直接复制粘贴不可用，因为`<img>`元素里有多余空格。
++ `<img class = "team-flag" src = "https://yuanfan.rbind.io/images/imgvalue.png">`
 + `<span class = "team-name"> type1 </span>`
 + `<span class = "team-record"> level 'level' </span>`
 
