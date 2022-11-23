@@ -857,7 +857,7 @@ font-weight:normal;
   background-color: lightgrey;
 }
 
-.className2 {
+table.dataTable th.className2, table.dataTable td.className2 {
   min-width: 100px;
   text-align: center;
 }
@@ -867,11 +867,10 @@ font-weight:normal;
 datatable(data, options = list(
   pageLength = 5,
   columnDefs = list(
-    list(targets = 1, class = 'ring'),
-    list(targets = 2, class = 'className1'),
+    list(targets = 1, class = 'dt-center ring'),
+    list(targets = 2, class = 'dt-center className1'),
     list(targets = c(3, 4), class = 'className2'),
-    list(targets = 5, className = 'dt-head-left'),
-    list(targets = 5, className = 'dt-body-center')
+    list(targets = 5, className = 'dt-head-right dt-body-left')
   )
 ))
 ```
@@ -880,23 +879,27 @@ datatable(data, options = list(
 
 <div style="float: right; width:39%; text-align: left;border:0.5px black solid;">
 
-+ 此方法会同时改变目标列的表头和表格主体的样式，更多[css 背景形状](https://www.cnblogs.com/hellocd/p/14285088.html)。
++ 一般，此方法会同时改变目标列的表头和表格主体的样式，更多[css 背景形状](https://www.cnblogs.com/hellocd/p/14285088.html)。
 
 ```r
 datatable(data, options = list(
  pageLength = 5,
 columnDefs = list(
 # 引入自定义的 css 样式  
-  list(targets = 1, class = 'ring'),
-  list(targets = 2, class = 'className1'),
+  list(targets = 1, 
+       class = 'dt-center ring'),
+  list(targets = 2, 
+       class = 'dt-center className1'),
   list(targets = c(3, 4), class = 'className2'),
 # 如'dt-[head|body]-center'等官方定义的样式
-# 可分别定义表头和表格主体的文本居中方式
-  list(targets = 5, className = 'dt-head-left'),
-list(targets = 5, className = 'dt-body-center')
-  )
-))
+# 可分别定义表头和表格主体的文本对齐方式
+  list(targets = 5,
+      className = 'dt-head-right dt-body-left')
+  )))
 ```
+
++ DT 包对表格的文本居中方式有默认样式，CSS 优先级问题可参考[此贴](https://d.cosx.org/d/423692-dt-bao-she-zhi-zi-ding-yi-css-yang-shi-shi-wen-ben-ju-zhong-bu-qi-zuo-yong/2)
+
 </div>
 
 <div class="notes">
@@ -924,7 +927,7 @@ list(targets = 5, className = 'dt-body-center')
   background-color: lightgrey;
 }
 
-.className2 {
+table.dataTable th.className2, table.dataTable td.className2 {
   min-width: 100px;
   text-align: center;
 }
