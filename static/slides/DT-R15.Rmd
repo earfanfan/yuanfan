@@ -138,14 +138,14 @@ datatable(data)
 datatable(data) |>
   formatCurrency(
     columns = c('value1', 'value2'),
-    currency = '\u2714',
+    currency = '\u2714', # 代表 ✔
     before = FALSE,
     digits = 2,
     rows = c(1:2)) |>
   formatString(
     columns = 2,
     prefix = '￥',
-    suffix = '\u2716',
+    suffix = '\u2716', # 代表 ✖
     rows = seq(
       from = 1,
       to = nrow(data),
@@ -162,14 +162,14 @@ datatable(data) |>
 datatable(data) |>
   formatCurrency(
     columns = c('value1', 'value2'),
-    currency = '\u2714',
+    currency = '\u2714', # 代表 ✔
     before = FALSE,
     digits = 2,
     rows = c(1:2)) |>
   formatString(
     columns = 2,
     prefix = '￥',
-    suffix = '\u2716',
+    suffix = '\u2716', # 代表 ✖
     rows = seq(
       from = 1,
       to = nrow(data),
@@ -317,7 +317,7 @@ function(data, type, row, meta) {return
 + 这段代码直接复制粘贴不可用，因为`<img>`元素里有多余空格。
 + `<img class = "team-flag" src = "https://yuanfan.rbind.io/images/imgvalue.png">`
 + `<span class = "team-name"> type1 </span>`
-+ `<span class = "team-record"> level 'level' </span>`
++ `<span class = "team-record"> level 'level'</span>`
 
 <div class="notes">
 
@@ -442,9 +442,12 @@ datatable(icon1data, escape = FALSE)
 ```{r}
 icon2data <- as.data.table(data)
 
-icon2data$level <- sapply(icon2data$level , function(level) {
-  paste(rep(fontawesome::fa(name = "heart"), level), collapse = "")
-})
+# icon2data$level <- sapply(icon2data$level , function(level) {
+#   paste(rep(fontawesome::fa(name = "heart"), level), collapse = "")
+# })
+
+icon2data$level <-
+  strrep(fontawesome::fa(name = "heart"), icon2data$level)
 
 datatable(icon2data, escape = FALSE)
 ```
@@ -459,12 +462,16 @@ datatable(icon2data, escape = FALSE)
 ```r
 icon2data <- as.data.table(data)
 
-icon2data$level <- sapply(icon2data$level ,
-function(level) {
-  paste(
-   rep(fontawesome::fa(name = "heart"), level), 
-   collapse = "")
-})
+# icon2data$level <- sapply(icon2data$level ,
+# function(level) {
+#   paste(
+#    rep(fontawesome::fa(name = "heart"),level), 
+#    collapse = "")
+# })
+
+icon2data$level <-
+  strrep(fontawesome::fa(name = "heart"), 
+             icon2data$level)
 
 datatable(icon2data, escape = FALSE)
 ```
@@ -477,46 +484,26 @@ datatable(icon2data, escape = FALSE)
 library(sparkline)
 dt <- as.data.table(data)
 
-dt.DT1 <- dt[, .(
-  '面积图' = as.character(htmltools::as.tags(
-    sparkline(
-      value1,
-      type = "line", # 面积图
-      width = 100, # 指定迷你图的宽度
-      height = 100 # 指定迷你图的高度
-    )
-  )),
-  '柱状图' = as.character(htmltools::as.tags(
-    sparkline(
-      value1,
-      type = "bar", # 柱状图
-      width = 100, height = 100
-    )
-  )),
-  '折线图' = as.character(htmltools::as.tags(
-    sparkline(
-      value1,
-      type = "line",
-      lineColor = "red", # 折线的颜色
-      fillColor = FALSE, # 不展示折线下的面积
-      width = 100, height = 100
-    )
-  )),
-  '柱状图2' = as.character(htmltools::as.tags(
-    sparkline(
-      value1,
-      type = "bar", # 柱状图
-      barColor = "green", # 指定数值为正数的柱子的颜色
-      width = 100, height = 100
-    )
-  )),
-  '箱图' = as.character(htmltools::as.tags(
-    sparkline(
-      value1,
-      type = "box", 
-      width = 100, height = 100
-    )
-  ))
+spark_html <- function(...) {
+  as.character(htmltools::as.tags(sparkline(
+    ..., height = 100
+  )))
+}
+
+dt.DT1 <- dt[, .( # 部分参数含义见备注（按P键）。
+  '面积图' = spark_html(value1, type = "line",width=100),
+  '柱状图' = spark_html(value1, type = "bar",width=100),
+  '折线图' = spark_html(
+    value1,
+    type = "line",
+    lineColor = "red",
+    fillColor = FALSE,width=100
+  ),
+  '柱状图2' = spark_html(value1,
+                      type = "bar",
+                      barColor = "green",width=100),
+  '箱图' = spark_html(value1,
+                    type = "box",width=100)
 ), keyby = .(type2)]
 
 datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
@@ -525,15 +512,15 @@ datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
 ```r
 library(sparkline)
 dt <- as.data.table(data)
+spark_html <- function(...) {
+  as.character(htmltools::as.tags(sparkline(..., height = 100)))}
+
 dt.DT1 <- dt[, .( # 部分参数含义见备注（按P键）。
-  '面积图' = as.character(htmltools::as.tags(sparkline(value1, type = "line", width = 100, height = 100))),
-  '柱状图' = as.character(htmltools::as.tags(sparkline(value1, type = "bar", width = 100, height = 100))),
-  '折线图' = as.character(htmltools::as.tags(sparkline(value1, type = "line", lineColor = "red", fillColor = FALSE,
-  width = 100, height = 100))),
-  '柱状图2' = as.character(htmltools::as.tags(sparkline(value1, type = "bar", barColor = "green", 
-  width = 100, height = 100))),
-  '箱图' = as.character(htmltools::as.tags(sparkline(value1, type = "box", 
-  width = 100, height = 100)))),  keyby = .(type2)]
+  '面积图' = spark_html(value1, type = "line", width=100),
+  '柱状图' = spark_html(value1, type = "bar", width=100),
+  '折线图' = spark_html(value1, type = "line", lineColor = "red", fillColor = FALSE, width=100),
+  '柱状图2' = spark_html(value1, type = "bar", barColor = "green", width=100),
+  '箱图' = spark_html(value1, type = "box", width=100) ), keyby = .(type2)]
 
 datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
 ```
@@ -561,16 +548,18 @@ barColor = "green", # 指定数值为正数的柱子的颜色
 
 ```{r}
 dt.DT2 <-
-  dt[, .('饼图' = as.character(htmltools::as.tags(
-    sparkline(
-      value1,
-      type = "pie", # 饼图
-      sliceColors = c("red", "green"), # 指定饼图中各个扇形的颜色。
-      offset = 90, # 指定饼图的旋转角度
-      width = 50,
-      height = 50
-    )
-  ))), keyby = .(type1)]
+  dt[, .(
+    '饼图' =
+      spark_html(
+        value1,
+        type = "pie",
+        # 饼图
+        sliceColors = c("red", "green"),
+        # 指定饼图中各个扇形的颜色。
+        offset = 90, width=100
+        # 指定饼图的旋转角度
+      )),
+    keyby = .(type1)]
 
 datatable(dt.DT2,
           escape = FALSE,
@@ -583,16 +572,12 @@ datatable(dt.DT2,
 ```
 
 ```r
-dt.DT2 <-
-  dt[, .('饼图' = as.character(htmltools::as.tags(
-    sparkline(value1, type = "pie", sliceColors = c("red", "green"), offset = 90, width = 50,height = 50)))
-  ), keyby = .(type1)]
+dt.DT2 <- dt[, .('饼图' = spark_html(value1, type = "pie", sliceColors = c("red", "green"), 
+                  offset = 90, width=100)),  keyby = .(type1)]
 
 datatable(dt.DT2,
           escape = FALSE,
-          options = list(
-            pageLength=2,
-            dom = 'tp',
+          options = list(pageLength=2, dom = 'tp',
             # 每次分页重新渲染，不加这个的话只有第一页有图
             drawCallback = JS('function(s) { HTMLWidgets.staticRender(); }') 
           )) |> spk_add_deps()
@@ -617,16 +602,14 @@ dt.DT <- dt[, .("两条折线" = as.character(htmltools::as.tags(spk_composite(
     type = "line",
     fillColor = FALSE,
     lineColor = 'red', # 指定折线的颜色
-    width = 300,
-    height = 100
+    width = 300, height=100
   ),
   sparkline(
     value2,
     type = "line",
     fillColor = FALSE,
     lineColor = 'green',
-    width = 300,
-    height = 100
+    width = 300, height=100
   )
 )))), keyby = .(type2)]
 
@@ -1206,4 +1189,4 @@ datatable(
 
 5.在设定表格标题、脚注或多行表头时，也可设置样式。
 
-# 完结 ✿✿ヽ(°▽°)ノ✿
+# 完结https://yuanfan.rbind.io/slides/dt-r15 | ✿✿ヽ(°▽°)ノ✿   ✿✿ヽ(°▽°)ノ✿      ✿✿ヽ(°▽°)ノ✿
