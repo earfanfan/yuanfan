@@ -68,6 +68,9 @@ R 中的交互式表格包：
 
 + rhandsontable（[相关文档](https://cran.r-project.org/web/packages/rhandsontable/rhandsontable.pdf)、[官方网站](https://jrowen.github.io/rhandsontable/)），源于 Handsontable.js。
 
+
+
+
 ## 目录
 
 1.丰富数据元素
@@ -486,24 +489,24 @@ dt <- as.data.table(data)
 
 spark_html <- function(...) {
   as.character(htmltools::as.tags(sparkline(
-    ..., height = 100
+    ..., height = 100, width=100
   )))
 }
 
 dt.DT1 <- dt[, .( # 部分参数含义见备注（按P键）。
-  '面积图' = spark_html(value1, type = "line",width=100),
-  '柱状图' = spark_html(value1, type = "bar",width=100),
+  '面积图' = spark_html(value1, type = "line"),
+  '柱状图' = spark_html(value1, type = "bar"),
   '折线图' = spark_html(
     value1,
     type = "line",
     lineColor = "red",
-    fillColor = FALSE,width=100
+    fillColor = FALSE
   ),
   '柱状图2' = spark_html(value1,
                       type = "bar",
-                      barColor = "green",width=100),
+                      barColor = "green"),
   '箱图' = spark_html(value1,
-                    type = "box",width=100)
+                    type = "box")
 ), keyby = .(type2)]
 
 datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
@@ -513,14 +516,14 @@ datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
 library(sparkline)
 dt <- as.data.table(data)
 spark_html <- function(...) {
-  as.character(htmltools::as.tags(sparkline(..., height = 100)))}
+  as.character(htmltools::as.tags(sparkline(..., height = 100, width=100)))}
 
 dt.DT1 <- dt[, .( # 部分参数含义见备注（按P键）。
-  '面积图' = spark_html(value1, type = "line", width=100),
-  '柱状图' = spark_html(value1, type = "bar", width=100),
-  '折线图' = spark_html(value1, type = "line", lineColor = "red", fillColor = FALSE, width=100),
-  '柱状图2' = spark_html(value1, type = "bar", barColor = "green", width=100),
-  '箱图' = spark_html(value1, type = "box", width=100) ), keyby = .(type2)]
+  '面积图' = spark_html(value1, type = "line"),
+  '柱状图' = spark_html(value1, type = "bar"),
+  '折线图' = spark_html(value1, type = "line", lineColor = "red", fillColor = FALSE),
+  '柱状图2' = spark_html(value1, type = "bar", barColor = "green"),
+  '箱图' = spark_html(value1, type = "box") ), keyby = .(type2)]
 
 datatable(dt.DT1,  escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
 ```
@@ -542,6 +545,8 @@ fillColor = FALSE, # 不展示折线下的面积
 type = "bar", # 柱状图
 
 barColor = "green", # 指定数值为正数的柱子的颜色
+
+type = "box" # 箱图
 </div> 
 
 ## 1.5.插入迷你图 --> 分页重新渲染
@@ -556,7 +561,7 @@ dt.DT2 <-
         # 饼图
         sliceColors = c("red", "green"),
         # 指定饼图中各个扇形的颜色。
-        offset = 90, width=100
+        offset = 90
         # 指定饼图的旋转角度
       )),
     keyby = .(type1)]
@@ -573,7 +578,7 @@ datatable(dt.DT2,
 
 ```r
 dt.DT2 <- dt[, .('饼图' = spark_html(value1, type = "pie", sliceColors = c("red", "green"), 
-                  offset = 90, width=100)),  keyby = .(type1)]
+                  offset = 90)),  keyby = .(type1)]
 
 datatable(dt.DT2,
           escape = FALSE,
@@ -616,7 +621,7 @@ dt.DT <- dt[, .("两条折线" = as.character(htmltools::as.tags(spk_composite(
 datatable(dt.DT, escape = FALSE, options = list(dom = 't')) |> spk_add_deps()
 ```
 
-```
+```r
 dt.DT <- dt[, .(
 "两条折线" = as.character(htmltools::as.tags(spk_composite(
   sparkline(value1, type = "line", fillColor = FALSE, lineColor = 'red', width = 300, height = 100),
