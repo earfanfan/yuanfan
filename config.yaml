@@ -91,7 +91,7 @@ params:
 # options for highlight.js (version, additional languages, and theme)
   highlightjsVersion: "9.12.0"
   highlightjsCDN: "//cdnjs.cloudflare.com/ajax/libs"
-  highlightjsLang: ["r", "yaml", "tex","sql"]
+  highlightjsLang: ["r", "yaml", "tex","sql","bash"]
   highlightjsTheme: "github"
   
   # You can put your custom css and js to `static` directory, or use remote css and js files which start with `http://` or `https://`
