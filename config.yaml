@@ -80,9 +80,9 @@ params:
   copyright: '© Copyright 2021-2022 ❤️ [阿木狗主](https://github.com/earfanfan)' 
   # Extra links in navigation
   links:
-  - name: "苦作舟"
+  - name: "苦作舟-R"
     path: "/project"
-  - name: "勤为径"
+  - name: "勤为径-小说"
     path: "/story"
     ## e.g.
     # - name: Project
