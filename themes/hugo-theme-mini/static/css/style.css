@@ -19,14 +19,15 @@ a:hover {
   color: #0366d6;
 }
 
-/* markdown content styles */
+/* markdown content styles 引用的样式 */
 blockquote {
   margin-top: 5px;
   margin-bottom: 5px;
   padding-left: 1em;
   margin-left: 0px;
-  border-left: 3px solid #eee;
+  border-left: 5px solid lightgrey;
   color: #757575;
+  font-style:italic;
 }
 
 hr {
@@ -66,6 +67,8 @@ thead th, th {
   cursor: default;
   white-space: nowrap;
   border: 1px solid #dadadc;
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
 }
 
 tr>td {
@@ -76,11 +79,25 @@ tr:nth-child(odd)>td {
   background: #fcfcfc;
 }
 
+/* 修改博客主页的三级目录标题的字体粗细和字体大小*/
 h1,
 h2,
 h3 {
-  font-weight: 400;
+  font-weight: bolder;
 }
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h3 {
+  font-size: 20px;
+}
+
 p {
   margin-block-start: 1.5em;
   margin-block-end: 1.5em;
@@ -113,10 +130,11 @@ h4:hover a {
   max-width: 100%;
   overflow-x: auto;
 }
+
 p code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, Courier, monospace;
   font-size: inherit;
-  background-color: rgba(238, 233, 233, 0.2);
+  background-color: rgba(238, 233, 233, 0.3);
   padding: 0 2px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 2px 2px;
@@ -129,6 +147,9 @@ pre code {
   display: block;
 }
 
+.prettyprint {
+background-color: #e6e6e6;
+}
 
 /* navigation */
 
@@ -159,7 +180,7 @@ nav.navigation a.button {
   color: #fff;
   margin-left: 12px;
 }
-@media (max-width: 700px) {
+@media (max-width: 715px) {
   nav.navigation {
     padding: 20px 10px 0 0;
     background: #fff;
@@ -263,17 +284,24 @@ nav.navigation a.button {
 }
 
 .profile h1 {
-  font-weight: 400;
+  font-weight: bolder;
   letter-spacing: 0px;
-  font-size: 20px;
+  font-size: 30px;
   color: #404040;
   margin-bottom: 0;
   margin-top: 0;
 }
 
 .profile h2 {
-  font-size: 20px;
-  font-weight: 300;
+  font-size: 24px;
+  font-weight: bold;
+  color: #757575;
+  margin-top: 0;
+}
+
+.profile h3 {
+  font-size: 22px;
+  font-weight: bolder;
   color: #757575;
   margin-top: 0;
 }
