@@ -26,7 +26,7 @@ draft: no
 
 # 1.数据集介绍
 
-这是一个典型的用于做二分类预测的数据集，是在 Kaggle 上随意找的[1^]，地址是<https://www.kaggle.com/datasets/ifteshanajnin/carinsuranceclaimprediction-classification>。
+这是一个典型的用于做二分类预测的数据集，是在 Kaggle 上随意找的[^1]，地址是<https://www.kaggle.com/datasets/ifteshanajnin/carinsuranceclaimprediction-classification>。
 
 建模场景是：根据车险保单的车辆信息预测未来6月内是否会出险理赔。训练集有58592条数据，测试集有39063条数据，其中训练集有结果标签，而测试集无。
 
@@ -888,4 +888,4 @@ testdata <- as.matrix(dtest.woe[, c('policy_tenure_woe',
 pred_test = predict(bst1, newdata = testdata, ntree_limit = 1000)
 ```
 
-[1^]:这份数据最奇葩的一点就是，它真的一点都不奇葩。笔者几次三番想换份数据，又无法干脆利落地做到轻易放弃，唉。
+[^1]:这份数据最奇葩的一点就是，它真的一点都不奇葩。笔者几次三番想换份数据，又无法干脆利落地做到轻易放弃，唉。
