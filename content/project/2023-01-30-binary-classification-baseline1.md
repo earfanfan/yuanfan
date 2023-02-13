@@ -19,7 +19,7 @@ draft: no
 这篇笔记使用的 R 包如下：
 
 + data.table：数据处理。
-+ DataExplorer：数据探索，主要是用来批量绘图，由于此包依赖 ggplot2，数据量大了出图有点慢。
++ DataExplorer：数据探索，主要用来批量绘图，由于此包依赖 ggplot2，数据量大了出图慢。
 + echarts4r/DT：由于平时工作用的是 Rstudio Server，服务器上没有装 DataExplorer 这个包，实际上更多用基础的图表包来探索数据。
 + scorecard：计算IV值，WOE转换，绘制 ROC曲线、K-S 曲线图。
 + xgboost：训练模型。
