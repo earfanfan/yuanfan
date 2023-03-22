@@ -108,7 +108,7 @@ e_charts() |>
 
 ![](https://yuanfan.rbind.io/images/2023/2023-02-22-2.png)
 
-由于 Echarts 中设置轴的颜色需要引入数组，而 JavaScripts 中的数组和 R 中的数组含义有所不同，JavaScripts 中的数组可以放入不同类型的数据，而 R 中的数组要求放入同类型的数据。因此在 R 中 用 echarts4r 包绘制仪表盘时，若要设定轴的颜色，需要引入数组。
+由于 Echarts 中设置轴的颜色需要引入数组，而 JavaScripts 中的数组和 R 中的数组含义有所不同，JavaScripts 中的数组可以放入不同类型的数据，而 R 中的数组要求放入同类型的数据。因此在 R 中 用 echarts4r 包绘制仪表盘时，若要设定轴的颜色，可改为引入列表。
 
 ```r
 e_charts() |>

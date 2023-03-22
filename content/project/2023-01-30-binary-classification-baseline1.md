@@ -460,6 +460,7 @@ woebin_plot(bins_adj$age_of_car)
 
 # WOE转换，得到分箱后的特征
 bins_df = data.table::rbindlist(bins_adj)
+# 这里的bins_df的格式是数据框，也可以用前面筛选了 IV>0.01 的 newbin 
 df.woe = woebin_ply(df[,..feature], bins = bins_df, to = 'woe')
 ```
 
@@ -715,6 +716,7 @@ bst1 <-
     data = dtrain,
     params = param1,
     nrounds = 1200,
+    # nthread = 16, # 默认1，值越大，执行越快
     verbose = 1,
     watchlist = watchlist,
     early_stopping_rounds = 20
@@ -742,11 +744,19 @@ perf.test = scorecard::perf_eva(
 ![](https://yuanfan.rbind.io/images/2023/2023-01-30-10.png)
 ![](https://yuanfan.rbind.io/images/2023/2023-01-30-11.png)
 
-## 4.2.寻参
+## 4.2.网格寻参
 
 下面这段寻参代码不记得是在哪里看到，然后笔者只是略微改了一点就拿来用了。寻参过程总是很慢，笔者也许应该去了解一下 foreach、parallel 那些实施并行计算的包，然后来改进这部分的执行效率。
 
 ```r
+# 寻参时，可不必拆分数据集
+train <- df.woe
+trainlabel <- train[, 'is_claim']
+traindata <- train[, -is_claim]
+traindata <- as.matrix(traindata)
+trainlabel <- as.matrix(trainlabel)
+dtrain <- xgb.DMatrix(data = traindata, label = trainlabel)
+
 best_param = list()
 best_seednumber = 1234
 # best_logloss = Inf
@@ -773,7 +783,7 @@ for (iter in 1:100) {
   mdcv <- xgb.cv(
     data = dtrain,
     params = param,
-    nthread = 16,
+    nthread = 16, # 默认1，值越大，执行越快
     nfold = cv.nfold,
     nrounds = cv.nround,
     verbose = T,
@@ -870,7 +880,65 @@ plot_features(explanation)
 
 ![](https://yuanfan.rbind.io/images/2023/2023-01-31-1.png)
 
-# 5.预测
+# 5.验证
+
+在建好模型以后，在正式预测之前，需要做一番验证：
+
++ 数据分布是否保持一致。
+
++ 特征是否稳定。假如一个特征在训练集IV值较低，在验证集IV值较高，会导致验证集效果比训练集更好。但是一个特征IV值变化很大是很有风险的，因为不敢确定该特征在未来的测试集上是否依然表现良好。
+
+### PSI特征稳定性
+
+```{r}
+library(scorecard)
+
+pred_list2 = list(pred_train, pred_valid)
+names(pred_list2) <- c("train", "valid")
+label_list2 = list(train$label, valid)
+names(label_list2) <- c("train", "valid")
+psi2 = perf_psi(score = pred_list2, label = label_list2)
+psi2$psi  # psi data frame
+
+# 分数分布
+library(Cairo)
+Cairo(
+  file = "Cairo_PNG_psi_dpi.png",
+  type = "png",
+  width = 1200,
+  height = 800
+)
+
+psi2$pic
+
+dev.off()
+```
+
+### IV特征重要性
+
+```r
+iv_train <- iv(train, y = "label")
+iv_valid <- iv(valid, y = "label")
+
+colnames(iv_train)[2]<-"iv_train"
+colnames(iv_valid)[2]<-"iv_valid"
+
+iv.data <- iv_train[iv_valid, on = "variable"]
+
+iv.data$iv_train_l <-
+  ifelse(iv.data$iv_train < 0.02, '无预测力',
+         ifelse(iv.data$iv_train < 0.1,'弱',
+           ifelse(iv.data$iv_train < 0.3, '中等', '强')))
+
+iv.data$iv_valid_l <-
+  ifelse(iv.data$iv_valid < 0.02, '无预测力',
+         ifelse(iv.data$iv_valid < 0.1, '弱',
+           ifelse(iv.data$iv_valid < 0.3, '中等', '强')))
+
+iv.data
+```
+
+# 6.预测
 
 上节建模时设定的目标函数是“binary:logistic”，评价指标是“auc”，预测时输出的结果是概率，即0至1之间的数值。通常在预测概率的基础上再设定阈值，判定好与坏的结果标签。实际业务中设定阈值通常与验证结果所花费的成本相关。若想预测结果直接是0或1，须将目标函数改为“binary:hinge”，评价指标也一并修改。
 
