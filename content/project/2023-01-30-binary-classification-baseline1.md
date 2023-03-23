@@ -890,7 +890,7 @@ plot_features(explanation)
 
 ### PSI特征稳定性
 
-```{r}
+```r
 library(scorecard)
 
 pred_list2 = list(pred_train, pred_valid)
