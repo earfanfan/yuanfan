@@ -27,7 +27,7 @@ blockquote {
   margin-left: 0px;
   border-left: 5px solid lightgrey;
   color: #757575;
-  font-style:italic;
+  font-style:"Lucida Console", Courier, monospace;
 }
 
 hr {
