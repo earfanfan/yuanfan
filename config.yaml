@@ -106,7 +106,7 @@ params:
 
 ## 配置 utteranc评论,教程参考 https://utteranc.es/
 params.utteranc:
-  enable: true
+  enable: false
   repo: "earfanfan/yuanfan" 
   issueTerm: "pathname"
   theme: "github-light"
