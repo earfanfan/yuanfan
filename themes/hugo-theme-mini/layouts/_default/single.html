@@ -19,7 +19,7 @@
         </span>
     </div>
 
-    
+
     {{ if or .Site.Params.showToc .Params.showToc }}
         {{ partial "toc.html" . }}
     {{ end }}
@@ -36,9 +36,7 @@
             {{ end }}
         </div>
     {{ end}}
-    
-    {{ partial "comment.html" . }}
-
+    {{ partial "comments.html" . }}
 </section>
 
 {{ end }}
