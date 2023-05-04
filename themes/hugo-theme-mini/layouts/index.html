@@ -11,7 +11,7 @@
           <div>
             <h1 class="title"><a href='{{ .RelPermalink }}'>{{ $title }}</a></h1>
             <div class ="date">
-                <time datetime="{{ .PublishDate }}">{{ i18n "publishDate" . }}</time>  
+                <time datetime="{{ .PublishDate }}">{{ i18n "publishDate" . }}</time>
             </div>
           </div>
 
@@ -31,7 +31,7 @@
                   </a>
             </span>
           {{ end }}
-          
+
           {{ if $paginator.HasNext }}
               <span class="next">
                   <a href="{{.Paginator.Next.URL}}">
@@ -41,7 +41,5 @@
           {{ end }}
         </div>
     {{ end }}
-
-
 </div>
 {{ end }}

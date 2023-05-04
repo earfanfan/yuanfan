@@ -1,5 +1,5 @@
 baseURL: "https://yuanfan.rbind.io/"
-languageCode: en-us
+languageCode: zh-cn
 title: "earfanfan | 袁凡"
 theme: "hugo-theme-mini"
 
@@ -8,8 +8,9 @@ defaultContentLanguage: zh
 
 preserveTaxonomyNames: true
 footnotereturnlinkcontents: "↩"
+ignoreFiles: ["\\.Rmd$", "\\.Rmarkdown$", "_cache$"]
 
-# !!! exampleSite only, you may need to delete the line: `themesDir: ../../` 
+# !!! exampleSite only, you may need to delete the line: `themesDir: ../../`
 
 hasCJKLanguage: true
 permalinks:
@@ -77,23 +78,14 @@ params:
   # To hidden post summary in home page, you could set `hiddenPostSummaryInHomePage: true`, default is `false`
   hiddenPostSummaryInHomePage: false
   # Website copy write, default: '© Copyright 2021 ❤️ {params.author}'
-  copyright: '© Copyright 2021-2023 ❤️ [阿木狗主](https://github.com/earfanfan)' 
+  copyright: '© Copyright 2021-2023 ❤️ [阿木狗主](https://github.com/earfanfan)'
   # Extra links in navigation
   links:
   - name: "苦作舟-R"
-    path: "/project"
+    path: "/project/"
   - name: "勤为径-小说"
-    path: "/story"
-    ## e.g.
-    # - name: Project
-    #   path: /project
-    
-# options for highlight.js (version, additional languages, and theme)
-  highlightjsVersion: "9.12.0"
-  highlightjsCDN: "//cdnjs.cloudflare.com/ajax/libs"
-  highlightjsLang: ["r", "yaml", "tex","sql","bash"]
-  highlightjsTheme: "github"
-  
+    path: "/story/"
+
   # You can put your custom css and js to `static` directory, or use remote css and js files which start with `http://` or `https://`
   customCSS:
     ## e.g.
@@ -103,10 +95,3 @@ params:
     ## e.g.
     # - js/custom.js # local js in `static/js/custom.js`
     # - https://example.com/custom.js # remote js
-
-## 配置 utteranc评论,教程参考 https://utteranc.es/
-params.utteranc:
-  enable: false
-  repo: "earfanfan/yuanfan" 
-  issueTerm: "pathname"
-  theme: "github-light"
