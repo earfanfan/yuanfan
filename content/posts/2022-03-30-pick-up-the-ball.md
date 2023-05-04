@@ -10,7 +10,7 @@ tags:
 draft: no
 ---
 
-<font face="微软雅黑">最近新学一个词叫做[冤种朋友](https://www.bilibili.com/video/BV1mb4y1s7mi?p=1&share_medium=iphone&share_plat=ios&share_session_id=C6192172-9F1E-4BF3-B586-58D9554B229E&share_source=WEIXIN&share_tag=s_i&timestamp=1648646938&unique_k=GyIsmLq)，挪到现实中来用的话，说的就是……
+最近新学一个词叫做[冤种朋友](https://www.bilibili.com/video/BV1mb4y1s7mi?p=1&share_medium=iphone&share_plat=ios&share_session_id=C6192172-9F1E-4BF3-B586-58D9554B229E&share_source=WEIXIN&share_tag=s_i&timestamp=1648646938&unique_k=GyIsmLq)，挪到现实中来用的话，说的就是……
 
 <!--more-->
 

@@ -10,7 +10,7 @@ tags:
 draft: no
 ---
 
-<font face="微软雅黑">这篇笔记使用的echarts4r包的版本是0.4.3。
+这篇笔记使用的echarts4r包的版本是0.4.3。
 
 <!--more-->
 

@@ -10,7 +10,7 @@ tags:
 draft: no
 ---
 
-<font face="微软雅黑">天天干蠢事。
+天天干蠢事。
 
 <!--more-->
 

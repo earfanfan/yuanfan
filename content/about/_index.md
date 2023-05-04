@@ -3,7 +3,7 @@ author: 袁凡
 title: About Me
 ---
 
-<font face="微软雅黑"> 
+ 
 
 # 个人兴趣 ∠( ᐛ 」∠)_ 
     

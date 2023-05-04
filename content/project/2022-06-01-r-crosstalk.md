@@ -10,7 +10,7 @@ tags:
 draft: no
 ---
 
-<font face="微软雅黑">这篇笔记一共有三章，第一章记录 crosstalk 与绘图包结合的案例，第二章记录 crosstalk 与表格包结合的案例，第三章记录一些 crosstalk 包本身可改动的参数细节。
+这篇笔记一共有三章，第一章记录 crosstalk 与绘图包结合的案例，第二章记录 crosstalk 与表格包结合的案例，第三章记录一些 crosstalk 包本身可改动的参数细节。
 
 <!--more-->
 

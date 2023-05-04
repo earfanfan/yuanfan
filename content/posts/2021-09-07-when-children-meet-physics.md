@@ -10,7 +10,7 @@ tags:
 draft: no
 ---
 
-<font face="微软雅黑">辣眼睛，慎入！
+辣眼睛，慎入！
 
 <!--more-->
 
