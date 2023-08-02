@@ -59,141 +59,82 @@ for (i in 1:ncol(data2)) {data2[, i][is.na(data2[, i])] <- 0}
 ##将data2和data6合并计算死亡率
 # 2 各地区分年龄、性别的死亡人口
 data2 <- as.data.table(data2)
-n <- ncol(data2)
-data2 <- melt(data2, id = 1:3, measure.vars = 4:n)
+data2 <-
+  melt(
+    data2[, -c('死亡人口-合计', '死亡人口-男', '死亡人口-女')],
+    id.vars = c('year', 'type', 'area'),
+    measure.vars = patterns('计$', '男$', '女$'),
+    variable.name = 'variable',
+    value.name = c('合计', '男', '女'),
+    variable.factor = FALSE
+  )
 
-data2_m <-
-  dcast(data2[variable %like% "男$"], year + type + area ~ variable, value.var = "value")
-n <- ncol(data2_m)
-char <- c(
-  '死亡人口',
-  '0岁',
-  '1-4岁',
-  '5-9岁',
-  '10-14岁',
-  '15-19岁',
-  '20-24岁',
-  '25-29岁',
-  '30-34岁',
-  '35-39岁',
-  '40-44岁',
-  '45-49岁',
-  '50-54岁',
-  '55-59岁',
-  '60-64岁',
-  '65-69岁',
-  '70-74岁',
-  '75-79岁',
-  '80-84岁',
-  '85-89岁',
-  '90-94岁',
-  '95-99岁',
-  '100岁及以上'
+age.group = data.table(
+  variable = as.character(c(1:22)),
+  age_group = c(
+    '0岁',
+    '1-4岁',
+    '5-9岁',
+    '10-14岁',
+    '15-19岁',
+    '20-24岁',
+    '25-29岁',
+    '30-34岁',
+    '35-39岁',
+    '40-44岁',
+    '45-49岁',
+    '50-54岁',
+    '55-59岁',
+    '60-64岁',
+    '65-69岁',
+    '70-74岁',
+    '75-79岁',
+    '80-84岁',
+    '85-89岁',
+    '90-94岁',
+    '95-99岁',
+    '100岁及以上'
+  )
 )
-colnames(data2_m)[4:n] <- char
 
-data2_m$gender <- "男"
+data2 <- age.group[data2, on = .(variable)]
 
-data2_f <-
-  dcast(data2[variable %like% "女$"], year + type + area ~ variable, value.var = "value")
-n <- ncol(data2_f)
-colnames(data2_f)[4:n] <- char
-data2_f$gender <- "女"
-
-data2_all <-
-  dcast(data2[variable %like% "计$"], year + type + area ~ variable, value.var = "value")
-n <- ncol(data2_all)
-colnames(data2_all)[4:n] <- char
-data2_all$gender <- "合计"
-
-data2 <- rbind(data2_m, data2_f, data2_all)
-rm(data2_m)
-rm(data2_f)
-rm(data2_all)
-
-n <- ncol(data2)
 data2 <-
   melt(
     data2,
-    id = c("year", "type", "area", "gender", "死亡人口"),
-    measure.vars = 5:n - 1,
+    id.vars = c('year', 'type', 'area', 'age_group'),
+    measure.vars = c('合计', '男', '女'),
+    variable.name = 'gender',
     variable.factor = FALSE,
-    variable.name = "age_group"
+    value.name = 'value2'
   )
 
 # 6 各地区分年龄、性别的人口
 data6 <- as.data.table(data6)
-n <- ncol(data6)
-data6 <- melt(data6, id = 1:3, measure.vars = 4:n)
+data6 <-
+  melt(
+    data6[, -c('合计', '男', '女')],
+    id.vars = c('year', 'type', 'area'),
+    measure.vars = patterns('计$', '男$', '女$'),
+    variable.name = 'variable',
+    value.name = c('合计', '男', '女'),
+    variable.factor = FALSE
+  )
 
-data6_m <-
-  dcast(data6[variable %like% "男$"], year + type + area ~ variable, value.var = "value")
-n <- ncol(data6_m)
-char <- c(
-  '人口',
-  '0岁',
-  '1-4岁',
-  '5-9岁',
-  '10-14岁',
-  '15-19岁',
-  '20-24岁',
-  '25-29岁',
-  '30-34岁',
-  '35-39岁',
-  '40-44岁',
-  '45-49岁',
-  '50-54岁',
-  '55-59岁',
-  '60-64岁',
-  '65-69岁',
-  '70-74岁',
-  '75-79岁',
-  '80-84岁',
-  '85-89岁',
-  '90-94岁',
-  '95-99岁',
-  '100岁及以上'
-)
-colnames(data6_m)[4:n] <- char
-data6_m$gender <- "男"
+data6 <- age.group[data6, on = .(variable)]
 
-data6_f <-
-  dcast(data6[variable %like% "女$"], year + type + area ~ variable, value.var = "value")
-n <- ncol(data6_f)
-colnames(data6_f)[4:n] <- char
-data6_f$gender <- "女"
-
-data6_all <-
-  dcast(data6[variable %like% "计$"], year + type + area ~ variable, value.var = "value")
-n <- ncol(data6_all)
-colnames(data6_all)[4:n] <- char
-data6_all$gender <- "合计"
-
-data6 <- rbind(data6_m, data6_f, data6_all)
-rm(data6_m)
-rm(data6_f)
-rm(data6_all)
-
-n <- ncol(data6)
 data6 <-
   melt(
     data6,
-    id = c("year", "type", "area", "gender", "人口"),
-    measure.vars = 5:n - 1,
+    id.vars = c('year', 'type', 'area', 'age_group'),
+    measure.vars = c('合计', '男', '女'),
+    variable.name = 'gender',
     variable.factor = FALSE,
-    variable.name = "age_group"
+    value.name = 'value6'
   )
 
-colnames(data2)[7] <- "value2"
-colnames(data6)[7] <- "value6"
-
-data6 <- data6[!(age_group == '人口'), ]
-data2 <- data2[!(age_group == '死亡人口'), ]
 data.agegroup <-
   data6[data2, on = c("year", "type", "area", "gender", "age_group")]
-
-rm(data2)
-rm(data6)
 
 ##############################
 # 5 全国分年龄、性别的死亡人口状况
