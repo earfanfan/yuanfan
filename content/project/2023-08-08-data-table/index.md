@@ -132,6 +132,10 @@ dt.new <- dt.new[, ':='(column5 = NULL, column6 = NULL)]
 dt.new <-
   dt.new[, c('column5', 'column6') := .(sample(100:200, 24), rep(c('0', '0岁', '1岁'), 8))]
 dt.new <- dt.new[, c('column5', 'column6') := NULL]
+
+# 或者这样删除多列
+nchar <- c('column5', 'column6')
+dt.new <- dt.new[, (nchar) := NULL]
 ```
 
 + 基于条件函数的新增列。
@@ -689,7 +693,7 @@ attributes(dt.new1)
 ## [1] "data.table" "data.frame"
 ## 
 ## $.internal.selfref
-## <pointer: 0x000002acb8f45850>
+## <pointer: 0x000001ea32a43ec0>
 ```
 
 
@@ -1313,7 +1317,7 @@ head(dt.new)
 
 ```r
 # 计算缺失值
-# dt.new[, lapply(.SD, function(x) mean(is.na(x)))] 
+# dt.new[, sapply(.SD, function(x) mean(is.na(x)))] 
 ```
 
 + `na.omit()`，根据指定列名称删掉存在缺失的行。
