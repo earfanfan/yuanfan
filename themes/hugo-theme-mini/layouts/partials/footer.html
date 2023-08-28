@@ -1,12 +1,4 @@
 <footer id="footer">
-
-{{ if .Section }}
-<nav class="post-nav">
-  <span class="nav-prev">{{ with .PrevInSection }}&larr; <a href="{{ .RelPermalink }}">{{ .Title }}</a>{{ end }}</span>
-  <span class="nav-next">{{ with .NextInSection }}<a href="{{ .RelPermalink }}">{{ .Title }}</a> &rarr;{{ end }}</span>
-</nav>
-{{ end }}
-
  {{ if .Site.Social }}
         {{ partial "social.html" . }}
     {{ end }}
@@ -15,8 +7,8 @@
     {{ with .Site.Params.copyright }}
         {{ . | markdownify }}
     {{ else }}
-       © Copyright 
-       {{ now.Format "2006"}} 
+       © Copyright
+       {{ now.Format "2006"}}
        <span class="split">
         {{ partial "svgs/heart.svg" (dict "fill" "#bbbbbb" "width" 15 "height" 15 ) }}
        </span>
