@@ -110,15 +110,15 @@ pre {
 .markdown-image img {
   max-width: 100%;
 }
-.anchor { 
-  font-size: 100%; 
-  visibility: hidden; 
+.anchor {
+  font-size: 100%;
+  visibility: hidden;
   color:silver;
 }
 h1:hover a,
 h2:hover a,
 h3:hover a,
-h4:hover a { 
+h4:hover a {
   visibility: visible
 }
 .highlight pre {
@@ -236,8 +236,7 @@ nav.navigation a.button {
 
 /* footer */
 #footer {
-  margin-top: 100px;
-  margin-bottom: 100px;
+  margin: 2em 0;
   text-align: center;
   color: #bbbbbb;
   font-size: 14px;
@@ -442,7 +441,7 @@ nav.navigation a.button {
 }
 
 #archive .group {
-  margin: 24px auto; 
+  margin: 24px auto;
 }
 #archive .group .key {
   font-size: 20px;
@@ -567,10 +566,8 @@ nav.navigation a.button {
 
 #post-nav {
     text-align: center;
-    padding-top: 10px;
-    font-size: 13px;
     font-weight: 500;
-    margin-top: 10px;
+    margin: 1em 0;
 }
 
 #post-nav span {
