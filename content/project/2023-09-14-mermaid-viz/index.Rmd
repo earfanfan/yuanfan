@@ -1,0 +1,485 @@
+---
+title: 使用 DiagrammeR 绘制流程图的笔记
+author: yuanfan
+date: 2023-09-14T20:15:18+0800
+slug: mermaid-viz
+categories:
+  - R
+tags:
+  - R
+draft: no
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,eval=TRUE,message = FALSE,warning = FALSE)
+```
+
+<!--more-->
+
+R 中绘制流程图的包有好几个，键者上网翻了翻，找到下面几个可能算是容易上手的。
+
++ [ggflowchart](https://nrennie.rbind.io/blog/introducing-ggflowchart/)，整个包只有一个`ggflowchart()`函数，若要修改流程图中节点、线的属性只需改动对应参数。
++ [ggdag](https://r-causal.github.io/ggdag/index.html)，节点、线的属性都被设置为单独的函数，可改动范围更大，但用起来也更繁琐。
++ DiagrammeR，通过此包[使用 viz.js 和 mermaid.js 的语法绘制流程图](http://rich-iannone.github.io/DiagrammeR/articles/graphviz-mermaid.html)。[mermaid.js](https://mermaid.js.org/intro/)本身是一个基于 JavaScript 的图表库，可绘制流程图、序列图、甘特图、思维导图、时间轴、桑基图等多种类型的图表。viz.js 也是一个基于 JavaScript 的图表库，viz.js 源于 Graphviz，后者是一个开源的图形可视化软件，使用 DOT 语言来定义图形。
+
+从键者的个人角度看，viz.js 和 mermaid.js 的语法看起来更简单，所以选择学习使用 DiagrammeR 来绘制流程图。
+
+```{r}
+library(DiagrammeR)
+packageVersion("DiagrammeR")
+```
+
+# 一、 mermaid 流程图
+
+在 mermaid.js 提供的网页文档中，关于流程图的部分 <https://mermaid.js.org/syntax/flowchart.html> 内容很详细，但并不是所有细节都能在 R 中实现。以下两种写法，效果相同.
+
+```{r, eval = FALSE}
+# 在 R 中使用 mermaid.js 绘图
+DiagrammeR(diagram = "", type = "mermaid", ...)
+mermaid(diagram = "")
+```
+
+## 1.1. 图形布局
+
+流程图中各个节点之间如何布局的方向共有如下四种。需要注意的是，节点的大小是根据宽度和高度自适应的。
+
++ TB，Top --> Bottom，从上到下。
++ BT，Bottom --> Top，从下到上。
++ RL，Right --> Left，从右到左。
++ LR，Left --> Right，从左到右。
+
+<div style="display: flex;">
+<div style="width: 49%">
+```{r}
+mermaid(diagram = "
+graph LR
+  节点1 --> 节点2
+  ", height = 100, width = '90%')
+```
+</div>
+<div style="width: 2%">
+</div>
+<div style="width: 49%">
+```{r}
+mermaid(diagram = "
+graph RL
+  节点1 --> 节点2
+  ", height = 100, width = '90%')
+```
+</div>
+</div>
+
+<div style="display: flex;">
+<div style="width: 49%">
+```{r}
+mermaid(diagram = "
+graph TB
+  节点1 --> 节点2
+  ", height = 200, width = '90%')
+```
+</div>
+<div style="width: 2%">
+</div>
+<div style="width: 49%">
+```{r}
+mermaid(diagram = "
+graph BT
+  节点1 --> 节点2
+  ", height = 200, width = '90%')
+```
+</div>
+</div>
+
+## 1.2. 节点的形状
+
+在节点较少或者节点内容简单的情况下，定义节点可以直接写`节点1 --> 节点2`，但是在节点较多的情况下，通常可以先定义节点，再定义节点之间的指向关系，如本小节的写法。**用`%%`符号添加注释**。
+
+按照键者当前的试验结果，DiagrammeR 包仅支持绘制出以下五种节点形状。在定义节点、线时，一次只能定义一个节点或者一条线，不能批量定义。多个节点、线的定义写在同一行会报错，要么换行写要么用分号隔开。
+
+```{r}
+mermaid(diagram = "
+graph LR
+
+%% 定义节点
+  A(圆角方框)
+  B[方框]
+  C((圆形))
+  D{菱形}
+  E>折角方框]
+  
+%% 定义节点之间的连线  
+  A --> B; B --> C; C --> D; D --> E
+  ", height = 100, width = '90%')
+```
+
+## 1.3. 节点的内容、样式
+
+### 1.3.1. 支持引入字体图标
+
+支持在节点内容中使用`""`双引号来引入 Unicode 编码代表的 字体图标，但同时需注意将`mermaid('')`函数括号里的引号改为单引号。引入方法有二：
+
++ 使用 [HTML/JS 支持的 UNICODE 编码](https://www.cnblogs.com/lsgxeva/p/10120275.html)。
++ 从其他地方复制粘贴过来，比如[这个网站](https://symbl.cc/cn/)。
+
+```{r}
+mermaid(diagram = '
+graph LR
+   A["&#10084"] %% HTML 支持的 UNICODE 编码
+   B["\u2764"] %% JS 支持的 UNICODE 编码
+   C["❤"]
+   D["✔"]
+   
+   A --> B; B --> C; C --> D
+   ', height = 100, width = '90%')
+```
+
+### 1.3.2. 支持引入 HTML 和 CSS
+
+mermaid.js 支持在定义节点的文本内容时使用 markdown，但是键者多番尝试发现 DiagrammeR 包中的 mermaid 函数似乎不支持 markdown，但却支持引入 HTML 和 CSS。
+
+如下，在文本内容中引入 HTML 标签，达到简单的换行、加粗、斜体的效果。
+
+```{r}
+mermaid(diagram = "
+graph LR
+  A[节点1] 
+  B[第一行<br>第二行</br>第三行]
+  C[<b>加粗</b> <i>斜体</i>]
+  
+  A --> B; B --> C
+  ", height = 200, width = '90%')
+```
+
+引入 CSS 样式的方法有两种，一是在绘图代码中直接定义每个节点的样式，二是在定义节点内容时使用 HTML 标签引入自定义样式。
+
+```{css}
+D {
+color:red;
+font-size:18px;
+}
+```
+
+```{r}
+mermaid(diagram = "
+graph LR
+  
+  %% 定义节点内容
+  A[节点1] 
+  B[第一行<br>第二行</br>第三行]
+  C[<b>加粗</b> <i>斜体</i>]
+  D[<D>改变字号</D>]
+  
+  %% 定义节点之间的连线
+  A --> B; B --> C; B --> D
+  
+  %% 定义节点的样式
+  style A fill:pink, stroke:black, stroke-width:4px
+  style B fill:lightgreen, stroke:red, stroke-width:2px, stroke-dasharray: 5 5
+  style C fill:lightblue
+  ", height = 200, width = '90%')
+```
+
+## 1.4. 线与箭头的样式
+
+如下是键者尝试过能正常使用的线与箭头的样式，线的长度是自适应的。如`---`代表没有箭头的直线，不支持写作`----`。
+
+```{r}
+mermaid(diagram = "
+graph LR
+%% 增加线上的文字
+  A1 --- B1; B1 ---|文字|B2
+  A2 --> B3; B3 -- 文字 --> B4
+  A3 -.-> B5; B5 -.文字.-> B6
+  A4 ==> B7; B7 == 文字 ==> B8
+", height = 400, width = '90%')
+```
+
+似乎只可以有箭头或无箭头，其他任何箭头样式都不支持。也不支持双向箭头。倘若在节点 A、B 之间需定义双向箭头，需得写`A --> B`和`B --> A`两次。
+
+```{r}
+mermaid(diagram = "
+graph LR
+  A --o B; B --> A; B --> C; C --x A
+", height = 100, width = '90%')
+```
+
+## 1.5. 子图
+
+在`subgraph`和`end`之间定义子图。mermaid.js 支持定义子图与子图、子图与节点之间的线，也支持定义嵌套多层子图，但是键者都没摸索出来怎么弄。
+
+```{r}
+mermaid(diagram = "
+graph TB 
+   A1 --> C2
+   
+%% 定义第一个子图
+    subgraph 子图名称1
+    A1 --> A2
+    end
+    
+%% 定义第二个子图    
+    subgraph 子图名称2
+    B1 --> B2
+    end
+    
+%% 定义第三个子图    
+    subgraph 子图名称3
+    C1 --> C2
+    end
+    ", height = 300, width = '90%')
+```
+
+# 二、 Graphviz 流程图
+
+关于节点、线的样式如何设置可参考<http://rich-iannone.github.io/DiagrammeR/articles/graphviz-mermaid.html#graphviz-attributes>和<https://graphviz.org/doc/info/attrs.html>，本节不细究。以下两种写法，效果相同。
+
+```{r, eval = FALSE}
+# 在 R 中使用 viz.js 绘图
+DiagrammeR(diagram = "", type = "grViz", ...)
+grViz(diagram = "")
+
+# 使用事先定义的图形模板
+grViz(replace_in_spec())
+```
+
+## 2.1. 基本语法
+
+与用 mermaid 函数绘制流程图一样的地方是，用 grViz 函数 绘制流程图时，节点的大小也是根据高度、宽度自适应的，图形中节点布局的方向也分为四种。**使用`#`符号添加注释**。
+
+<div style="display: flex;">
+<div style="width: 49%">
++ 无向图（graph），使用`--`描述节点之间的关系。
+```{r}
+grViz(diagram = "graph{
+ # 定义图形布局，从左至右
+  graph[rankdir = LR]
+ # 定义节点 
+  node[shape = rectangle]
+      A[label = '节点1']
+      B[label = '节点2']
+ # 定义线   
+  edge[style=dashed]
+  A -- B
+}", height = 100, width = '90%')
+```
+</div>
+<div style="width: 2%">
+</div>
+<div style="width: 49%">
++ 有向图（digraph），使用`->`来描述节点之间的关系。
+```{r}
+grViz(diagram = "digraph{
+ # 定义图形布局，从右至左
+  graph[rankdir = RL]
+ # 定义节点       
+  node[shape = rectangle]
+      A[label = '节点1']
+      B[label = '节点2']
+ # 定义线     
+ edge[arrowsize = 2,style = dashed]
+  A -> B 
+}", height = 100, width = '60%')
+```
+</div>
+</div>
+
+与 mermaid 函数不同的是，grViz 函数支持对多个节点、线进行一次性统一定义或者分批次统一定义，而对节点、线单独定义的样式优先级会更高。
+
+<div style="display: flex;">
+<div style="width: 49%">
++ 对单个节点、线依次定义。
+```{r}
+grViz(diagram = "digraph{
+graph[rankdir = LR, fontsize = 12]
+      
+ node[shape = rectangle, 
+  style = filled, fillcolor = Yellow]
+   A[label = '节点1', 
+     fillcolor = 'ForestGreen']
+  B[label = '节点2', 
+     fillcolor = 'LightYellow']
+  C[label = '节点3', 
+     fillcolor = 'Yellow', fontsize = 24]
+      
+ edge[arrowhead = diamond]
+  A -> B [arrowhead = box]
+  B -> C [label = '条件', color = red]
+}", height = 100, width = '90%')
+```
+
+</div>
+<div style="width: 2%">
+</div>
+<div style="width: 49%">
++ 对多个节点、线统一定义
+```{r}
+grViz(diagram = "digraph{
+graph[rankdir = LR]
+     
+ node[shape = rectangle, 
+  style = filled, fillcolor = ForestGreen]
+      节点1;节点2;
+      
+  node[fillcolor = Yellow]    
+      节点3;
+      
+      
+  edge[arrowhead = diamond] 
+  节点1 -> 节点2 -> 节点3 
+  {节点2, 节点3} -> 节点1
+}", height = 100, width = '90%')
+```
+</div>
+</div>
+
+## 2.2. 节点的内容
+
+节点内容支持引入 HTML/JS 的 unicode 编码，但不支持 markdown 格式，也不支持引入 HTML 标签。较为特别的是支持用'@@'符号引入 R 代码的执行结果。
+
+|-|HTML unicode 编码|JS unicode 编码|markdown|HTML 标签|R代码|
+|:----:|:----:|:----:|:----:|:----:|:----:|
+|标签内容|`&#10084`|`\u2764`|`**加粗**`|`<b>加粗</b>`|`max(mtcars$cyl)`|
+|实现效果|`r knitr::asis_output("&#10084;")`|`r knitr::asis_output("\u2764")`|**加粗**|<b>加粗</b>|`r max(mtcars$cyl)`|
+
+```{r}
+grViz(diagram = "digraph{
+  graph[rankdir = LR]
+
+  node[shape = rectangle]
+      A[label = '&#10084;'] # HTML unicode 编码
+      B[label = '\u2764'] # JS unicode 编码
+      C[label = '❤'] # 复制粘贴的字体图标
+      D[label = '**加粗**'] # markdown 
+      E[label = '<b>加粗</b>'] # HTML 标签
+      F[label = '@@1'] # 引用 R 代码结果
+
+  A -> B -> C -> D -> E -> F
+}
+[1]:paste0('引入文字', max(mtcars$cyl)) # R 代码
+", height = 100, width = '90%')
+```
+
+## 2.3. 子图
+
+子图中定义的样式优先级也比原图高。同样地，键者也没摸索出来怎么定义节点与子图、子图与子图之间的线。
+
+```{r}
+grViz(diagram = "digraph{
+  graph[rankdir = TB]
+    label = '图形注释'
+    style = dashed
+# 定义第一个子图
+  subgraph cluster1{
+    label = '子图名称1'
+    style = solid
+
+    node[style = dotted]
+    A1; A2;
+    edge[color = Yellow]
+    A1 -> A2
+  }
+# 定义第二个子图  
+  subgraph cluster2{
+   label='子图名称2'
+   B1 -> B2
+  }
+# 定义第三个子图  
+  subgraph cluster3{
+  label = '子图名称3'
+  C1 -> C2
+  }
+  A1 -> C2
+}", height = 300, width = '90%')
+```
+
+# 三、比较
+
+`DiagrammeR::mermaid()`和`DiagrammeR::grViz()`是分别将 mermaid.js 和 viz.js 这两个 Javascripts 图表库挪到 R 中来用，可根据需求随意修改图形布局，且图形、节点边框的大小会随着图形宽度、高度和节点标签文本长度而自适应变化。这些特点`ggflowchart::ggflowchart()`并不具备。
+
+若论在可设定的样式种类多寡，`ggflowchart::ggflowchart()`受限于该函数中的参数数量，`DiagrammeR::mermaid()`在线的样式上仅可改变线型，而`DiagrammeR::grViz()`不仅可以设定节点、线的各种样式，还可以设定子图的样式，相比而言可设定的样式种类最丰富。三者之间还有以下区别。
+
+|-|`DiagrammeR::mermaid()`|`DiagrammeR::grViz()`|`ggflowchart::ggflowchart()`|
+|:------------:|:----:|:----:|:----:|
+|节点标签支持引入 HTML 标签和 CSS|✔|||
+|节点标签支持引入 R 代码结果||✔||
+|支持批量设置节点、线的样式||✔|✔|
+|支持嵌套子图|✔|✔||
+
+总地来看，如果不是遇到节点标签中需要引入 HTML 标签的情况，绘制流程图选用`DiagrammeR::grViz()`。
+
+以下绘制同一个流程图，依次用`DiagrammeR::mermaid()`、`DiagrammeR::grViz()`、`ggflowchart::ggflowchart()`实现。
+
+```{r}
+mermaid(diagram = "
+graph BT
+%% 定义节点
+  A1[MYSQL]; A2[ORACLE]; A3[IMPALA]
+  B1>应用<br>微服务]; B2>接口<br>微服务]; B3>批处理]
+  C1(用户); C2(系统应用)
+%% 定义线
+  A1-->B1;A1-->B2;A1-->B3
+  A2-->B1;A2-->B2
+  A3-->B1;A3-->B2;A3-->B3
+  B1-->C1;B2-->C2
+%% 定义节点样式
+  style A1 fill:#44A57CFF
+  style A2 fill:#44A57CFF
+  style A3 fill:#44A57CFF
+  style B1 fill:#58A449FF
+  style B2 fill:#58A449FF
+  style B3 fill:#58A449FF
+  style C1 fill:#CEC917FF
+  style C2 fill:#CEC917FF
+",height = 300, width = '90%')
+```
+
+```{r}
+grViz(diagram = "digraph{
+  graph[rankdir = BT]
+# 定义节点
+  node[shape = rectangle, style = filled, fillcolor = '#44A57CFF']
+      A1[label = 'MYSQL']
+      A2[label = 'ORACLE']
+      A3[label = 'IMPALA']
+  node[shape = folder, style = filled, fillcolor = '#58A449FF']
+      B1[label = '应用\n微服务']
+      B2[label = '接口\n微服务']
+      B3[label = '批处理']
+ node[shape = ellipse, style = filled, fillcolor = '#CEC917FF']
+      C1[label = '用户']
+      C2[label = '系统应用']
+ # 定义线
+  A1->{B1,B2,B3}; A2->{B1,B2}; A3->{B1,B2,B3}
+  B1->C1; B2->C2
+}",height = 300, width = '90%')
+```
+
+```{r}
+data <- tibble::tibble(
+  from = c(rep('A1', 2),
+           rep('A2', 3),
+           rep('A3', 3),
+           'B1',
+           'B2'),
+  to = c(c('B1', 'B2'), rep(c('B1', 'B2', 'B3'), 2),  'C1', 'C2'))
+node_data = tibble::tibble(
+  name = c(
+    paste('A', c(1:3), sep = ''),
+    paste('B', c(1:3), sep = ''),
+    paste('C', c(1:2), sep = '')
+  ),
+  label = c(
+    'ORACLE',
+    'MYSQL',
+    'IMPALA',
+    '应用微服务',
+    '接口微服务',
+    '批处理',
+    '用户',
+    '应用系统'
+  ),
+  fill = c(rep('#44A57CFF', 3), rep('#58A449FF', 3), rep('#CEC917FF', 2))
+)
+# 节点的填充颜色不对
+ggflowchart::ggflowchart(data, node_data, fill = fill)
+```
