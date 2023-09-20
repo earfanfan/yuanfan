@@ -123,6 +123,54 @@ draft: no
 <link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
 <script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
 <script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
 <script src="{{< blogdown/postref >}}index_files/d3/d3.min.js"></script>
 <script src="{{< blogdown/postref >}}index_files/dagre/dagre-d3.min.js"></script>
 <link href="{{< blogdown/postref >}}index_files/mermaid/dist/mermaid.css" rel="stylesheet" />
@@ -130,6 +178,14 @@ draft: no
 <link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
 <script src="{{< blogdown/postref >}}index_files/chromatography/chromatography.js"></script>
 <script src="{{< blogdown/postref >}}index_files/DiagrammeR-binding/DiagrammeR.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
+<script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
+<link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
+<script src="{{< blogdown/postref >}}index_files/grViz-binding/grViz.js"></script>
 <script src="{{< blogdown/postref >}}index_files/htmlwidgets/htmlwidgets.js"></script>
 <script src="{{< blogdown/postref >}}index_files/viz/viz.js"></script>
 <link href="{{< blogdown/postref >}}index_files/DiagrammeR-styles/styles.css" rel="stylesheet" />
@@ -411,7 +467,13 @@ graph TB
 
 # 二、 Graphviz 流程图
 
-关于节点、线的样式如何设置可参考<http://rich-iannone.github.io/DiagrammeR/articles/graphviz-mermaid.html#graphviz-attributes>和<https://graphviz.org/doc/info/attrs.html>，本节不细究。以下两种写法，效果相同。
+关于节点、线的样式如何设置可参考以下文档，本节不细究。
+
+- DiagrammeR 包的官网文档<http://rich-iannone.github.io/DiagrammeR/articles/graphviz-mermaid.html#graphviz-attributes>。
+- graphviz 官网文档<https://graphviz.org/doc/info/attrs.html>。
+- 其他用户整理的笔记<https://www.cnblogs.com/shuqin/p/11897207.html#attr>。
+
+以下两种写法，效果相同。
 
 ``` r
 # 在 R 中使用 viz.js 绘图
@@ -577,39 +639,326 @@ grViz(diagram = "digraph{
 
 ## 2.3. 子图
 
-子图中定义的样式优先级也比原图高。同样地，键者也没摸索出来怎么定义节点与子图、子图与子图之间的线。
+子图中定义的样式优先级也比原图高。
 
 ``` r
-grViz(diagram = "digraph{
-  graph[rankdir = TB]
-    label = '图形注释'
-    style = dashed
+grViz(diagram = "digraph G{
+  compound = true  #允许子图间可以连线
+  ranksep = 1
+  label = '图形注释'
+  style = dashed
+    
+   node[style = dotted]
+    A1; A2; 
+   node[style = solid]
+    B1;B2;C1;C2  
+    
 # 定义第一个子图
-  subgraph cluster1{
+  subgraph cluster1 {
     label = '子图名称1'
     style = solid
-
-    node[style = dotted]
-    A1; A2;
-    edge[color = Yellow]
-    A1 -> A2
-  }
+    A1;A2
+}
 # 定义第二个子图  
-  subgraph cluster2{
+  subgraph cluster2 {
    label='子图名称2'
-   B1 -> B2
+  B1;B2
   }
 # 定义第三个子图  
-  subgraph cluster3{
+  subgraph cluster3 {
   label = '子图名称3'
-  C1 -> C2
+  C1;C2
   }
-  A1 -> C2
+# 定义第四个子图  
+  subgraph cluster4 {
+  label = '子图名称4'
+  D1;D2
+    subgraph cluster5 {
+    label = '嵌套子图'; color = green
+    D3; D4}
+  }
+  
+# 子图内节点连线
+    B1 -> B2; C1 -> C2; 
+    A1 -> A2[color = Yellow]
+# 跨多个子图，节点连线
+    A1 -> B2
+# 子图与子图之间连线
+    B1 -> C2 [lhead = cluster3, ltail = cluster2] 
+# 节点与子图之间连线
+    C1->D1 [lhead = cluster4, ltail = C1] 
+  
 }", height = 300, width = '90%')
 ```
 
 <div id="htmlwidget-17" style="width:90%;height:300px;" class="grViz html-widget "></div>
-<script type="application/json" data-for="htmlwidget-17">{"x":{"diagram":"digraph{\n  graph[rankdir = TB]\n    label = \"图形注释\"\n    style = dashed\n# 定义第一个子图\n  subgraph cluster1{\n    label = \"子图名称1\"\n    style = solid\n\n    node[style = dotted]\n    A1; A2;\n    edge[color = Yellow]\n    A1 -> A2\n  }\n# 定义第二个子图  \n  subgraph cluster2{\n   label=\"子图名称2\"\n   B1 -> B2\n  }\n# 定义第三个子图  \n  subgraph cluster3{\n  label = \"子图名称3\"\n  C1 -> C2\n  }\n  A1 -> C2\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-17">{"x":{"diagram":"digraph G{\n  compound = true  #允许子图间可以连线\n  ranksep = 1\n  label = \"图形注释\"\n  style = dashed\n    \n   node[style = dotted]\n    A1; A2; \n   node[style = solid]\n    B1;B2;C1;C2  \n    \n# 定义第一个子图\n  subgraph cluster1 {\n    label = \"子图名称1\"\n    style = solid\n    A1;A2\n}\n# 定义第二个子图  \n  subgraph cluster2 {\n   label=\"子图名称2\"\n  B1;B2\n  }\n# 定义第三个子图  \n  subgraph cluster3 {\n  label = \"子图名称3\"\n  C1;C2\n  }\n# 定义第四个子图  \n  subgraph cluster4 {\n  label = \"子图名称4\"\n  D1;D2\n    subgraph cluster5 {\n    label = \"嵌套子图\"; color = green\n    D3; D4}\n  }\n  \n# 子图内节点连线\n    B1 -> B2; C1 -> C2; \n    A1 -> A2[color = Yellow]\n# 跨多个子图，节点连线\n    A1 -> B2\n# 子图与子图之间连线\n    B1 -> C2 [lhead = cluster3, ltail = cluster2] \n# 节点与子图之间连线\n    C1->D1 [lhead = cluster4, ltail = C1] \n  \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+## 2.4. 线
+
+### 2.4.1. 合并线
+
+当有多条线指向同一终点时，如果不想线太多太杂乱，可以创建一个极小的中间节点，将多条线指向中间节点且设置无箭头，再设置中间节点指向终点，便会得到多条线合并在一起的效果。
+
+- dir：设置箭头方向
+
+``` r
+grViz(diagram = "digraph {
+rankdir = LR
+ A -> B[dir = forward] # 箭头方向，向前
+ B -> C[dir = back] # 箭头方向，向后
+ C -> D[dir = both] # 双向箭头
+ D -> E[dir = none] # 无箭头
+}", height = 100, width = '90%')
+```
+
+<div id="htmlwidget-18" style="width:90%;height:100px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-18">{"x":{"diagram":"digraph {\nrankdir = LR\n A -> B[dir = forward] # 箭头方向，向前\n B -> C[dir = back] # 箭头方向，向后\n C -> D[dir = both] # 双向箭头\n D -> E[dir = none] # 无箭头\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+<div style="display: flex;">
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+  
+     {A1, A2, A3}->B
+     
+}", height = 200, width = '90%')
+```
+
+<div id="htmlwidget-19" style="width:90%;height:200px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-19">{"x":{"diagram":"digraph {\n  rankdir = LR\n  \n     {A1, A2, A3}->B\n     \n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+<div style="width: 2%">
+
+</div>
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+    M1[shape = point, width = 0.01, height = 0.01]
+     {A1, A2, A3} -> M1[dir = none]
+      M1 -> B
+}", height = 200, width = '90%')
+```
+
+<div id="htmlwidget-20" style="width:90%;height:200px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-20">{"x":{"diagram":"digraph {\n  rankdir = LR\n    M1[shape = point, width = 0.01, height = 0.01]\n     {A1, A2, A3} -> M1[dir = none]\n      M1 -> B\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+</div>
+
+### 2.4.2. 指定相同的起点、终点
+
+- samehead/sametail：设置多条线具有相同的起点、终点。
+
+<div style="display: flex;">
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+     rankdir = LR
+     
+     {A1, A2, A3} -> B
+     B -> {C1, C2, C3}
+}", height = 200, width = '90%')
+```
+
+<div id="htmlwidget-21" style="width:90%;height:200px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-21">{"x":{"diagram":"digraph {\n     rankdir = LR\n     \n     {A1, A2, A3} -> B\n     B -> {C1, C2, C3}\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+<div style="width: 2%">
+
+</div>
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+  edge[samehead = h1, sametail = t1]   
+     {A1, A2, A3} -> B
+     B -> {C1, C2, C3}
+}", height = 200, width = '90%')
+```
+
+<div id="htmlwidget-22" style="width:90%;height:200px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-22">{"x":{"diagram":"digraph {\n  rankdir = LR\n  edge[samehead = h1, sametail = t1]   \n     {A1, A2, A3} -> B\n     B -> {C1, C2, C3}\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+</div>
+
+### 2.4.3. 设置隐藏线改变节点位置
+
+设置不同的线的指向通常会改变节点的布局。如果想要改变位置的节点之间没有设置线，那么可以通过设置隐藏起来的透明线来实现。
+
+``` r
+grViz(diagram = "digraph {
+rankdir = LR
+ A -> B[style = solid] # 实线
+ B -> C[style = dashed] # 虚线
+ C -> D[style = dotted] # 点线
+ D -> E[style = bold] # 加粗线
+ E -> F[style = invis] # 隐藏线
+}", height = 100, width = '90%')
+```
+
+<div id="htmlwidget-23" style="width:90%;height:100px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-23">{"x":{"diagram":"digraph {\nrankdir = LR\n A -> B[style = solid] # 实线\n B -> C[style = dashed] # 虚线\n C -> D[style = dotted] # 点线\n D -> E[style = bold] # 加粗线\n E -> F[style = invis] # 隐藏线\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+<div style="display: flex;">
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+  
+    A -> B
+    A -> C
+}", height = 200, width = '90%')
+```
+
+<div id="htmlwidget-24" style="width:90%;height:200px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-24">{"x":{"diagram":"digraph {\n  rankdir = LR\n  \n    A -> B\n    A -> C\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+<div style="width: 2%">
+
+</div>
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+    A -> B;A->C
+ {rankdir = TB; rank = same
+  C -> B[style = invis]} # 隐藏线
+}", height = 200, width = '90%')
+```
+
+<div id="htmlwidget-25" style="width:90%;height:200px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-25">{"x":{"diagram":"digraph {\n  rankdir = LR\n    A -> B;A->C\n {rankdir = TB; rank = same\n  C -> B[style = invis]} # 隐藏线\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+</div>
+
+### 2.4.3. 通过设置线的属性改变节点位置
+
+在 grViz 函数绘制的图形中，其节点位置是根据线的属性自适应变化的，改变一些线的属性，节点之间的相对位置就可能会改变。
+
+- headport/tailport：线的头部/尾部与节点连接的位置，以节点为中心的主要方位有四个，n（north）、s（south）、w（west）、e（east）。衍生出来八个，n、ne、e、se、s、sw、w、nw。
+
+- headclip/tailclip：线的头部/尾部是否在节点外面，默认值均为 true，即线的头尾两端都在节点边缘，取值为 false 时，线的头尾两端在节点中心。
+
+- label/headlabel/taillabel：线上标签位置在线的中部、头部、尾部。
+
+<div style="display: flex;">
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+  node[shape = rectangle]
+	A -> B [headclip = true, tailclip = true]
+	B -> C [headclip = false, tailclip = false]
+}", height = 300, width = '90%')
+```
+
+<div id="htmlwidget-26" style="width:90%;height:300px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-26">{"x":{"diagram":"digraph {\n  rankdir = LR\n  node[shape = rectangle]\n\tA -> B [headclip = true, tailclip = true]\n\tB -> C [headclip = false, tailclip = false]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+<div style="width: 2%">
+
+</div>
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+  node[shape = rectangle]
+	A -> B [headport = 'n', tailport = 'n', label = '线中部标签']
+	B -> C [headport = 's', tailport = 's', headlabel = '线头标签', taillabel = '线尾标签']
+}", height = 300, width = '90%')
+```
+
+<div id="htmlwidget-27" style="width:90%;height:300px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-27">{"x":{"diagram":"digraph {\n  rankdir = LR\n  node[shape = rectangle]\n\tA -> B [headport = \"n\", tailport = \"n\", label = \"线中部标签\"]\n\tB -> C [headport = \"s\", tailport = \"s\", headlabel = \"线头标签\", taillabel = \"线尾标签\"]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+</div>
+
+- splines：用于设置线的形状。大致有这些选项，none（不绘制线）、line（直线）、polyline（折线）、curved（曲线）、ortho（轴对齐的折角线）。
+
+- constraint：设置的线是否会改动节点布局，默认值为 true。取值为 false 时，改变线的各种属性均不影响节点布局。
+
+<div style="display: flex;">
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+	splines = ortho
+	
+  node[shape = rectangle]
+  
+	A -> B -> C -> E [color = green]
+	
+	{B, D} -> E [color = red]
+}", height = 300, width = '90%')
+```
+
+<div id="htmlwidget-28" style="width:90%;height:300px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-28">{"x":{"diagram":"digraph {\n  rankdir = LR\n\tsplines = ortho\n\t\n  node[shape = rectangle]\n  \n\tA -> B -> C -> E [color = green]\n\t\n\t{B, D} -> E [color = red]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+<div style="width: 2%">
+
+</div>
+
+<div style="width: 49%">
+
+``` r
+grViz(diagram = "digraph {
+  rankdir = LR
+	splines = ortho
+  node[shape = rectangle]
+  edge[color = green]
+	 A -> B -> C
+	 C -> E[headport = 's', tailport = 'e', constraint = true]
+	edge[color=red]
+	 B -> E
+	 D -> E[headport = 's', tailport = 'e', constraint = false]
+}", height = 300, width = '90%')
+```
+
+<div id="htmlwidget-29" style="width:90%;height:300px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-29">{"x":{"diagram":"digraph {\n  rankdir = LR\n\tsplines = ortho\n  node[shape = rectangle]\n  edge[color = green]\n\t A -> B -> C\n\t C -> E[headport = \"s\", tailport = \"e\", constraint = true]\n\tedge[color=red]\n\t B -> E\n\t D -> E[headport = \"s\", tailport = \"e\", constraint = false]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+</div>
+
+</div>
 
 # 三、比较
 
@@ -652,8 +1001,8 @@ graph BT
 ",height = 300, width = '90%')
 ```
 
-<div id="htmlwidget-18" style="width:90%;height:300px;" class="DiagrammeR html-widget "></div>
-<script type="application/json" data-for="htmlwidget-18">{"x":{"diagram":"\ngraph BT\n%% 定义节点\n  A1[MYSQL]; A2[ORACLE]; A3[IMPALA]\n  B1>应用<br>微服务]; B2>接口<br>微服务]; B3>批处理]\n  C1(用户); C2(系统应用)\n%% 定义线\n  A1-->B1;A1-->B2;A1-->B3\n  A2-->B1;A2-->B2\n  A3-->B1;A3-->B2;A3-->B3\n  B1-->C1;B2-->C2\n%% 定义节点样式\n  style A1 fill:#44A57CFF\n  style A2 fill:#44A57CFF\n  style A3 fill:#44A57CFF\n  style B1 fill:#58A449FF\n  style B2 fill:#58A449FF\n  style B3 fill:#58A449FF\n  style C1 fill:#CEC917FF\n  style C2 fill:#CEC917FF\n"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-30" style="width:90%;height:300px;" class="DiagrammeR html-widget "></div>
+<script type="application/json" data-for="htmlwidget-30">{"x":{"diagram":"\ngraph BT\n%% 定义节点\n  A1[MYSQL]; A2[ORACLE]; A3[IMPALA]\n  B1>应用<br>微服务]; B2>接口<br>微服务]; B3>批处理]\n  C1(用户); C2(系统应用)\n%% 定义线\n  A1-->B1;A1-->B2;A1-->B3\n  A2-->B1;A2-->B2\n  A3-->B1;A3-->B2;A3-->B3\n  B1-->C1;B2-->C2\n%% 定义节点样式\n  style A1 fill:#44A57CFF\n  style A2 fill:#44A57CFF\n  style A3 fill:#44A57CFF\n  style B1 fill:#58A449FF\n  style B2 fill:#58A449FF\n  style B3 fill:#58A449FF\n  style C1 fill:#CEC917FF\n  style C2 fill:#CEC917FF\n"},"evals":[],"jsHooks":[]}</script>
 
 ``` r
 grViz(diagram = "digraph{
@@ -676,8 +1025,8 @@ grViz(diagram = "digraph{
 }",height = 300, width = '90%')
 ```
 
-<div id="htmlwidget-19" style="width:90%;height:300px;" class="grViz html-widget "></div>
-<script type="application/json" data-for="htmlwidget-19">{"x":{"diagram":"digraph{\n  graph[rankdir = BT]\n# 定义节点\n  node[shape = rectangle, style = filled, fillcolor = \"#44A57CFF\"]\n      A1[label = \"MYSQL\"]\n      A2[label = \"ORACLE\"]\n      A3[label = \"IMPALA\"]\n  node[shape = folder, style = filled, fillcolor = \"#58A449FF\"]\n      B1[label = \"应用\n微服务\"]\n      B2[label = \"接口\n微服务\"]\n      B3[label = \"批处理\"]\n node[shape = ellipse, style = filled, fillcolor = \"#CEC917FF\"]\n      C1[label = \"用户\"]\n      C2[label = \"系统应用\"]\n # 定义线\n  A1->{B1,B2,B3}; A2->{B1,B2}; A3->{B1,B2,B3}\n  B1->C1; B2->C2\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-31" style="width:90%;height:300px;" class="grViz html-widget "></div>
+<script type="application/json" data-for="htmlwidget-31">{"x":{"diagram":"digraph{\n  graph[rankdir = BT]\n# 定义节点\n  node[shape = rectangle, style = filled, fillcolor = \"#44A57CFF\"]\n      A1[label = \"MYSQL\"]\n      A2[label = \"ORACLE\"]\n      A3[label = \"IMPALA\"]\n  node[shape = folder, style = filled, fillcolor = \"#58A449FF\"]\n      B1[label = \"应用\n微服务\"]\n      B2[label = \"接口\n微服务\"]\n      B3[label = \"批处理\"]\n node[shape = ellipse, style = filled, fillcolor = \"#CEC917FF\"]\n      C1[label = \"用户\"]\n      C2[label = \"系统应用\"]\n # 定义线\n  A1->{B1,B2,B3}; A2->{B1,B2}; A3->{B1,B2,B3}\n  B1->C1; B2->C2\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 ``` r
 data <- tibble::tibble(
@@ -709,4 +1058,180 @@ node_data = tibble::tibble(
 ggflowchart::ggflowchart(data, node_data, fill = fill)
 ```
 
-<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-24-1.png" width="672" />
+<img src="{{< blogdown/postref >}}index_files/figure-html/unnamed-chunk-36-1.png" width="672" />
+
+# 四、瞎碰乱试的案例
+
+本节用来复现的两张图是从《置身事内》这本书里找的。
+
+## 图一（复原度80%）
+
+![](https://yuanfan.rbind.io/images/2023/mermaid1.jpg)
+
+这张图按节点类型看，一共有三类：
+
+- 方形，实线边框，无填充
+
+- 方形，虚线边框，无填充
+
+- 方形，无边框，灰色填充
+
+还有一些没有边框、没有填充颜色的纯文字，当做子图的图形标题处理。整张图从左至右分成四个部分。
+
+``` r
+library(DiagrammeR)
+
+grViz(diagram = "digraph{
+# 定义图形布局，从左至右
+graph[rankdir = LR]
+# 定义节点       
+  node[shape = rectangle, style = dashed]
+    A1[label = '财政包干：中央财政困难+\n国家财政困难']
+    A2[label = '地方财政增长\n方式转变：工\n商业税收与\n土地财政', width = 1.5]
+    
+  node[shape = rectangle,style = filled, fillcolor = 'gray', color = 'white', width = 2]
+    B1[label = '分税制改革']
+    B2[label = '土地和要素\n市场改革']
+    B3[label = '五个统筹']
+    B4[label = '农村税费改革']
+    B5[label = '乡财县管，\n省直管县']
+    B6[label = '转移支付改革']    
+    
+  node[shape = rectangle, style = solid, color = 'black', width = 1]
+    C1[label = '财政\n集权']
+    C4[label = '体制\n改革']
+    C2[label = '国税、地税分立', width = 2]
+    C3[label = '税收向中央集中', width = 2]
+    C5[label = '支出分权', width = 2]
+    C6[label = '转移支付体系', width = 2]
+    C7[label = '总体均衡', width = 1.5]
+    C8[label = '县乡财政危机\n（纵向失衡）', width = 1.5]
+    C9[label = '地区间失衡\n（横向失衡）', width = 1.5]  
+    C10[label='城市化大\n兴土木']
+    C11[label='招商引资']
+    C12[label='重生产\n轻民生']
+    C13[label='农民负担']  
+    
+# 定义第一个子图
+subgraph cluster1{
+  label = '央地博弈：\n讨价还价'
+  style = solid
+  color = white
+  A2; C7; C8; C9
+} 
+# 定义第二个子图
+subgraph cluster2{
+  label = '社会现象'
+  style = solid
+  color = white
+  C10; C11; C12; C13
+}
+# 定义第三个子图
+subgraph cluster3{
+  label = '继续改革'
+  style = solid
+  color = white
+  B2; B3; B4; B5; B6
+}
+# 定义第四个子图，隐形线，调换 C1和 C4的位置
+subgraph cluster4{
+  rankdir = TB
+  rank = same
+  C1 -> C4[style = invis]
+}
+
+# 定义线
+edge[arrowsize = 1, samehead = h1, sametail = t1]
+A1 -> B1; 
+C1 -> {C2, C3}; C4 -> {C5, C6}
+{C3, C5} -> A2; 
+C6 -> {C7, C8, C9}
+A2 -> {C10, C11, C12, C13}
+C8 -> {C13, B5, B6}; C9 -> B6
+C10 -> {B2, B3}; C12 -> B3; C13 -> {B3, B4}
+edge[headport = 'w', tailport = 'w', splines = ortho, constraint = false]
+B1 -> {C1, C4}
+# 设置多个节点，维持在一个垂直线上
+{rank = same; A1; B1; C1; C4;}
+}")
+```
+
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-32" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-32">{"x":{"diagram":"digraph{\n# 定义图形布局，从左至右\ngraph[rankdir = LR]\n# 定义节点       \n  node[shape = rectangle, style = dashed]\n    A1[label = \"财政包干：中央财政困难+\n国家财政困难\"]\n    A2[label = \"地方财政增长\n方式转变：工\n商业税收与\n土地财政\", width = 1.5]\n    \n  node[shape = rectangle,style = filled, fillcolor = \"gray\", color = \"white\", width = 2]\n    B1[label = \"分税制改革\"]\n    B2[label = \"土地和要素\n市场改革\"]\n    B3[label = \"五个统筹\"]\n    B4[label = \"农村税费改革\"]\n    B5[label = \"乡财县管，\n省直管县\"]\n    B6[label = \"转移支付改革\"]    \n    \n  node[shape = rectangle, style = solid, color = \"black\", width = 1]\n    C1[label = \"财政\n集权\"]\n    C4[label = \"体制\n改革\"]\n    C2[label = \"国税、地税分立\", width = 2]\n    C3[label = \"税收向中央集中\", width = 2]\n    C5[label = \"支出分权\", width = 2]\n    C6[label = \"转移支付体系\", width = 2]\n    C7[label = \"总体均衡\", width = 1.5]\n    C8[label = \"县乡财政危机\n（纵向失衡）\", width = 1.5]\n    C9[label = \"地区间失衡\n（横向失衡）\", width = 1.5]  \n    C10[label=\"城市化大\n兴土木\"]\n    C11[label=\"招商引资\"]\n    C12[label=\"重生产\n轻民生\"]\n    C13[label=\"农民负担\"]  \n    \n# 定义第一个子图\nsubgraph cluster1{\n  label = \"央地博弈：\n讨价还价\"\n  style = solid\n  color = white\n  A2; C7; C8; C9\n} \n# 定义第二个子图\nsubgraph cluster2{\n  label = \"社会现象\"\n  style = solid\n  color = white\n  C10; C11; C12; C13\n}\n# 定义第三个子图\nsubgraph cluster3{\n  label = \"继续改革\"\n  style = solid\n  color = white\n  B2; B3; B4; B5; B6\n}\n# 定义第四个子图，隐形线，调换 C1和 C4的位置\nsubgraph cluster4{\n  rankdir = TB\n  rank = same\n  C1 -> C4[style = invis]\n}\n\n# 定义线\nedge[arrowsize = 1, samehead = h1, sametail = t1]\nA1 -> B1; \nC1 -> {C2, C3}; C4 -> {C5, C6}\n{C3, C5} -> A2; \nC6 -> {C7, C8, C9}\nA2 -> {C10, C11, C12, C13}\nC8 -> {C13, B5, B6}; C9 -> B6\nC10 -> {B2, B3}; C12 -> B3; C13 -> {B3, B4}\nedge[headport = \"w\", tailport = \"w\", splines = ortho, constraint = false]\nB1 -> {C1, C4}\n# 设置多个节点，维持在一个垂直线上\n{rank = same; A1; B1; C1; C4;}\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+
+## 图二（复原度40%）
+
+![](https://yuanfan.rbind.io/images/2023/mermaid2.jpg)
+
+这张图一共只有两种节点：方形、菱形。复杂的地方在于线，以及固定节点的位置？键者实在是搞不明白一些参数的先后顺序咋定……
+
+``` r
+grViz(diagram = "digraph{
+# 定义图形布局，从上到下
+rankdir = LR
+splines = ortho # 轴对齐的折角线
+compound = true  #允许子图间可以连线
+
+# 定义节点       
+  node[shape = diamond, fontsize = 24]
+    A1[label='地方政府']
+    
+  node[shape = rectangle, width = 2]
+    B1[label='城市基础\n设施建设']
+    B2[label='经济增长']
+    B3[label='城市生活质量']
+    
+    C1[label = '土地出让价格']
+    C2[label = '土地储备数量']
+    C3[label = '土地出让数量']
+    C4[label = '土地抵押融资']
+    C5[label = '土地出让收入']
+ 
+
+subgraph clusterA {
+  style = dashed
+  rankdir = TB
+ # rank = same
+  C2 -> C3[style = invis] # 设置一条透明线固定节点位置
+}
+
+subgraph clusterB {
+  label = '土地融资总额'
+  style = dashed
+  C4;C5 
+}
+
+# 定义线，合并起点、终点
+edge[arrowsize = 1, samehead = h1, sametail = t1, headclip = true, tailclip = true]
+
+# 两条线并为一条
+M1 [shape=point,width=0.01,height=0.01];
+{C1, C2} ->M1[dir=none];M1-> C4;
+
+M2 [shape=point,width=0.01,height=0.01];
+{C1, C3} ->M2[dir=none];M2-> C5; 
+
+M3 [shape=point,width=0.01,height=0.01];
+    B1->M3 [dir=none];M3 ->{B2, B3}; 
+ 
+M4 [shape=point,width=0.01,height=0.01];    
+{B2, B3} ->M4[dir=none];M4-> C1[constraint = false] # 只生成线，不影响节点布局
+
+# 双向箭头
+C1 -> C3[dir=both]
+
+# 子图到节点的线
+C4 -> B1[lhead = B1, ltail = clusterB]
+
+# 节点到子图的线
+A1 -> C2 [label = '土地出让决策', lhead = clusterA, ltail = A1, headport = 'n', tailport = 'w'] 
+C4 -> A1 [label = '资金来源', lhead = A1, ltail = clusterB, penwidth = 4]
+
+# 单个节点到单个节点的线
+A1 -> B2 [taillabel = '晋升激励', arrowhead = none, headport = 'n', tailport = 'e']
+A1 -> B1[label = '支出', penwidth = 4]
+}")
+```
+
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-33" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-33">{"x":{"diagram":"digraph{\n# 定义图形布局，从上到下\nrankdir = LR\nsplines = ortho # 轴对齐的折角线\ncompound = true  #允许子图间可以连线\n\n# 定义节点       \n  node[shape = diamond, fontsize = 24]\n    A1[label=\"地方政府\"]\n    \n  node[shape = rectangle, width = 2]\n    B1[label=\"城市基础\n设施建设\"]\n    B2[label=\"经济增长\"]\n    B3[label=\"城市生活质量\"]\n    \n    C1[label = \"土地出让价格\"]\n    C2[label = \"土地储备数量\"]\n    C3[label = \"土地出让数量\"]\n    C4[label = \"土地抵押融资\"]\n    C5[label = \"土地出让收入\"]\n \n\nsubgraph clusterA {\n  style = dashed\n  rankdir = TB\n # rank = same\n  C2 -> C3[style = invis] # 设置一条透明线固定节点位置\n}\n\nsubgraph clusterB {\n  label = \"土地融资总额\"\n  style = dashed\n  C4;C5 \n}\n\n# 定义线，合并起点、终点\nedge[arrowsize = 1, samehead = h1, sametail = t1, headclip = true, tailclip = true]\n\n# 两条线并为一条\nM1 [shape=point,width=0.01,height=0.01];\n{C1, C2} ->M1[dir=none];M1-> C4;\n\nM2 [shape=point,width=0.01,height=0.01];\n{C1, C3} ->M2[dir=none];M2-> C5; \n\nM3 [shape=point,width=0.01,height=0.01];\n    B1->M3 [dir=none];M3 ->{B2, B3}; \n \nM4 [shape=point,width=0.01,height=0.01];    \n{B2, B3} ->M4[dir=none];M4-> C1[constraint = false] # 只生成线，不影响节点布局\n\n# 双向箭头\nC1 -> C3[dir=both]\n\n# 子图到节点的线\nC4 -> B1[lhead = B1, ltail = clusterB]\n\n# 节点到子图的线\nA1 -> C2 [label = \"土地出让决策\", lhead = clusterA, ltail = A1, headport = \"n\", tailport = \"w\"] \nC4 -> A1 [label = \"资金来源\", lhead = A1, ltail = clusterB, penwidth = 4]\n\n# 单个节点到单个节点的线\nA1 -> B2 [taillabel = \"晋升激励\", arrowhead = none, headport = \"n\", tailport = \"e\"]\nA1 -> B1[label = \"支出\", penwidth = 4]\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
