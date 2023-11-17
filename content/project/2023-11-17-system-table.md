@@ -64,7 +64,7 @@ ORACLE数据库有一系列系统表（system tables），可用于查询库中�
 
 其官网上有介绍[系统表](https://docs.oracle.com/database/timesten-18.1/TTSYS/systemtables.htm#TTSYS346)的文档。按照不同的权限范围，系统表又分成了 DBA、ALL、USER 三种，分别对应可查看整个数据库、可查看当前用户可访问的一切数据、只可查看当前用户下的数据。当我们登录数据库用的是 DM 层用户，又想查看 DW 层的表时，应该选择查看 ALL 这一类系统表。
 
-### 表与列（all_col_/all_tab_）
+## 表与列（all_col_/all_tab_）
 
 如果有足够权限的话，就可以在执行下面这段脚本后，得到整个 DW 层的所有表名、表注释、字段名、字段注释、字段类型等信息。
 
@@ -97,7 +97,7 @@ select t.owner,
 |xxx_DW|2|DW_FACT_TABLE|记录表|VARCHAR2|22|Y|CODE|单号|
 |xxx_DW|3|DW_FACT_TABLE|记录表|VARCHAR2|10|Y|TYPE|类型|
 
-### 表关系（all_dependencies）
+## 表关系（all_dependencies）
 
 如果有足够权限的话，执行类似以下代码查看 DW 层中的某个表来源于哪些表。
 
@@ -128,7 +128,7 @@ select *
 |DM|ETL_DM_xxx_LIST|PROCEDURE|DW|DW_FACT_xxx|TABLE||HARD|
 |DM|DM_PL_xxxx|PROCEDURE|DW|DW_FACT_xxx|TABLE||HARD|
 
-### 权限（all_tab_privs）
+## 权限（all_tab_privs）
 
 执行类似以下代码查看表的一些权限分别被赋权给了哪些用户。
 
@@ -139,14 +139,14 @@ select *
    and t.table_name like '%DW_FACT%'; --表名
 ```
 
-### 索引和约束
+## 索引和约束
 
 ```sql
 select * from all_constraints t where t.owner like '%DW%' ;
 select * from all_indexes t where t.owner like '%DW%' ;
 ```
 
-## IMPALA
+# IMPALA
 
 用 [SHOW 命令](https://impala.apache.org/docs/build/html/topics/impala_show.html#show_databases)或[DESCRIBE 命令](https://impala.apache.org/docs/build/html/topics/impala_describe.html)查看单个对象的信息。不知道怎么批量查询，可能是因为对象信息都是单独存储的？
 
