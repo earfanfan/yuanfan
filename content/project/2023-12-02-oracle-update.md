@@ -114,7 +114,7 @@ select p1.item_id, p2.column_a, p3.column_b
 
 接着在原表上增加两个新字段以及字段注释。
 
-```{sql}
+```sql
 alter table t_fact_newbusiness
 add column_a varchar2(22)
 add column_b varchar2(15);
