@@ -116,7 +116,7 @@ select *
 
 或者反过来，执行类似以下代码查看 DW 层中的某个表被用在了哪些程序或存储过程中。
 
-```{sql,eval=FALSE}
+```sql
 select *
    from all_dependencies t
   where t.referenced_owner like '%DW%' -- DW 层用户
@@ -165,4 +165,4 @@ show table stats database_name.table_name;
 show column stats database_name.table_name;
 ```
 
-剩下的就是花时间了。
+剩下的就是花时间和精力用脑子去记了。
