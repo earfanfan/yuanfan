@@ -1,0 +1,749 @@
+---
+title: 看一看我国自杀率变化趋势
+author: yuanfan
+date: 2024-03-29T22:06:29+0800
+slug: population3
+categories:
+  - R
+tags:
+  - R
+draft: no
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,message = FALSE)
+```
+
+<!--more-->
+
+近两年总是看到一些年轻人自杀的新闻，去年就见过一些底层年轻人相约去景区自杀的深度报道，今年开年就又见到多起学生、年轻教师、医院规培生自杀的新闻，这些累积促使我决定找来官方公布的自杀率数据看看。本文使用的数据来源有二，其一是[2011-2022年中国卫生健康统计年鉴](http://www.nhc.gov.cn/mohwsbwstjxxzx/tjzxtjsj/tjsj_list.shtml)，其中可以找到2010-2021年的自杀率数据；其二是[世界卫生组织](https://data.who.int/zh/indicators/i/16BBF41)提供下载的2000-2019年世界各国自杀率数据。
+
+```{r, echo = TRUE}
+library(ggplot2)
+library(data.table)
+library(readxl)
+library(sparkline)
+library(DT)
+
+data <- read_xlsx('data/中国卫生统计年鉴-自杀率数据.xlsx', sheet = 1)
+setDT(data)
+
+data.who <-
+  read_xlsx('data/中国卫生统计年鉴-自杀率数据.xlsx', sheet = 2)
+setDT(data.who)
+setnames(data.who, tolower)
+
+spark_html <- function(...) {
+  as.character(htmltools::as.tags(sparkline(..., height = 50, width = 100)))}
+```
+
+# 一
+
+本节使用的数据来源是：中国卫生健康统计年鉴。关于此有两点细节需要说明。
+
+1. 按城乡分，城市包括直辖市区和地级市辖区，农村包括县及县级市。这和中国人口普查年鉴里面分成城市、镇、乡村的划分方式不一样。
+
+2. 性别年龄别死亡率，指分性别年龄别计算的死亡率。计算公式：男（女）性某年龄别死亡率＝男（女）性某年龄别死亡人数／男（女）性同年龄平均人口数。下文中死亡率的单位是1/10万人，仅提供了按城市合计、城市男性、城市女性、农村合计、农村男性、农村女性计算的自杀率数据，由于没有同一口径下城市、农村人口比例或男女人口比例，所以无法算出各年龄段的总和自杀率或男性女性自杀率。
+
+按城乡和性别来看，从2010年到2021年我国自杀率整体呈现下降趋势。若比较自杀率高低，应是`农村-男 > 农村-女 > 城市-男 > 城市-女`，即农村自杀率高于城市，而分别在农村和城市则均为男性自杀率高于女性。
+
+<details>
+<summary>点击查看绘图的 R 代码</summary>
+<pre><code>
+
+```{r, eval = FALSE, echo = TRUE}
+ggplot(data = data[ICD10 == '自杀' &
+                     type %in% c('农村-男', '农村-女', '城市-男', '城市-女'), ],
+       mapping = aes(x = year,
+                     y = total,
+                     colour = type)) +
+  geom_line(size = 1) + geom_point(size = 1.5) + theme_classic() +
+  labs(
+    x = '年份',
+    y = '自杀率（每10万人）',
+    colour = '城乡&性别',
+    title = '2010至2021年全国自杀率变化趋势',
+    subtitle = '数据来源：中国卫生健康统计年鉴'
+  ) +
+  scale_x_continuous(breaks = seq(2010, 2021, 1)) +
+  ylim(c(0, 11)) +
+  scale_colour_manual(
+    values = c(
+      "农村-男" = "#28231DFF",
+      "农村-女" = "#008E90FF",
+      "城市-男" = "#58A449FF",
+      "城市-女" = "#CEC917FF"
+    )
+  )
+```
+
+</code></pre>
+</details>
+
+```{r}
+ggplot(data = data[ICD10 == '自杀' &
+                     type %in% c('农村-男', '农村-女', '城市-男', '城市-女'), ],
+       mapping = aes(x = year,
+                     y = total,
+                     colour = type)) +
+  geom_line(size = 1) + geom_point(size = 1.5) + theme_classic() +
+  labs(
+    x = '年份',
+    y = '自杀率（每10万人）',
+    colour = '城乡&性别',
+    title = '2010至2021年全国自杀率变化趋势',
+    subtitle = '数据来源：中国卫生健康统计年鉴'
+  ) +
+  scale_x_continuous(breaks = seq(2010, 2021, 1)) +
+  ylim(c(0, 11)) +
+  scale_colour_manual(
+    values = c(
+      "农村-男" = "#28231DFF",
+      "农村-女" = "#008E90FF",
+      "城市-男" = "#58A449FF",
+      "城市-女" = "#CEC917FF"
+    )
+  )
+```
+
+如果只是知道自杀率为多少，似乎没有一个具体概念。由于此前曾经看过2020年人口普查数据，可以结合自杀率数据来粗略计算自杀人数。取2020年的自杀率数据，绘制下图，按年龄段来看，不论城乡或性别，自杀率随着年龄增加而升高。极其明显的是，老年人自杀率极高。
+
+已知在2020年人口普查数据中，85岁及以上男性人数为610万，其中城市、农村男性自杀率分别为24.86、70.45，那么对应自杀人数的范围为1516至4297人。同理，2020年85岁及以上女性人数为931万，其中城市、农村女性自杀率分别为17.99、41.68，那么对应自杀人数的范围为1673至3876人。
+
+<details>
+<summary>点击查看绘图的 R 代码</summary>
+<pre><code>
+
+```{r, eval = FALSE, echo = TRUE}
+data2.melt <- melt(
+  data[ICD10 == '自杀' &
+         year == 2020 & type %in% c('城市-男', '城市-女', '农村-男', '农村-女'),],
+  id.vars = c('type', 'year'),
+  measure.vars = c(
+    '不满1岁',
+    '1-4',
+    '5-9',
+    '10-14',
+    '15-19',
+    '20-24',
+    '25-29',
+    '30-34',
+    '35-39',
+    '40-44',
+    '45-49',
+    '50-54',
+    '55-59',
+    '60-64',
+    '65-69',
+    '70-74',
+    '75-79',
+    '80-84',
+    '85岁及以上'
+  ),
+  variable.name = 'age_group',
+  value.name = 'value'
+)
+
+ggplot(data = data2.melt) +
+  geom_bar(mapping = aes(x = age_group, y = value, fill = type),
+           stat = 'identity')  +
+  theme_classic() +
+  labs(
+    x = '年龄段',
+    y = '自杀率（1/10万）',
+    fill = '城乡&性别',
+    title = '2020年全国自杀率按年龄段变化趋势',
+    subtitle = '数据来源：中国卫生健康统计年鉴'
+  ) +
+  facet_wrap(vars(type), ncol = 2) +
+  scale_x_discrete(breaks = c('不满1岁', '15-19', '45-49', '85岁及以上')) +
+  scale_fill_manual(
+    values = c(
+      "农村-男" = "#28231DFF",
+      "农村-女" = "#008E90FF",
+      "城市-男" = "#58A449FF",
+      "城市-女" = "#CEC917FF"
+    )
+  ) +
+  theme(panel.spacing.x = unit(2, "lines")) # 让分面后左右两边的图之间间距调大
+```
+
+</code></pre>
+</details>
+
+```{r}
+data2.melt <- melt(
+  data[ICD10 == '自杀' &
+         year == 2020 & type %in% c('城市-男', '城市-女', '农村-男', '农村-女'),],
+  id.vars = c('type', 'year'),
+  measure.vars = c(
+    '不满1岁',
+    '1-4',
+    '5-9',
+    '10-14',
+    '15-19',
+    '20-24',
+    '25-29',
+    '30-34',
+    '35-39',
+    '40-44',
+    '45-49',
+    '50-54',
+    '55-59',
+    '60-64',
+    '65-69',
+    '70-74',
+    '75-79',
+    '80-84',
+    '85岁及以上'
+  ),
+  variable.name = 'age_group',
+  value.name = 'value'
+)
+
+ggplot(data = data2.melt) +
+  geom_bar(mapping = aes(x = age_group, y = value, fill = type),
+           stat = 'identity')  +
+  theme_classic() +
+  labs(
+    x = '年龄段',
+    y = '自杀率（1/10万）',
+    fill = '城乡&性别',
+    title = '2020年全国自杀率按年龄段变化趋势',
+    subtitle = '数据来源：中国卫生健康统计年鉴'
+  ) +
+  facet_wrap(vars(type), ncol = 2) +
+  scale_x_discrete(breaks = c('不满1岁', '15-19', '45-49', '85岁及以上')) +
+  scale_fill_manual(
+    values = c(
+      "农村-男" = "#28231DFF",
+      "农村-女" = "#008E90FF",
+      "城市-男" = "#58A449FF",
+      "城市-女" = "#CEC917FF"
+    )
+  ) +
+  theme(panel.spacing.x = unit(2, "lines")) # 让分面后左右两边的图之间间距调大
+```
+
+由于老年人自杀率往往比低年龄段自杀率高出几倍甚至数十倍，因此单独拿出10-34岁低年龄段的数据来看，会更清楚看到在低年龄段存在一些小小的波峰。如下表所示，在2020年，对城市女性和农村女性来说，在15-19岁存在一个自杀率波峰；对农村男性来说，在25-29岁存在一个自杀率波峰；而对城市男性来说，在21-24岁存在一个自杀率波峰。
+
+只知存在这样一些个小小波峰，似乎也没什么具体概念。已知2020年人口普查数据中15-19岁女性人数为3363万，该年龄段城市、农村女性自杀率分别为3.19、2.84，那么对应自杀人数的范围应为955至1072人。同样已知2020年人口普查数据中25-29岁男性人数为4816万，该年龄段城市、农村男性自杀率分别为3.09、5.77，那么对应自杀人数的范围应为1488至2778人。
+
+<details>
+<summary>点击查看绘图的 R 代码</summary>
+<pre><code>
+
+```{r, eval = FALSE, echo = TRUE}
+data3 <- dcast(data2.melt,
+               year + age_group ~ type,
+               value.var = 'value')[age_group %in% c('10-14', '15-19', '20-24', '25-29', '30-34'), c('year', 'age_group', '农村-女', '城市-女', '农村-男', '城市-男')]
+
+datatable(
+  data3,
+  rownames = FALSE,
+  colnames = c('年份', '年龄段', '农村-女', '城市-女', '农村-男', '城市-男'),
+  options = list(dom='t')
+) |>
+  formatStyle(
+    columns = '农村-女',
+    background = styleColorBar(c(0, 6, data3$`农村-女`), color = "#008E90FF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  ) |>
+  formatStyle(
+    columns = '城市-女',
+    background = styleColorBar(c(0, 6, data3$`城市-女`), color = "#CEC917FF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  ) |>
+  formatStyle(
+    columns = '农村-男',
+    background = styleColorBar(c(0, 6, data3$`农村-男`), color = "#28231DFF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  ) |>
+  formatStyle(
+    columns = '城市-男',
+    background = styleColorBar(c(0, 6, data3$`城市-男`), color = "#58A449FF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  )
+```
+
+</code></pre>
+</details>
+
+```{r}
+data3 <- dcast(data2.melt,
+               year + age_group ~ type,
+               value.var = 'value')[age_group %in% c('10-14', '15-19', '20-24', '25-29', '30-34'), c('year', 'age_group', '农村-女', '城市-女', '农村-男', '城市-男')]
+
+datatable(
+  data3,
+  rownames = FALSE,
+  colnames = c('年份', '年龄段', '农村-女', '城市-女', '农村-男', '城市-男'),
+  options = list(dom='t')
+) |>
+  formatStyle(
+    columns = '农村-女',
+    background = styleColorBar(c(0, 6, data3$`农村-女`), color = "#008E90FF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  ) |>
+  formatStyle(
+    columns = '城市-女',
+    background = styleColorBar(c(0, 6, data3$`城市-女`), color = "#CEC917FF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  ) |>
+  formatStyle(
+    columns = '农村-男',
+    background = styleColorBar(c(0, 6, data3$`农村-男`), color = "#28231DFF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  ) |>
+  formatStyle(
+    columns = '城市-男',
+    background = styleColorBar(c(0, 6, data3$`城市-男`), color = "#58A449FF"),
+    backgroundSize = '90% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center',
+    color = 'white'
+  )
+```
+
+在整体自杀率逐年下降和自杀率随年龄增长而升高的前提下，若单独按城乡和性别看每个年龄段的自杀率变化趋势，如下表可以看到在15-19岁青少年人群中，农村和城市女性自杀率在2011-2013年曾连续三年上升，之后出现下降趋势，但近几年又重新出现上升趋势，并且上升趋势更加陡峭；城市男性自杀率在2012-2014年也曾连续三年上升，之后出现下降趋势，但同样在2018-2019年重现极为陡峭的上升趋势。对此，我的猜测是15-19岁青少年是社会重点关注对象，倘若自杀率连续3年上升，社会上会更加重视这个问题并进行自杀干预，随后自杀率会重新下降，而自杀干预的效果算是治标不治本，几年后自杀率的上升趋势会变得更陡峭。
+
+<details>
+<summary>点击查看绘图的 R 代码</summary>
+<pre><code>
+
+```{r, eval = FALSE, echo = TRUE}
+dt1.melt <- melt(
+  data[ICD10 == '自杀' &
+         type %in% c('城市-男', '城市-女', '农村-男', '农村-女', '城市-合计', '农村-合计'), ],
+  id.vars = c('type', 'year'),
+  measure.vars = c(
+    # '不满1岁',
+    # '1-4',
+    # '5-9',
+    '10-14',
+    '15-19',
+    '20-24',
+    '25-29',
+    '30-34',
+    '35-39',
+    '40-44',
+    '45-49',
+    '50-54',
+    '55-59',
+    '60-64',
+    '65-69',
+    '70-74',
+    '75-79',
+    '80-84',
+    '85岁及以上'
+  ),
+  variable.name = 'age_group',
+  value.name = '自杀率'
+)
+
+dt1.dcast <-
+  dcast(dt1.melt,
+        year + age_group ~ type,
+        value.var = '自杀率')
+
+dt1 <- dt1.dcast[, .(
+  '农村-女' = spark_html(
+    `农村-女`,
+    type = "line",
+    lineColor = "#008E90FF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  ),
+  '城市-女' = spark_html(
+    `城市-女`,
+    type = "line",
+    lineColor = "#CEC917FF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  ),
+  '农村-男' = spark_html(
+    `农村-男`,
+    type = "line",
+    lineColor = "#28231DFF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  ),
+  '城市-男' = spark_html(
+    `城市-男`,
+    type = "line",
+    lineColor = "#58A449FF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  )
+),  keyby = .(age_group)]
+
+datatable(
+  dt1,
+  colnames = c('年份', '农村-女', '城市-女', '农村-男', '城市-男'),
+  rownames = FALSE,
+  escape = FALSE,
+  options = list(
+    pageLength = 5,
+    # 每次分页重新渲染，不加这个的话只有第一页有图
+    drawCallback = JS('function(s) { HTMLWidgets.staticRender(); }'),
+    language = list(
+      lengthMenu = '展示 _MENU_ 每页记录数',
+      search = '检索：',
+      zeroRecords = '什么都没有找到',
+      infoEmpty = '找不到记录',
+      infoFiltered = '(从 _MAX_ 条数据中筛选)',
+      info = '共 _TOTAL_ 条记录，从 _START_ 到 _END_',
+      paginate = list(previous = '上一页', `next` = '下一页')
+    )
+  )
+) |> spk_add_deps()
+```
+
+</code></pre>
+</details>
+
+```{r}
+dt1.melt <- melt(
+  data[ICD10 == '自杀' &
+         type %in% c('城市-男', '城市-女', '农村-男', '农村-女', '城市-合计', '农村-合计'), ],
+  id.vars = c('type', 'year'),
+  measure.vars = c(
+    # '不满1岁',
+    # '1-4',
+    # '5-9',
+    '10-14',
+    '15-19',
+    '20-24',
+    '25-29',
+    '30-34',
+    '35-39',
+    '40-44',
+    '45-49',
+    '50-54',
+    '55-59',
+    '60-64',
+    '65-69',
+    '70-74',
+    '75-79',
+    '80-84',
+    '85岁及以上'
+  ),
+  variable.name = 'age_group',
+  value.name = '自杀率'
+)
+
+dt1.dcast <-
+  dcast(dt1.melt,
+        year + age_group ~ type,
+        value.var = '自杀率')
+
+dt1 <- dt1.dcast[, .(
+  '农村-女' = spark_html(
+    `农村-女`,
+    type = "line",
+    lineColor = "#008E90FF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  ),
+  '城市-女' = spark_html(
+    `城市-女`,
+    type = "line",
+    lineColor = "#CEC917FF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  ),
+  '农村-男' = spark_html(
+    `农村-男`,
+    type = "line",
+    lineColor = "#28231DFF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  ),
+  '城市-男' = spark_html(
+    `城市-男`,
+    type = "line",
+    lineColor = "#58A449FF",
+    # 折线的颜色
+    fillColor = FALSE # 不展示折线下的面积
+  )
+),  keyby = .(age_group)]
+
+datatable(
+  dt1,
+  colnames = c('年份', '农村-女', '城市-女', '农村-男', '城市-男'),
+  rownames = FALSE,
+  escape = FALSE,
+  options = list(
+    pageLength = 5,
+    # 每次分页重新渲染，不加这个的话只有第一页有图
+    drawCallback = JS('function(s) { HTMLWidgets.staticRender(); }'),
+    language = list(
+      lengthMenu = '展示 _MENU_ 每页记录数',
+      search = '检索：',
+      zeroRecords = '什么都没有找到',
+      infoEmpty = '找不到记录',
+      infoFiltered = '(从 _MAX_ 条数据中筛选)',
+      info = '共 _TOTAL_ 条记录，从 _START_ 到 _END_',
+      paginate = list(previous = '上一页', `next` = '下一页')
+    )
+  )
+) |> spk_add_deps()
+```
+
+而如果连续4年及以上自杀率维持上升趋势，可能说明自杀干预的治标效果也在减弱。下面按自杀率在更近年份连续4年上升作为重现连续上升趋势，若截止2021年自杀率没有下降，则在下表中记录重现上升趋势的年份，若截止2021年自杀率有下降，则一并标记趋势重新下降的年份。由于没能拿到2022-2023年的数据，仅从下表记录的这些年份来看，不论城乡或性别，青少年自杀问题已经不可遏制地变得越来越严重了。
+
+|年龄段|农村-女|城市-女|农村-男|城市-男|
+|:----:|:----:|:----:|:----:|:----:|
+|10-14岁|2016（**2021**）|2017|2019|-|
+|15-19岁|2018|2017|2017|-|
+|20-24|-|2018|2018|2017（**2021**）|
+
+# 二
+
+本节使用的数据来源是：世界卫生组织。
+
+在上节简单看完国内官方的自杀率数据后，再看看中国的自杀率在世界范围是何水平。如下所示，按照世界卫生组织的数据来看，自2000年至2019年世界自杀率水平不断下降，中国和日本近些年自杀率也在不断下降，中国的自杀率已经下降到世界水平以下，而美国的自杀率却在不算上升。
+
+<details>
+<summary>点击查看绘图的 R 代码</summary>
+<pre><code>
+
+```{r, eval = FALSE, echo = TRUE}
+data.who <- data.who[geo_name_short %in% c('World',
+                                           'Japan',
+                                           'China',
+                                           #'Republic of Korea',
+                                           'United States of America'), c('geo_name_short',
+                                                                          'dim_time',
+                                                                          'dim_sex',
+                                                                          'dim_age',
+                                                                          'value_numeric')]
+
+data.who[dim_sex == 'Female', dim_sex := '女性']
+data.who[dim_sex == 'Male', dim_sex := '男性']
+data.who[dim_sex == 'Total', dim_sex := '合计']
+data.who[geo_name_short == 'China', geo_name_short := '中国']
+data.who[geo_name_short == 'Japan', geo_name_short := '日本']
+#data.who[geo_name_short == 'Republic of Korea', geo_name_short := '韩国']
+data.who[geo_name_short == 'United States of America', geo_name_short := '美国']
+data.who[geo_name_short == 'World', geo_name_short := '世界']
+data.who[dim_age == '15 to 19 years', dim_age := '15-19']
+data.who[dim_age == '15 to 24 years', dim_age := '15-24']
+data.who[dim_age == '15 to 29 years', dim_age := '15-29']
+data.who[dim_age == '25 to 34 years', dim_age := '25-34']
+data.who[dim_age == '30 to 49 years', dim_age := '30-49']
+data.who[dim_age == '35 to 44 years', dim_age := '35-44']
+data.who[dim_age == '45 to 54 years', dim_age := '45-54']
+data.who[dim_age == '55 to 64 years', dim_age := '55-64']
+data.who[dim_age == '65 to 74 years', dim_age := '65-74']
+data.who[dim_age == '75 to 84 years', dim_age := '75-84']
+data.who[dim_age == '85 plus years', dim_age := '85岁及以上']
+data.who[dim_age == 'Total years', dim_age := '全年龄段']
+
+ggplot(
+  data = data.who[dim_age == '全年龄段' &
+                    dim_sex == '合计', ] ,
+  mapping = aes(x = dim_time, y = value_numeric, colour = geo_name_short)
+) + geom_line()  +
+  geom_point() +
+  theme_classic() +
+  labs(
+    x = '年份',
+    y = '自杀率（1/10万）',
+    colour = '国家',
+    title = '2000至2019年自杀率变化趋势',
+    subtitle = '数据来源：世界卫生组织'
+  )+ ylim(c(0, 30)) 
+```
+
+</code></pre>
+</details>
+
+```{r}
+data.who <- data.who[geo_name_short %in% c('World',
+                                           'Japan',
+                                           'China',
+                                           #'Republic of Korea',
+                                           'United States of America'), c('geo_name_short',
+                                                                          'dim_time',
+                                                                          'dim_sex',
+                                                                          'dim_age',
+                                                                          'value_numeric')]
+
+data.who[dim_sex == 'Female', dim_sex := '女性']
+data.who[dim_sex == 'Male', dim_sex := '男性']
+data.who[dim_sex == 'Total', dim_sex := '合计']
+data.who[geo_name_short == 'China', geo_name_short := '中国']
+data.who[geo_name_short == 'Japan', geo_name_short := '日本']
+#data.who[geo_name_short == 'Republic of Korea', geo_name_short := '韩国']
+data.who[geo_name_short == 'United States of America', geo_name_short := '美国']
+data.who[geo_name_short == 'World', geo_name_short := '世界']
+data.who[dim_age == '15 to 19 years', dim_age := '15-19']
+data.who[dim_age == '15 to 24 years', dim_age := '15-24']
+data.who[dim_age == '15 to 29 years', dim_age := '15-29']
+data.who[dim_age == '25 to 34 years', dim_age := '25-34']
+data.who[dim_age == '30 to 49 years', dim_age := '30-49']
+data.who[dim_age == '35 to 44 years', dim_age := '35-44']
+data.who[dim_age == '45 to 54 years', dim_age := '45-54']
+data.who[dim_age == '55 to 64 years', dim_age := '55-64']
+data.who[dim_age == '65 to 74 years', dim_age := '65-74']
+data.who[dim_age == '75 to 84 years', dim_age := '75-84']
+data.who[dim_age == '85 plus years', dim_age := '85岁及以上']
+data.who[dim_age == 'Total years', dim_age := '全年龄段']
+
+ggplot(
+  data = data.who[dim_age == '全年龄段' &
+                    dim_sex == '合计',] ,
+  mapping = aes(x = dim_time, y = value_numeric, colour = geo_name_short)
+) + geom_line()  +
+  geom_point() +
+  theme_classic() +
+  labs(
+    x = '年份',
+    y = '自杀率（1/10万）',
+    colour = '国家',
+    title = '2000至2019年自杀率变化趋势',
+    subtitle = '数据来源：世界卫生组织'
+  ) + ylim(c(0, 30)) 
+```
+
+再看2019年按性别和年龄段的自杀率数据，如下所示，三个国家均是男性自杀率高于女性，但整体上看中国的男性与女性之间的自杀率差距更小。
+
+<details>
+<summary>点击查看绘图的 R 代码</summary>
+<pre><code>
+
+```{r, eval = FALSE, echo = TRUE}
+# 15-24 25-34 35-44 45-54 55-64 65-74 75-84 85+
+# 15-19
+# 15-29 30-49
+
+data.who.age <-
+  data.who[!dim_age %in% c('15-19', '15-29', '30-49','全年龄段')&dim_sex%in%c('男性','女性'), ]
+
+data.who.age$dim_age <-
+  factor(
+    data.who.age$dim_age,
+    levels = c(
+      '15-24',
+      '25-34',
+      '35-44',
+      '45-54',
+      '55-64',
+      '65-74',
+      '75-84',
+      '85岁及以上'
+    )
+  )
+
+ggplot(
+  data = data.who.age,
+  mapping = aes(
+    x = dim_age,
+    y = value_numeric,
+    group = dim_sex,
+    color = dim_sex
+  )
+) +
+  geom_line()  +
+  geom_point() +
+  theme_classic() +
+  labs(
+    x = '年龄段',
+    y = '自杀率（1/10万）',
+    color = '性别',
+    title = '2019年各国按年龄段的自杀率变化趋势',
+    subtitle = '数据来源：世界卫生组织'
+  ) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_wrap(vars(geo_name_short), ncol = 3) 
+
+```
+
+</code></pre>
+</details>
+
+```{r}
+# 15-24 25-34 35-44 45-54 55-64 65-74 75-84 85+
+# 15-19
+# 15-29 30-49
+
+data.who.age <-
+  data.who[!dim_age %in% c('15-19', '15-29', '30-49','全年龄段')&dim_sex%in%c('男性','女性'), ]
+
+data.who.age$dim_age <-
+  factor(
+    data.who.age$dim_age,
+    levels = c(
+      '15-24',
+      '25-34',
+      '35-44',
+      '45-54',
+      '55-64',
+      '65-74',
+      '75-84',
+      '85岁及以上'
+    )
+  )
+
+ggplot(
+  data = data.who.age,
+  mapping = aes(
+    x = dim_age,
+    y = value_numeric,
+    group = dim_sex,
+    color = dim_sex
+  )
+) +
+  geom_line()  +
+  geom_point() +
+  theme_classic() +
+  labs(
+    x = '年龄段',
+    y = '自杀率（1/10万）',
+    color = '性别',
+    title = '2019年各国按年龄段的自杀率变化趋势',
+    subtitle = '数据来源：世界卫生组织'
+  ) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  facet_wrap(vars(geo_name_short), ncol = 3) 
+
+```
+
+值得一提的是，按照中国卫生健康统计年鉴数据，在2019年85岁及以上人群中，城市男性自杀率是33.4，农村男性自杀率是73.5，那么男性自杀率最高不超过73.5，而城市女性自杀率是18.31，农村女性自杀率是45.08，那么女性自杀率最高不超过45.08。根据世界卫生组织的数据，在2019年85岁及以上人群中，中国男性自杀率是110.56，中国女性自杀率是50.18。这说明两个口径的数据是存在差异的。
+
+# 三
+
+在看这些自杀率数据的过程中，我也上网找了许多不同类型的材料来看，下面三个值得记录下来以后再看。
+
++ [中国自杀率陡降的30年：农村女性自杀率下降最快](https://www.thepaper.cn/newsDetail_forward_3894683)，2019年。
+
++ [中国青少年的自杀现状](https://www.chinacdc.cn/jkzt/mxfcrjbhsh/zs/gwzskkjyf/200509/W020130219372225041587.pdf)，费立鹏（Michael PHILLIPS），2005年9月。
+
++ [年轻中国农村女性的自杀未遂](https://www.chinacdc.cn/jkzt/mxfcrjbhsh/zs/gwzskkjyf/200509/P0200509074269287358699026666666666666666360.pdf) ，Veronica PEARSON，费立鹏（Michael PHILLIPS），何凤生，及惠郁，2005年9月。
+
+另有一个发现是，韩国的自杀率有点高得离谱，按世卫组织的数据看，韩国全年龄段的自杀率为28.5，单看85岁及以上人群，男性自杀率为289.3、女性自杀率为48。韩国低年龄段人群的自杀率也是中国的好几倍。
