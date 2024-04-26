@@ -43,6 +43,8 @@ title: About Me
 
 + [黄湘云](https://xiangyun.rbind.io/post/)：不嫌我菜的编辑大人，正走在成长为技术大神的路上
 
++ [黄国政](https://guozheng.rbind.io/)：人类学，真诚，温柔，会长大的小孩
+
 &emsp; &emsp;
     
 # 阿木狗主的自白 ❥(^_-)
