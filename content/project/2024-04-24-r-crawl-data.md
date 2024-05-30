@@ -12,9 +12,11 @@ draft: no
 
 <!--more-->
 
-本文主要参考了一篇统计之都主站的文章——[数据通灵术之爬虫技巧](https://cosx.org/2017/08/web-scrap-tools/)。所选案例为抓取中国政府网的政策文件名称和日期。
+本文主要参考了一篇统计之都主站的文章——[数据通灵术之爬虫技巧](https://cosx.org/2017/08/web-scrap-tools/)。所选案例为抓取中国政府网的政策文件名称和日期，以及文件的文本内容。
 
-# 静态网页抓取数据
+# 抓取政策文件的标题和日期
+
+## 静态网页抓取数据
 
 进入此网页<https://www.gov.cn/zhengce/zuixin/>，可以看到页面下方显示当前有91页内容，第91页最后一个政策的日期是2016年1月，说明这里只能查到2016年及以后公布的政策文件。试着选择不同页数，会发现网页地址有变化，页面上可选的1-91页对应的网址后缀是`home_0.htm`到`home_90.htm`。
 
@@ -64,7 +66,7 @@ colnames(all_data)[1] <- "name"
 data.table::fwrite(all_data, '~/gov_zhengce.csv')
 ```
 
-# 动态网页抓取数据
+## 动态网页抓取数据
 
 要想查看全部政策文件的名称和日期，需要进入国务院政策文件库，即<https://sousuo.www.gov.cn/zcwjk/policyRetrieval>。打开网页，单击搜索按钮，可以看到一共有国务院文件5956条、国务院部门文件11005条、国务院公报13968条。这可能是个动态网页，因为不管跳转到第几页，网页地址并没有改变。此时依然需要使用浏览器的“开发者模式”，来找到想要抓取的数据究竟隐藏在哪里。
 
@@ -96,7 +98,7 @@ https://sousuo.www.gov.cn/search-gov/data?t=zhengcelibrary_gb&q=&timetype=&minti
 
 如果一次只抓取1页默认的5条数据，那么抓取效率显然会很低，试着直接将以上链接地址复制粘贴到浏览器中打开，发现将地址中的 n 从默认的5修改为10时能正常打开，若将 n 修改为100甚至1000时也能正常打开，但是若改为5000就会报错。那么后续抓取数据时，可以考虑按1页1000条来操作。
 
-## 抓取一个页面
+### 抓取一个页面
 
 为了找到想要抓取的数据所在位置，先只抓取一个页面的内容。由于抓取到的数据全是用大括号括起来的 json 字符串，需要使用 jsonlite 包来帮助解析数据。
 
@@ -157,7 +159,7 @@ data_list$searchVO$catMap$bumenfile$listVO
 data_list$searchVO$catMap$gongbao$listVO
 ```
 
-## 批量抓取全部页面
+### 批量抓取全部页面
 
 按照每页抓取1000条数据，一共3万多条数据，设置抓取31次。
 
@@ -238,4 +240,92 @@ data$pubtime_date <- format(data$pubtime_date, tz = "Asia/Shanghai")
 
 # 导出保存
 data.table::fwrite(data,'~/gov_zhengce_all.csv')
+```
+
+# 抓取政策文件的文本内容
+
+前面批量抓取政策文件的标题时，也得到了每个文件的网页链接（url），据此可进一步将政策文件的文本内容也抓取下来。在批量抓取之前，需要先摸清楚文本嵌入网页源代码中的基本模式。分别打开几个国务院文件、国务院部门文件、国务院公报的页面，可以观察到前两者和后一者之间有些区别，应分成两种模式去操作。
+
++ 其一，前两者的网页链接较为相似都是<https://www.gov.cn/zhengce/zhengceku/>，而国务院公报的网页链接是<https://www.gov.cn/gongbao/>。
+
++ 其二，前两者的网页中，在文件的文本内容之前会有一些主题分类、发文机关之类的信息，而国务院公报的网页中没有这些信息。
+
+打开一个国务院公报的网页，如<https://www.gov.cn/gongbao/2024/issue_11286/202404/content_6945590.html>，再打开“开发者模式”，用元素选择器选择政策文本的一个自然段落，右键可以复制得到以下内容。观察得到所需抓取文本的位置特点是，都被包裹在设置为`data-index="-2"`的`<p>`元素之中。
+
+```
+<!-- 复制 outerHTML -->
+<p data-index="-2" style="text-indent: 2em; margin-top: 2px; margin-bottom: 2px;">为了贯彻落实《国务院关于取消和调整一批罚款事项的决定》（国发〔2023〕20号），进一步优化营商环境，工业和信息化部决定对2部规章部分条款予以修改。</p>
+
+<!-- 复制 XPath -->
+//*[@id="UCAP-CONTENT"]/div[1]/p[11]
+
+<!-- 复制完整的XPath -->
+/html/body/div[3]/div/div[2]/div/div[1]/div[1]/p[12]
+```
+
+打开一个国务院部门文件的网页，如<https://www.gov.cn/zhengce/zhengceku/202404/content_6947234.htm>，选一个段落，用同样的方式复制得到以下内容。观察得到所需抓取文本的位置特点是，都被包裹在设置`style="text-indent: 2em;"`的`<p>`元素之中。需要注意的是`style=" "`中表示设置样式，而样式细节通常可以设置许多，后面若用这点来匹配时应该更灵活一些。
+
+```
+<!-- 复制 outerHTML -->
+<p style="text-indent: 2em;">为深入落实中央经济工作会议精神和党中央、国务院决策部署，进一步发挥海关信用管理职能作用，持续提升高级认证企业（AEO企业）获得感，更好服务外贸质升量稳，海关总署决定在原有管理措施基础上，向高级认证企业实施以下便利措施：</p>
+
+<!-- 复制（完整的） XPath -->
+/html/body/div[3]/div[2]/div[4]/div/p[2]
+```
+
+## 使用 xml2 包批量提取
+
+翻查 xml2 包的[官方文档](https://xml2.r-lib.org/articles/modification.html)，摘录一段如下，发现原来可以用`xml_text()`函数直接把网页源代码中的文本提取出来。
+
+```r
+x <- read_xml("<p>This is some <b>text</b>. This is more.</p>")
+xml_text(x)
+#> [1] "This is some text. This is more."
+```
+
+当然，若要仅提取文本，而不是把每个 XML（HTML）元素中包含的内容都提取出来，应该要先按之前的观察筛选出仅包含文本的`<p>`元素，即国务院公报文件按`data-index="-2"`的模式匹配，其余按`style="text-indent: 2em;.*"`（`.*`代表匹配任意内容）的模式匹配。
+
+```r
+library(xml2)
+
+# 获取国务院公报的文本
+get_content1 <- function(url) {
+  html_lines <- readLines(url)
+  content_lines <- grep('data-index="-2"', html_lines, value = T)
+  # 当 content_lines 为空时，跳过
+  if (length(content_lines) == 0) { 
+    return("") 
+  }
+  
+  dom <- read_xml(content_lines)
+  content <- xml_text(dom)
+  return(content)
+}
+
+# 获取国务院文件、国务院部门文件的文本
+get_content2 <- function(url) {
+  html_lines <- readLines(url)
+  content_lines <-
+    grep('style="text-indent: 2em;.*"', html_lines, value = T)
+    
+  # 当 content_lines 为空时，跳过
+  if (length(content_lines) == 0) { 
+    return("") 
+  }
+  
+  # 这里不知为何content_lines会是'chr [1:2]'，只能取一个
+  # 否则会报错 Error in `read_xml()`:! `x` must be a single string, not a character vector.
+  dom <- read_xml(content_lines[1])
+  content <- xml_text(dom)
+  return(content)
+}
+
+# 使用 lapply 函数批量抓取每个 url 对应网页的文本
+data1 <-
+  data[label == '国务院公报'][, ':='(content = unlist(lapply(url, get_content1)))]
+
+data2 <-
+  data[label %in% c('国务院文件', '国务院部门文件')][, ':='(content = unlist(lapply(url, get_content2)))]
+  
+data.new <- rbind(data1, data2)  
 ```
