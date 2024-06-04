@@ -1,5 +1,5 @@
 ---
-title: 使用基础 R 抓取网页数据
+title: 使用 R 抓取网页数据--基于国务院政策文件库
 author: yuanfan
 date: 2024-04-24T22:16:16+0800
 slug: r crawl data
@@ -14,9 +14,9 @@ draft: no
 
 本文主要参考了一篇统计之都主站的文章——[数据通灵术之爬虫技巧](https://cosx.org/2017/08/web-scrap-tools/)。所选案例为抓取中国政府网的政策文件名称和日期，以及文件的文本内容。
 
-# 抓取政策文件的标题和日期
+# 一、抓取政策文件的标题和日期
 
-## 静态网页抓取数据
+## 1.1. 静态网页抓取数据
 
 进入此网页<https://www.gov.cn/zhengce/zuixin/>，可以看到页面下方显示当前有91页内容，第91页最后一个政策的日期是2016年1月，说明这里只能查到2016年及以后公布的政策文件。试着选择不同页数，会发现网页地址有变化，页面上可选的1-91页对应的网址后缀是`home_0.htm`到`home_90.htm`。
 
@@ -66,7 +66,7 @@ colnames(all_data)[1] <- "name"
 data.table::fwrite(all_data, '~/gov_zhengce.csv')
 ```
 
-## 动态网页抓取数据
+## 1.2. 动态网页抓取数据
 
 要想查看全部政策文件的名称和日期，需要进入国务院政策文件库，即<https://sousuo.www.gov.cn/zcwjk/policyRetrieval>。打开网页，单击搜索按钮，可以看到一共有国务院文件5956条、国务院部门文件11005条、国务院公报13968条。这可能是个动态网页，因为不管跳转到第几页，网页地址并没有改变。此时依然需要使用浏览器的“开发者模式”，来找到想要抓取的数据究竟隐藏在哪里。
 
@@ -98,7 +98,7 @@ https://sousuo.www.gov.cn/search-gov/data?t=zhengcelibrary_gb&q=&timetype=&minti
 
 如果一次只抓取1页默认的5条数据，那么抓取效率显然会很低，试着直接将以上链接地址复制粘贴到浏览器中打开，发现将地址中的 n 从默认的5修改为10时能正常打开，若将 n 修改为100甚至1000时也能正常打开，但是若改为5000就会报错。那么后续抓取数据时，可以考虑按1页1000条来操作。
 
-### 抓取一个页面
+### 1.2.1. 抓取一个页面
 
 为了找到想要抓取的数据所在位置，先只抓取一个页面的内容。由于抓取到的数据全是用大括号括起来的 json 字符串，需要使用 jsonlite 包来帮助解析数据。
 
@@ -159,7 +159,7 @@ data_list$searchVO$catMap$bumenfile$listVO
 data_list$searchVO$catMap$gongbao$listVO
 ```
 
-### 批量抓取全部页面
+### 1.2.2. 批量抓取全部页面
 
 按照每页抓取1000条数据，一共3万多条数据，设置抓取31次。
 
@@ -242,40 +242,87 @@ data$pubtime_date <- format(data$pubtime_date, tz = "Asia/Shanghai")
 data.table::fwrite(data,'~/gov_zhengce_all.csv')
 ```
 
-# 抓取政策文件的文本内容
+# 二、抓取政策文件的文本内容
 
-前面批量抓取政策文件的标题时，也得到了每个文件的网页链接（url），据此可进一步将政策文件的文本内容也抓取下来。在批量抓取之前，需要先摸清楚文本嵌入网页源代码中的基本模式。分别打开几个国务院文件、国务院部门文件、国务院公报的页面，可以观察到前两者和后一者之间有些区别，应分成两种模式去操作。
+前面批量抓取政策文件的标题时，也得到了每个文件的网页链接（url），据此可进一步将政策文件的文本内容也抓取下来。一切正式开始之前，需要先摸清楚文本嵌入网页源代码中的基本模式。
 
-+ 其一，前两者的网页链接较为相似都是<https://www.gov.cn/zhengce/zhengceku/>，而国务院公报的网页链接是<https://www.gov.cn/gongbao/>。
+在浏览器中分别打开几个国务院文件、国务院部门文件、国务院公报的页面，可以观察到前两者和后一者之间有些区别：其一，前两者的网页链接（url）较为相似都是<https://www.gov.cn/zhengce/zhengceku/>，而国务院公报的网页链接（url）是<https://www.gov.cn/gongbao/>；其二，前两者的网页中，在文件的文本内容之前会有一些主题分类、发文机关之类的信息，而国务院公报的网页中没有这些信息。这说明，整个政策文件库中的文件不仅横跨多个年份，并且可能需要用不同的模式去匹配和抓取想要的文本内容。
 
-+ 其二，前两者的网页中，在文件的文本内容之前会有一些主题分类、发文机关之类的信息，而国务院公报的网页中没有这些信息。
+抓取网页文本一共只有三个步骤：
 
-打开一个国务院公报的网页，如<https://www.gov.cn/gongbao/2024/issue_11286/202404/content_6945590.html>，再打开“开发者模式”，用元素选择器选择政策文本的一个自然段落，右键可以复制得到以下内容。观察得到所需抓取文本的位置特点是，都被包裹在设置为`data-index="-2"`的`<p>`元素之中。
+1. 读取网页源代码，其中包含 HTML 元素、CSS 样式、网页文本。
+2. 找到想要提取的文本所在的位置。
+3. 提取文本。
 
-```
+其中第2步最关键，使用浏览器打开网页后，再打开“开发者模式”，用元素选择器选择网页文本中的一个自然段落，右键“复制”可以分别“复制 outerHTML”和“复制 XPath”。以下是三个不同的网页链接（url），分别复制得到的内容，从中可以总结出两个找到文本位置的方法。
+
++ 第一种，根据 CSS 样式匹配。由于文本被包裹在`<p>...</p>`之间，而`<p>`是一种 HTML 元素，表示一个文本段落，通常可以对每个段落设置不同的 CSS 样式。观察政策文件的文本段落样式，发现通常会设置`text-indent: 2em;`，即首行缩进。那么可以使用正则表达式匹配`style=""`中包含`text-indent: 2em;`，即按`style=".*text-indent: 2em;.*"`（.*代表匹配任意内容）的模式匹配所需文本。
+
++ 第二种，根据 XPath 匹配。比如一个文本段落的 XPath 是`//*[@id="UCAP-CONTENT"]/div[1]/p[12]`，那么查找整个文件所有文本段落应该是更上一级路径，即 XPath 应该是`//*[@id="UCAP-CONTENT"]/div[1]`。下面有三种不同的 XPath，分别是`//*[@id="UCAP-CONTENT"]/div[1]`、`//*[@id="UCAP-CONTENT"]`、`//*[@id="UCAP-CONTENT"]/div`。
+
+```html
+<!-- url:https://www.gov.cn/gongbao/2024/issue_11286/202404/content_6945590.html --->
 <!-- 复制 outerHTML -->
 <p data-index="-2" style="text-indent: 2em; margin-top: 2px; margin-bottom: 2px;">为了贯彻落实《国务院关于取消和调整一批罚款事项的决定》（国发〔2023〕20号），进一步优化营商环境，工业和信息化部决定对2部规章部分条款予以修改。</p>
 
 <!-- 复制 XPath -->
-//*[@id="UCAP-CONTENT"]/div[1]/p[11]
-
-<!-- 复制完整的XPath -->
-/html/body/div[3]/div/div[2]/div/div[1]/div[1]/p[12]
+//*[@id="UCAP-CONTENT"]/div[1]/p[12]
 ```
 
-打开一个国务院部门文件的网页，如<https://www.gov.cn/zhengce/zhengceku/202404/content_6947234.htm>，选一个段落，用同样的方式复制得到以下内容。观察得到所需抓取文本的位置特点是，都被包裹在设置`style="text-indent: 2em;"`的`<p>`元素之中。需要注意的是`style=" "`中表示设置样式，而样式细节通常可以设置许多，后面若用这点来匹配时应该更灵活一些。
+```html
+<!-- url:https://www.gov.cn/gongbao/content/2023/content_5754544.htm --->
+<!-- 复制 outerHTML -->
+<p align="" style="margin-top: 0px; margin-bottom: 0px; text-indent: 2em; text-align: justify; font-family: 宋体;">《北京证券交易所向不特定合格投资者公开发行股票注册管理办法》已经2023年2月17日中国证券监督管理委员会2023年第2次委务会议审议通过，现予公布，自公布之日起施行。</p>
 
+<!-- 复制 XPath -->
+//*[@id="UCAP-CONTENT"]/p[5]
 ```
+
+```html
+<!-- url:https://www.gov.cn/zhengce/zhengceku/202404/content_6947234.htm --->
 <!-- 复制 outerHTML -->
 <p style="text-indent: 2em;">为深入落实中央经济工作会议精神和党中央、国务院决策部署，进一步发挥海关信用管理职能作用，持续提升高级认证企业（AEO企业）获得感，更好服务外贸质升量稳，海关总署决定在原有管理措施基础上，向高级认证企业实施以下便利措施：</p>
 
-<!-- 复制（完整的） XPath -->
-/html/body/div[3]/div[2]/div[4]/div/p[2]
+<!-- 复制 XPath -->
+//*[@id="UCAP-CONTENT"]/div/p[2]
 ```
 
-## 使用 xml2 包批量提取
+## 2.1. 使用基础 R 抓取网页文本
 
-翻查 xml2 包的[官方文档](https://xml2.r-lib.org/articles/modification.html)，摘录一段如下，发现原来可以用`xml_text()`函数直接把网页源代码中的文本提取出来。
+使用基础 R 函数来抓取网页文本时，通常要使用正则表达式来提取文本。对于跨年份跨类型的政策文件库来说，有时候文本就被放在`<p>`元素中，有时候却又被放在`<p>`元素中包裹的`<span>`元素中。如果要写一个正则表达式，可以把几万个网页中所有文本提取出来，那么会不得不写成一种超级冗长的模式。
+
+```r
+# url1
+url <- 'https://www.gov.cn/zhengce/zhengceku/202404/content_6947234.htm' 
+# url2: <span> 中有文本
+url <- 'https://www.gov.cn/gongbao/2023/issue_10826/202311/content_6915819.html' 
+# url3: <a> 中有文本
+url <- 'https://www.gov.cn/zhengce/zhengceku/202405/content_6948904.htm' 
+# url4
+url <- 'https://www.gov.cn/gongbao/content/2023/content_5754544.htm' 
+
+# 1. 读取网页源代码
+html_lines <- readLines(url)
+
+# 2. 匹配文本位置
+content_lines <- grep('data-index="-2"|style=".*text-indent: 2em;.*"',
+                      html_lines,
+                      value = T)
+
+# 3. 使用正则表达式提取文本
+# 适用于 url1-3
+content <- gsub('<p[^>]*>(.*?)</p>', '\\1', content_lines[1], perl = T)
+# 适用于 url4
+content <- gsub('.*>(.*?)<.*', '\\1', content_lines, perl = T)
+
+# 将所有段落拼接为一个长字符串
+content <- paste(content,collapse = " ")
+content
+```
+
+## 2.2. 使用 xml2 包抓取网页文本
+
+翻查 xml2 包的[官方文档](https://xml2.r-lib.org/articles/modification.html)，原来可以用`xml_text()`函数直接把 HTML/XML 中的文本提取出来，不需要再琢磨写复杂的正则表达式。
 
 ```r
 x <- read_xml("<p>This is some <b>text</b>. This is more.</p>")
@@ -283,49 +330,128 @@ xml_text(x)
 #> [1] "This is some text. This is more."
 ```
 
-当然，若要仅提取文本，而不是把每个 XML（HTML）元素中包含的内容都提取出来，应该要先按之前的观察筛选出仅包含文本的`<p>`元素，即国务院公报文件按`data-index="-2"`的模式匹配，其余按`style="text-indent: 2em;.*"`（`.*`代表匹配任意内容）的模式匹配。
-
 ```r
 library(xml2)
 
-# 获取国务院公报的文本
-get_content1 <- function(url) {
-  html_lines <- readLines(url)
-  content_lines <- grep('data-index="-2"', html_lines, value = T)
-  # 当 content_lines 为空时，跳过
-  if (length(content_lines) == 0) { 
-    return("") 
+# 1. 读取网页源代码
+html_lines <- read_html(url)
+
+# 2. 使用 xml_find_all 函数查找文本位置
+# 用 CSS 样式来查找
+content_lines <- xml_find_all(
+  html_lines,
+  '//p[@data-index="-2"] | //p[contains(@style, "text-indent: 2em")] | //span[contains(@style, "text-indent:")]'
+)
+# 用 Xpath 来查找
+# content_lines <- xml_find_all(html_lines, '//*[@id="UCAP-CONTENT"]/div[1] | //*[@id="UCAP-CONTENT"]|//*[@id="UCAP-CONTENT"]/div')
+
+# 3. 使用 xml_text 提取文本段落
+content <- xml_text(content_lines)
+
+# 将所有段落拼接为一个长字符串
+content <- paste(unique(gsub("\n| ","",content)), collapse = " ")
+```
+
+## 2.3. 批量提取网页文本
+
+批量提取往往不会一次就成功，需要不断去核查网页链接（url）提取出来的文本为空的原因，大多是因为在查找那一步总结出来的模式还不齐全。需要注意的是用 CSS 样式和用 XPath 去查找文本是有区别的，后者往往能查找到更多内容，但不一定都是想要提取出来的。
+
+```r
+library(data.table)
+library(xml2)
+
+data <- fread('~/gov_zhengce_all.csv')
+
+# 把根据 URL 提取网页文本封装成函数
+get_content <- function(url) {
+  html_lines <- read_html(url)
+  content_lines <- xml_find_all(
+    html_lines,
+    '//p[@data-index="-2"] | //p[contains(@style, "text-indent: 2em")] | //span[contains(@style, "text-indent:")]'
+  )
+  # 检查content_lines是否为空
+  if (length(content_lines) == 0) {
+    return("")  # 返回一个空字符串
   }
-  
-  dom <- read_xml(content_lines)
-  content <- xml_text(dom)
+  content <- xml_text(content_lines)
+  content <- paste(unique(gsub("\n| ", "", content)), collapse = " ")
   return(content)
 }
 
-# 获取国务院文件、国务院部门文件的文本
-get_content2 <- function(url) {
-  html_lines <- readLines(url)
-  content_lines <-
-    grep('style="text-indent: 2em;.*"', html_lines, value = T)
-    
-  # 当 content_lines 为空时，跳过
-  if (length(content_lines) == 0) { 
-    return("") 
-  }
+batch_size <- 1000 # 指定每批次数量
+
+num_batches <- ceiling(nrow(data) / batch_size)  # 计算批次数量
+
+for (i in 1:num_batches) {
+  start_row <- (i - 1) * batch_size + 1
+  end_row <- min(i * batch_size, nrow(data))
   
-  # 这里不知为何content_lines会是'chr [1:2]'，只能取一个
-  # 否则会报错 Error in `read_xml()`:! `x` must be a single string, not a character vector.
-  dom <- read_xml(content_lines[1])
-  content <- xml_text(dom)
-  return(content)
+  data[start_row:end_row, ':='(content = unlist(lapply(url, get_content)))]
+  Sys.sleep(180)  # 暂停3分钟
 }
 
-# 使用 lapply 函数批量抓取每个 url 对应网页的文本
-data1 <-
-  data[label == '国务院公报'][, ':='(content = unlist(lapply(url, get_content1)))]
+fwrite(data, '~/gov_zhengce_content.csv')
+```
 
-data2 <-
-  data[label %in% c('国务院文件', '国务院部门文件')][, ':='(content = unlist(lapply(url, get_content2)))]
-  
-data.new <- rbind(data1, data2)  
+# 三、批量下载国务院公报1954-1999
+
+政策文件库里只有1999年以后的电子版，[历史公报](https://www.gov.cn/zhengce/gongbao/guowuyuan1954_1999/)只上传了 PDF 文件。
+
+```r
+# 加载httr包
+library(httr)
+
+# 定义保存PDF的本地路径
+path <- "~/国务院公报/"
+
+# 定义年份和编号
+years <- c(1954:1966,1980:1999)
+nums <- list(
+  c(195401:195403),
+  c(195501:195523),
+  c(195601:195647),
+  c(195701:195754),
+  c(195801:195837),
+  c(195901:195930),
+  c(196001:196036),
+  c(196101:196119),
+  c(196201:196215),
+  c(196301:196324),
+  c(196401:196418),
+  c(196501:196516),
+  c(196601:196605),
+  c(198001:198020),
+  c(198101:198127),
+  c(198201:198221),
+  c(198301:198326),
+  c(198401:198431),
+  c(198501:198536),
+  c(198601:198635),
+  c(198701:198730),
+  c(198801:198828),
+  c(198901:198928), #198909
+  c(199001:199030),
+  c(199101:199146),
+  c(199201:199233),
+  c(199301:199331),
+  c(199401:199432),
+  c(199501:199533),
+  c(199601:199638),
+  c(199701:199740),
+  c(199801:199835),
+  c(199901:199936)
+)
+
+# 循环下载文件
+for (j in 1:length(years)) {
+  for (i in nums[[j]]) {
+    url <- paste0("https://www.gov.cn/gongbao/shuju/",
+                  years[j],
+                  "/gwyb",
+                  i,
+                  ".pdf")
+    destfile <- paste0(path, "gwyb", i, ".pdf")
+    GET(url, write_disk(destfile, overwrite = TRUE))
+  }
+}
 ```
