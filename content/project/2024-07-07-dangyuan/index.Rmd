@@ -1,0 +1,231 @@
+---
+title: 看一看中国共产党党员组成
+author: yuanfan
+date: 2024-07-07T17:11:14+0800
+slug: dangyuan
+categories:
+  - R
+tags:
+  - R
+draft: no
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,message = FALSE)
+```
+
+<!--more-->
+
+中共中央组织部网站上公开了2012年至今的[中国共产党党内统计公报](https://news.12371.cn/dzybmbdj/zzb/dntjgb/)，截止2023年底党员总数一共有9918.5万人，其中女党员共有3018.5万人，占比33.5%。
+
+```{r,echo=TRUE}
+library(readxl)
+library(data.table)
+library(ggplot2)
+
+# 党员
+data1 <- read_xlsx('data/中国共产党党内统计公报.xlsx', sheet = 1)
+# 党组织
+data2 <- read_xlsx('data/中国共产党党内统计公报.xlsx', sheet = 2)
+
+setDT(data1)
+setDT(data2)
+```
+
+计算出每年发展党员数和净增党员数，绘制图形如下，可以看到有两个显著不同的年份，一是2021年发展党员数远多于其他年份，二是2017年净增党员数远少于其他年份。
+ 
+```{r}
+ggplot(data = data1[, ':='(value_add = data1$`中国共产党党员总数` - shift(data1$`中国共产党党员总数`, type = 'lead'))], mapping = aes(x = `年份`)) +
+  geom_col(
+    mapping = aes(y = value_add, fill = '当年净增党员'),
+    just = -0.1,  width = 0.3) +
+  geom_col(
+    mapping = aes(y = `当年发展党员`, fill = '当年发展党员'),
+    just = 1.1,  width = 0.3) +
+  theme_classic() +
+  scale_x_continuous(breaks = data1$年份, labels = data1$年份) +
+  labs(
+    title = '2012-2023年发展党员与净增党员',
+    caption = '数据来源：中共中央组织部网站',
+    y = '人数（万个）',
+    fill = '指标')
+```
+
+# 性别
+
+近十年来，发展党员中女党员的占比不超过50%。
+
+```{r}
+ggplot(data = data1[, ':='(prob1 = round(`当年发展女党员` / `当年发展党员`, 2))],
+       mapping = aes(x = `年份`, y = prob1, fill = '当年发展女党员占比')) +
+  geom_bar(stat = 'identity') +
+  ylim(c(0, 1)) +
+  theme_classic() +
+  geom_text(aes(label = prob1), vjust = -0.5) +
+  scale_fill_discrete(guide = FALSE) +
+  scale_x_continuous(breaks = data1$年份, labels = data1$年份) +
+  labs(title = '2012-2023年当年发展女党员占比',
+       caption = '数据来源：中共中央组织部网站',
+       y = '') 
+```
+
+# 年龄
+
+近十年来，发展党员中35岁及以下党员的占比稳定超过80%。
+
+```{r}
+ggplot(data = data1[, ':='(prob1 = round(`当年发展35岁及以下党员` / `当年发展党员`, 2))],
+       mapping = aes(x = `年份`, y = prob1, fill = '当年发展35岁及以下党员占比')) +
+  geom_bar(stat = 'identity') +
+  ylim(c(0, 1)) +
+  theme_classic() +
+  geom_text(aes(label = prob1), vjust = -0.5) +
+  scale_fill_discrete(guide = FALSE) +
+  scale_x_continuous(breaks = data1$年份, labels = data1$年份) +
+  labs(title = '2012-2023年当年发展35岁及以下党员占比',
+       caption = '数据来源：中共中央组织部网站',
+       y = '') 
+```
+
+# 学历
+
+近十年来，发展党员中具有大专及以上学历党员占比逐年上升，到2023年此比例超过50%。
+
+```{r}
+ggplot(data = data1[, ':='(prob1 = round(`当年发展具有大专及以上学历党员` / `当年发展党员`, 2))],
+       mapping = aes(x = `年份`, y = prob1, fill = '当年发展具有大专及以上学历党员占比')) +
+  geom_bar(stat = 'identity') +
+  ylim(c(0, 1)) +
+  theme_classic() +
+  geom_text(aes(label = prob1), vjust = -0.5) +
+  scale_fill_discrete(guide = FALSE) +
+  scale_x_continuous(breaks = data1$年份, labels = data1$年份) +
+  labs(title = '2012-2023年当年发展具有大专及以上学历党员占比',
+       caption = '数据来源：中共中央组织部网站',
+       y = '') 
+```
+
+# 职业
+
+从2023年党员职业的分布来看，企事业单位、社会组织占比最高为28%，其次是农牧渔民占比为26%。而在当年发展党员中，学生占比最高为38%。
+
+```{r}
+melt1 <- melt(
+  data1[, ':='(
+    prob1 = round(`工人（工勤技能人员）` / `中国共产党党员总数`, 2),
+    prob2 = round(`农牧渔民` / `中国共产党党员总数`, 2),
+    prob3 = round((`企事业单位、社会组织专业技术人员` + `企事业单位、社会组织管理人员`) / `中国共产党党员总数`, 2),
+    #prob4 = round(`企事业单位、社会组织管理人员` / `中国共产党党员总数`, 2),
+    prob5 = round(`党政机关工作人员` / `中国共产党党员总数`, 2),
+    prob6 = round(`学生` / `中国共产党党员总数`, 2),
+    prob7 = round(`其他职业人员` / `中国共产党党员总数`, 2),
+    prob8 = round(`离退休人员` / `中国共产党党员总数`, 2)
+  )],
+  id.vars = '年份',
+  measure.vars = c('prob1',
+                   'prob2',
+                   'prob3',
+                   'prob5',
+                   'prob6',
+                   'prob7',
+                   'prob8'),
+  variable.name = 'name',
+  value.name = 'value1'
+)
+
+melt2 <- melt(
+  data1[, ':='(
+    prob1 = round(`当年发展工人（工勤技能人员）` / `当年发展党员`, 2),
+    prob2 = round(`当年发展农牧渔民` / `当年发展党员`, 2),
+    prob3 = round((`当年发展企事业单位、社会组织专业技术人员` + `当年发展企事业单位、社会组织管理人员`)  / `当年发展党员`, 2),
+    # prob4 = round(`当年发展企事业单位、社会组织管理人员` / `当年发展党员`, 2),
+    prob5 = round(`当年发展党政机关工作人员` / `当年发展党员`, 2),
+    prob6 = round(`当年发展学生` / `当年发展党员`, 2),
+    prob7 = round(`当年发展其他职业人员` / `当年发展党员`, 2),
+    prob8 = round(0 / `当年发展党员`, 2)
+  )],
+  id.vars = '年份',
+  measure.vars = c('prob1',
+                   'prob2',
+                   'prob3',
+                   'prob5',
+                   'prob6',
+                   'prob7',
+                   'prob8'),
+  variable.name = 'name',
+  value.name = 'value2'
+)
+
+data <- melt1[melt2, on = .(`年份`, name)]
+
+ggplot(data[`年份` == 2023] , mapping = aes(x = name)) +
+  geom_col(
+    mapping = aes(y = value1, fill = '当年党员'),
+    just = -0.1,
+    width = 0.3
+  ) +
+  geom_col(
+    mapping = aes(y = value2, fill = '当年发展党员'),
+    just = 1.1,
+    width = 0.3
+  ) +
+  theme_classic() +
+  scale_x_discrete(labels = c('工人',
+                              '农牧渔民',
+                              '企事业单位\n社会组织',
+                              '党政机关',
+                              '学生',
+                              '其他职业',
+                              '离退休')) +
+  labs(
+    title = '2023年党员各职业占比--当年党员&当年发展党员',
+    caption = '数据来源：中共中央组织部网站',
+    x = '',
+    y = '占比',
+    fill = '类别'
+  )
+```
+
+不过若是计算2023年各职业当年净增党员数，数据所呈现的表象又有所不同。
+
+|职业类别|2023年净增党员数（万个）|占比|
+|:----:|:----:|:----:|
+|农牧渔民|4.3|3.7%|
+|工人|-0.6|-0.5%|
+|企事业单位、社会组织|48|41.9%|
+|党政机关|-13.9|-12.2%|
+|学生|-13|-11.4%|
+|其他职业|11.9|10.4%|
+|离退休人员|77.7|67.9%|
+
+# 组织
+
+随着国内城市化进程不断加速，各行政级别建立的党组织数量也随之变化。从2013年到2023年的这十年，乡镇级别的党组织减少了3352个，行政村级别的党组织减少了95016个，而城市街道级别的党组织增加了1677个，城市社区级别的党组织增加了28996个。
+
+```{r}
+dcast(
+  melt(
+    data2[`年份` %in% c(2013, 2023), 1:11],
+    id.vars = '年份',
+    measure.vars = c(
+      '党的各级地方委员会' ,
+      '省（区、市）委' ,
+      '市（州）委'  ,
+      '县（市、区、旗）委'   ,
+      '城市街道' ,
+      '乡镇'   ,
+      '社区（居委会）'   ,
+      '行政村'   ,
+      '机关基层党组织（万个）'    ,
+      '事业单位基层党组织（万个）'
+    ),
+    variable.name = '级别',
+    value.name = '数量'
+  ),
+  `级别` ~ `年份`,
+  value.var = c('数量')
+)
+```
