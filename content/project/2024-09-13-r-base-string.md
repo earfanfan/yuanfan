@@ -51,7 +51,7 @@ R 中常见字符除了数字、英文字母、中文以外，还有一些具有
 + `\u2764`是编程语言中的 Unicode 转义序列，代表的字符就是❤，因此两者都是1个字符、3个字节。
 
 
-```r
+``` r
 my_vector <- c("汉字",
                "Ear1",
                NA,
@@ -85,7 +85,7 @@ nchar(my_vector, type = 'bytes')
 `nchar()`函数默认所需输入的是字符向量，如果输入的是其他数据类型，会自动用`as.character()`函数进行强制转换，而不会报错。如下可知，缺失值 NA 若作为列表来计算字符数，会先强制转换成字符串`"NA"`，从而得到字符数为2。
 
 
-```r
+``` r
 nchar(list(NA))
 ## [1] 2
 as.character(list(NA))
@@ -99,7 +99,7 @@ nchar(as.character(list(NA)))
 下面有两个极为相似的字符串，字符数一致但并不相等。如果进一步比较两个字符串的字节数，发现也不一致。
 
 
-```r
+``` r
 str1 <- "财政部 卫生健康委"
 str2 <- "财政部 卫生健康委"
 
@@ -122,7 +122,7 @@ nchar(str2, type = 'bytes')
 如果将这两个字符串分别转换成 raw 格式，即存储的原始16进制字节序列，再进一步比较转换后存在的差异，可以看到前者独有“e2 80 82”（代表半个空格，EN SPACE），后者独有“20”（代表一个普通空格，SPACE）。
 
 
-```r
+``` r
 raw1 <- charToRaw(str1)
 raw2 <- charToRaw(str2)
 print(raw1)
@@ -143,7 +143,7 @@ setdiff(as.character(raw2), as.character(raw1))
 如果再把这两个16进制字节序列转换为字符串，用普通的眼睛看也还是很难看出区别。
 
 
-```r
+``` r
 rawToChar(as.raw(c(0xe2, 0x80, 0x82)))
 ## [1] " "
 rawToChar(as.raw(c(0x20)))
@@ -157,7 +157,7 @@ rawToChar(as.raw(c(0x20)))
 另外 `cat()`函数也可以用来拼接字符串，只是结果会直接输出到控制台（Console），并且不能被赋值给 R 中的变量。
 
 
-```r
+``` r
 paste('春江', '花月夜', "❤")
 ## [1] "春江 花月夜 ❤"
 paste('春江', '花月夜', "❤", sep = "|")
@@ -174,7 +174,7 @@ cat('春江', '花月夜', "❤")
 下面的例子是按行分组拼接字符串，使用`paste()`函数把向量中多个元素拼接成一个长字符串，这里就需要通过 collapse 参数来设置分隔符。由于 collapse 参数的默认值是 NULL，所以如果不设置这个参数，就不会把向量中的元素拼接起来。
 
 
-```r
+``` r
 data <- data.frame(
   id = c(1:2),
   col1 = c('春江', '海上'),
@@ -196,7 +196,7 @@ apply(X = data[, 2:4], MARGIN = 1, FUN = paste, collapse = "")
 通常使用`strsplit()`函数来分割字符串，其中用 split 参数来设置需要匹配的分割符号。如下所示，若要精确匹配“|”符号后分割字符串，在参数设置上需要增加`fixed = TRUE`，或者改写作`split = '[|]'`、`split = '\\|'`。
 
 
-```r
+``` r
 strsplit('潮水|流水', split = ',')
 ## [[1]]
 ## [1] "潮水|流水"
@@ -218,7 +218,7 @@ strsplit('潮水|流水', split = '\\|')
 split 参数支持使用正则表达时，比如输入多个不同的分割符号，但在复杂的情况下容易产生空字符串。
 
 
-```r
+``` r
 strsplit('春江 潮水*连海平*|海上', split = '[ |*]')
 ## [[1]]
 ## [1] "春江"   "潮水"   "连海平" ""       "海上"
@@ -227,7 +227,7 @@ strsplit('春江 潮水*连海平*|海上', split = '[ |*]')
 如果所需设置的分割符号在字符串的开头或者末尾，那么精确匹配并分割后，在开头的情况会多一个空字符串，而结尾不会。
 
 
-```r
+``` r
 strsplit(c('忽闻海上有仙山', '山在虚无缥缈间'), split = '[山]')
 ## [[1]]
 ## [1] "忽闻海上有仙"
@@ -242,7 +242,7 @@ unlist(strsplit(c('忽闻海上有仙山', '山在虚无缥缈间'), split = '[�
 使用`strsplit()`函数得到的结果会是一个列表，通常可以再加上`unlist()`函数转换成向量。
 
 
-```r
+``` r
 data <- data.frame(id = c(1:2), value = c('江水|为竭', '海枯|石烂'))
 
 unlist(lapply(data[, 2], function(x)
@@ -257,7 +257,7 @@ unlist(lapply(data[, 2], function(x)
 `substr()`和`substring()`都能实现截取字符串的功能，在截取单个字符串的情况下，如果起点位置和终点位置分别只输入一个数字，那么两个函数会输出一样的结果，且后者可以只需输入起点位置、默认截取到最长的终点。
 
 
-```r
+``` r
 substr('阿木是条狗', start = 4, stop = 5)
 ## [1] "条狗"
 substring('阿木是条狗', first = 4, last = 5)
@@ -269,7 +269,7 @@ substring('阿木是条狗', first = 4)
 在单个字符串的情况下，`substr()`不管起点和终点输入多少个数字，只分别按第一个数字输出结果，而`substring()`允许输入多个不同的起点终点位置。
 
 
-```r
+``` r
 substr('阿木是条狗', 1:4, 2:5)
 ## [1] "阿木"
 
@@ -287,7 +287,7 @@ substring('阿木是条狗', 1, 2:5)
 `strtrim()`函数按照固定宽度从第一个字符开始截取字符串。在截取英文字符串的情况下，指定宽度为数字几，就会截取多少个字符。在截取中文字符串的情况下，一个中文字符占2个宽度，不足2个宽度时输出结果为空字符串。
 
 
-```r
+``` r
 strtrim('amu is a dog', width = 3)
 ## [1] "amu"
 strtrim(rep('阿木是条狗', 10), c(1:10))
@@ -308,7 +308,7 @@ strtrim(rep('阿木是条狗', 10), c(1:10))
 除了以上符号，还可以用`\\`加上其他符号来匹配并去除。
 
 
-```r
+``` r
 my_vector <- c('
   
     amu is a dog   ','中文 amu is a dog * ')
@@ -331,7 +331,7 @@ trimws(my_vector, whitespace = "[\\h\\v\\*\\中文]")
 + `casefold()`：默认大写转小写，若设置`upper = TRUE`则为小写转大写。
 
 
-```r
+``` r
 tolower('AMU is A dog')
 ## [1] "amu is a dog"
 toupper('amu is a dog')
@@ -351,7 +351,7 @@ casefold('AMU is A dog', upper = TRUE)
 3. 匹配的参数：仅能指定固定的一个或多个字符，不支持正则表达式；指定多个字符时，也相当于一对一的替换。
 
 
-```r
+``` r
 chartr(old = "狗", new = "猫", x = '阿木是条狗')
 ## [1] "阿木是条猫"
 chartr(old = "狗", new = "猫咪", x = '阿木是条狗')
@@ -376,7 +376,7 @@ chartr('*', ' ', x = c('pig*', 'dog*'))
 |支持不区分大小写|×|✓|✓|
 
 
-```r
+``` r
 my_vector <- c('>amu<;>money<', 'MuMu')
 chartr('M', '木', my_vector)
 ## [1] ">amu<;>money<" "木u木u"
@@ -394,7 +394,7 @@ gsub(pattern = '[><]', replacement = "", my_vector)
 `replace()`函数可用来替换字符向量中的元素，但需要指定所替换的元素在向量中的索引（PS.在 sql 语言中用`replace()`函数来计算字符串）。
 
 
-```r
+``` r
 my_vector <- c('张三', '李四', '王七', '赵六', '阿木')
 replace(my_vector, '王七', '王五')
 ##                                      王七 
@@ -453,7 +453,7 @@ R base 中支持使用正则表达式来匹配字符串的函数有`grep/agrep/g
 在下面的例子中，`pattern = '[>.<]'`表示匹配方括号中`>`、`.`、`<`三个之中任意一个字符，`pattern = '>.*<'`表示匹配在`>`与`<`之间存在任意数量的字符。
 
 
-```r
+``` r
 my_vector <- c('>阿木<;>曼妮<', 'amu', 'amu<', '>.*<')
 # 默认情况下，返回匹配成功的元素索引
 grep(pattern = '[>.<]', my_vector)
@@ -502,7 +502,7 @@ agrep(pattern = '阿木狗', my_vector, value = TRUE)
   - `regexpr()`函数返回一个向量，匹配成功的模式在字符串中的起始位置、模式的长度，匹配失败的输出-1。
 
 
-```r
+``` r
 my_vector <- c('阿木狗', '猫咪曼妮', '图图')
 
 grep(pattern = '狗|猫咪', my_vector)
@@ -519,7 +519,7 @@ regexpr(pattern = '狗|猫咪', my_vector)
   - `gregexec()`函数返回一个列表，返回每一次匹配成功的模式所对应的结果。
 
 
-```r
+``` r
 my_vector <- c('条狗阿木狗', '猫咪曼妮猫咪', '图图')
 
 regexpr(pattern = '狗|猫咪', my_vector)
@@ -549,7 +549,7 @@ gregexpr(pattern = '狗|猫咪', my_vector)
   - `pattern = '(>.)(.<)'`表示匹配两个捕获组，第一个捕获组是`(>.)`代表一个`>`符号跟着一个任意字符，第二个捕获组是`(.<)`代表一个任意字符跟着一个`<`符号，两个捕获组串接也可以匹配`>..<`。比较 reg3 和 reg4 的结果可知，只有后者（exec）才会输出每个捕获组匹配成功的内容。
 
 
-```r
+``` r
 my_vector <- c('>阿木<;>曼妮<', '>mu<money')
 reg1 <- gregexpr(pattern = '>..<', my_vector)
 reg2 <- gregexec(pattern = '>..<', my_vector)
@@ -597,7 +597,7 @@ regmatches(my_vector, reg4)
 如下，希望提取`>`与`<`符号之间的名称，名称长度不限，用`gregexpr + regmatches + gsub`来实现。
 
 
-```r
+``` r
 my_vector <- c('>木<;>土豆<', '>>图图狗<')
 
 # 步骤1：使用 gregexpr 得到匹配成功的子字符串的起始位置和长度
@@ -631,7 +631,7 @@ print(step3)
 在`regmatches()`函数中还可以设置`invert = TRUE`来提取匹配成功后剩下的部分，也可以直接用`regmatches(...) <- value`的方式替换掉匹配成功或者未匹配的部分。
 
 
-```r
+``` r
 my_vector <- c('>木<;abc>土豆<ef', 'abc>图图狗<wre')
 
 regmatches(my_vector, gregexpr(pattern = ">([^<]+)<", my_vector), invert = TRUE)
@@ -667,7 +667,7 @@ print(my_vector)
 |匹配失败的返回值|NA|NA|0|
 
 
-```r
+``` r
 match(x = 1:10, table = 7:20)
 ##  [1] NA NA NA NA NA NA  1  2  3  4
 match(x = c('a', 'b', 'b'), table = c('b', 'bc'))
@@ -708,7 +708,7 @@ charmatch(x = c('ab', 'ab', '阿木'),
 `startsWith()`和`endsWith()`用于判断字符串的开头或结尾是否为特定字符。
 
 
-```r
+``` r
 # 判断第二个参数值‘电’字，是否在第一个参数输入的向量中
 startsWith(c('电话', '电脑', '电视机', '电饭煲', '洗衣机'), '电')
 ## [1]  TRUE  TRUE  TRUE  TRUE FALSE
@@ -727,7 +727,7 @@ endsWith(c('电话', '电脑', '电视机', '电饭煲', '洗衣机'), '机')
 + `strwrap()`，将长文本格式化处理为段落，但对中文不起作用。
 
 
-```r
+``` r
 strtoi(c('阿木', '0x20', 'a', 39), 16L)
 ## [1] NA 32 10 57
 
@@ -746,7 +746,7 @@ strwrap(
 `rep()`和`strrep()`函数都能生成重复字符串，但前者重复的是元素，后者重复的是字符。
 
 
-```r
+``` r
 rep(x = 1:2, times = 3)
 ## [1] 1 2 1 2 1 2
 strrep(x = 1:2, times = 3)
@@ -772,7 +772,7 @@ strrep(c('A', 'B', 'C'), 1:3)
 + `setdiff()`：取两个向量中元素的差集，通常是第一个向量中有、第二个向量中无的差集。
 
 
-```r
+``` r
 my_vector1 <- c(NA, pi, '阿木', '兔狲', NaN)
 my_vector2 <- c(pi, NA, '试炼', '意义')
 
@@ -806,7 +806,7 @@ is.element(my_vector1, my_vector2)
   - `regexpr/gregexpr/regexec/gregexec`输出结果中也会保留 NA，但结合`regmatches`时不会提取出 NA。
 
 
-```r
+``` r
 strsplit(c('abc', NA), 'b')
 ## [[1]]
 ## [1] "a" "c"
@@ -837,7 +837,7 @@ regmatches(c('abc', NA), regexpr('b.', c('abc', NA)))
 下面是一个简单的例子，需要从字符串中拆出年份。
 
 
-```r
+``` r
 data <- data.frame(
   pcode = c('国发〔2024〕10号', '国办发〔2023〕27号'),
   index = c('000014349/2024-00037', '000014349/2023-00047')
@@ -875,7 +875,7 @@ gsub('[/-]', '', regmatches(data$index, regexpr('/.{4}-', data$index)))
 正则表达式中有些字符具有特殊含义（如`.*+?()[]{}|^$\`），要想特殊字符被当做普通字符来匹配，那么需要在这些符号前面加上转义符。在 R 中，正则表达式的反斜杠符号需要进行双重转义，即写作`\\`。 
 
 
-```r
+``` r
 # '\\*\\|'代表匹配‘*|’
 grep(pattern = '\\*\\|',
      x = c('a*|b', '阿木*', '曼|妮'),
@@ -902,7 +902,7 @@ grep(pattern = '\\*|\\|',
 |`()`|用于分组匹配和捕获子表达式|比如`(xyz)`匹配并捕获"xyz"|
 
 
-```r
+``` r
 # 默认情况下'.'能匹配出换行符（`\n`）和回车符（`\r`）
 grep(pattern = '.',
      x = c('\n', '\r', '阿木'),
@@ -951,7 +951,7 @@ grep(
 |`(?<!)`|反向否定断言|`(?<!a)b`匹配‘b’，但仅当‘b’前面不是‘a’|
 
 
-```r
+``` r
 my_vector <- c('山中明月', '西山月', '山西下月下西山', '海上仙月')
 
 # '山(?=月)'代表从左至右匹配，山字后面紧跟月字
@@ -1005,7 +1005,7 @@ grep(
 |`{n,m}`|匹配前面的子表达式，最少连续 n 次且最多连续 m 次，n 小于 m||
 
 
-```r
+``` r
 my_vector <- c("a", "aa", "aaa", "b", "aba", "ababa", 'abababa')
 
 # "a+"表示匹配的 a 至少有1个
@@ -1043,7 +1043,7 @@ grep(pattern = "(.*a.*){3,4}", x = my_vector, value = TRUE)
 |`\\S`|匹配任何非空白符|等同于`[^ \t\n\r\f\v]`|
 
 
-```r
+``` r
 my_vector <- c('abc', 'ABC', '20240912', '2024_a', ' ', "❤")
 
 grep(pattern = "\\d", x = my_vector, value = TRUE)
@@ -1068,7 +1068,7 @@ grep(pattern = "\\S", x = my_vector, value = TRUE)
 |`\\B`|匹配非单词边界|与`\\b`含义相反，匹配的模式不在字符串中一个英文单词的开头或结尾|
 
 
-```r
+``` r
 my_vector2 <- c("hello word", "word dog", "木word", '_word', "word木", "木word木")
 
 # "word" 表示包含 word 的字符串
@@ -1112,8 +1112,8 @@ grep(pattern = "\\Bword\\B", x = my_vector2, value = TRUE)
 |`(?:)`|仅分组匹配而不捕获子表达式|不捕获子表达式就不能进一步引用|
 
 
-```r
-# '(\\d)\\1'代表匹配重复两次的数字
+``` r
+#  `(\\d)`代表匹配并捕获一个数字，'(\\d)\\1'代表匹配重复两次的数字
 grep(pattern = '(\\d)\\1',
      x = c('11a', '22b', '3c'),
      value = T)
@@ -1124,9 +1124,14 @@ grep(
   pattern = '(\\d)(\\d)\\2',
   x = c('2011a', '211a', '221b'),
   value = TRUE,
-  perl = TRUE
-)
+  perl = TRUE)
 ## [1] "2011a" "211a"
+
+# '(?:\\d)'代表仅匹配数字
+grep(pattern = '(\\d)',
+     x = c('11a', '22b', '3c'),
+     value = T)
+## [1] "11a" "22b" "3c"
 ```
 
 ## 6. 符号的优先级

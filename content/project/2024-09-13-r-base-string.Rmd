@@ -843,7 +843,7 @@ grep(pattern = "\\Bword\\B", x = my_vector2, value = TRUE)
 |`(?:)`|仅分组匹配而不捕获子表达式|不捕获子表达式就不能进一步引用|
 
 ```{r}
-# '(\\d)\\1'代表匹配重复两次的数字
+#  `(\\d)`代表匹配并捕获一个数字，'(\\d)\\1'代表匹配重复两次的数字
 grep(pattern = '(\\d)\\1',
      x = c('11a', '22b', '3c'),
      value = T)
@@ -853,8 +853,12 @@ grep(
   pattern = '(\\d)(\\d)\\2',
   x = c('2011a', '211a', '221b'),
   value = TRUE,
-  perl = TRUE
-)
+  perl = TRUE)
+
+# '(?:\\d)'代表仅匹配数字
+grep(pattern = '(\\d)',
+     x = c('11a', '22b', '3c'),
+     value = T)
 ```
 
 ## 6. 符号的优先级
