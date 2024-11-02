@@ -494,7 +494,7 @@ dt1 <- dt1.dcast[, .(
 
 datatable(
   dt1,
-  colnames = c('年份', '农村-女', '城市-女', '农村-男', '城市-男'),
+  colnames = c('年龄段', '农村-女', '城市-女', '农村-男', '城市-男'),
   rownames = FALSE,
   escape = FALSE,
   options = list(
