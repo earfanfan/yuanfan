@@ -19,9 +19,9 @@ permalinks:
 paginate: 10
 
 
-# enableGoogleAnalytics: false
-# googleAnalytics: your-google-analytics-id
-# enableBaiduAnalytics: true
+enableGoogleAnalytics: true
+googleAnalytics: G-9CYT1Z0FY1
+enableBaiduAnalytics: true
 baiduAnalytics: 'c2336cad7e77b97703a3cc5e2e516161'
 #disqusShortname: your-disqus-shortname
 
