@@ -1,0 +1,168 @@
+---
+title: 看一看我国刑事案件数据
+author: yuanfan
+date: 2024-11-13T22:17:18+0800
+slug: court-data
+categories:
+  - R
+tags:
+  - R
+draft: no
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,warning = FALSE,message = FALSE)
+```
+
+<!--more-->
+
+键者整理了一些人民法院公开的历年刑事一审案件总数和罪犯总数。由于并不了解刑事犯罪类型在法律文本上的含义，也不了解司法领域的改革，因此本文仅仅只是把收集的数据做简单的展示，并不过多分析（PS这次真的只是看一看呐）。
+
+>本文数据来源于国家统计局网站和[全国法院司法统计公报](http://gongbao.court.gov.cn/ArticleList.html?serial_no=sftj)。
+
+```{r}
+library(readxl)
+library(echarts4r)
+library(data.table)
+library(DT)
+
+data1 <-
+  read_xlsx('data/1978至2023刑事案件数.xlsx',
+            sheet = 1)
+
+data2 <-
+  read_xlsx('data/1978至2023刑事案件数.xlsx',
+            sheet = 2)
+
+setDT(data1)
+setDT(data2)
+```
+
+# 案件总数
+
+1978至1996年的数据在收案件数、结案件数、罪犯总数等三个指标上是完全一致的。不论案件数还是罪犯数，数十年来整体上呈现出升趋势。
+
+```{r}
+data1 |>
+  e_charts(`年份`) |>
+  e_line(`收案数(件)`) |>
+  e_line(`结案数(件)`) |>
+  e_line(`刑事罪犯总数(人)`) |>
+  e_x_axis(type = 'category') |>
+  e_tooltip(trigger = 'axis') |>
+  e_title(text = "1978至2023年刑事一审案件收案、结案、罪犯总数")|> 
+  e_legend(top = '5%')
+```
+
+# 犯罪类型
+
+对比1999年和2023年的数据，计算在刑事一审案件收案总数中不同犯罪类型所占比例，可以看出只有侵犯公民人身权利民主权利罪、侵犯财产罪、贪污贿赂罪、渎职罪变少了。危害公共安全罪和妨害社会管理秩序罪在1999年合计共占比17.04%，到了2023年上升到了62.98%。
+
+```{r}
+data <- data1[, ':='(
+  `危害公共安全罪` = round(`危害公共安全罪收案数(件)` / `收案数(件)`, 4),
+  `破坏社会主义市场经济秩序罪` = round(`破坏社会主义市场经济秩序罪收案数(件)` / `收案数(件)`, 4),
+  `侵犯公民人身权利民主权利罪` = round(`侵犯公民人身权利民主权利罪收案数(件)` / `收案数(件)`, 4),
+  `侵犯财产罪` = round(`侵犯财产罪收案数(件)` / `收案数(件)`, 4),
+  `妨害社会管理秩序罪` = round(`妨害社会管理秩序罪收案数(件)` / `收案数(件)`, 4),
+  `危害国防利益罪` = round(`危害国防利益罪收案数(件)` / `收案数(件)`, 4),
+  `贪污贿赂罪` = round(`贪污贿赂罪收案数(件)` / `收案数(件)`, 4),
+  `渎职罪` = round(`渎职罪收案数(件)` / `收案数(件)`, 4),
+  `其他` = round(`其他收案数(件)` / `收案数(件)`, 4)
+)]
+
+data.facet <- melt(
+  data[`年份` >= 1999],
+  id = "年份",
+  #长数据中第一个字段
+  measure = c(
+    '危害公共安全罪',
+    '破坏社会主义市场经济秩序罪',
+    '侵犯公民人身权利民主权利罪',
+    '侵犯财产罪',
+    '妨害社会管理秩序罪',
+    '危害国防利益罪',
+    '贪污贿赂罪',
+    '渎职罪',
+    '其他'
+  ),
+  variable.name = 'type',
+  value.name = 'value'
+)
+
+dt <-
+  dcast(data.facet[`年份` %in% c(1999, 2023)], type ~ `年份`, value.var =
+          "value")
+datatable(
+  dt,
+  rownames = FALSE,
+  colnames = c('刑事犯罪类型', '1999年',  '2023年'),
+  caption = "刑事一审收案中不同犯罪类型的占比",
+  options = list(dom = 't')
+) |>
+  formatPercentage(columns = c(2:3), digits = 2) |>
+  formatStyle(
+    columns = 2,
+    background = styleColorBar(c(0, 0.45, dt$`1999`), '#008E90FF'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  ) |>
+  formatStyle(
+    columns = 3,
+    background = styleColorBar(c(0, 0.45, dt$`2023`), '#CEC917FF'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  )
+```
+
+去掉占比极低的危害国防利益罪、渎职罪和其他，剩下的犯罪类型的历年案件数变化趋势如下。其中危害公共安全罪的占比直到2010年都不超过12%，从2011年开始快速增长。
+
+```{r}
+data.facet[!type %in% c('危害国防利益罪', '渎职罪', '其他')] |>
+  group_by(type) |>
+  e_charts(`年份`) |>
+  e_bar(value) |>
+  e_x_axis(type = 'category') |>
+  e_y_axis(formatter = e_axis_formatter("percent", digits = 0),
+           offset = -17) |>
+  e_tooltip(trigger = 'item',
+            formatter = e_tooltip_item_formatter("percent", digits = 1)) |>
+  e_legend(top = '5%')|>
+  e_facet(
+    rows = 3,
+    cols = 2,
+    legend_pos = "top",
+    legend_space = 12
+  )|>
+  e_title(text = "1999至2023年不同刑事犯罪类型的收案件数变化趋势")
+```
+
+# 罪犯情况
+
+2023年的罪犯总数是1659396，其中男性罪犯有1486347，占比89.6%，女性罪犯有173049，占比10.4%。若按照不同刑事犯罪类型看，在危害公共安全罪各性别占比差别最大，男性占96.4%，女性占3.6%。
+
+```{r}
+data2[, ':='(prob_female = round(`女性罪犯` / `罪犯人数` , 3),
+             prob_male = round((`罪犯人数` - `女性罪犯`) / `罪犯人数`, 3))][`年份` == 2023 &
+                                                                  !(`类别` == '合计')] |>
+  e_charts(`类别`) |>
+  e_bar(prob_female, name = '女性占比') |>
+  e_bar(prob_male, name = '男性占比') |>
+  e_x_axis(axisLabel = list(interval = 0, rotate = 15)) |>
+  e_y_axis(formatter = e_axis_formatter("percent", digits = 0)) |>
+  e_labels(
+    position = 'top',
+    formatter = htmlwidgets::JS("
+    function(params) {
+      return params.value[1]*1000/10 + '%';
+    }
+  ")
+  ) |> 
+  e_title(text = "2023年不同刑事犯罪类型的罪犯中各性别占比")|> 
+  e_legend(top = '5%')
+```
