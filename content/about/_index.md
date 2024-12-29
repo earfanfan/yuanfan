@@ -3,23 +3,33 @@ author: 袁凡
 title: About Me
 ---
 
- 
+# 我的兴趣地图ヾ(●゜▽゜●)♡
 
-# 个人兴趣 ∠( ᐛ 」∠)_ 
-    
-+ useR！本新手最近吭哧吭哧往统计之都主站投稿了几篇文章。
-    
-    - echarts4r: 从入门到应用（[文章](https://cosx.org/2021/12/introduction-to-echarts4r/)，[幻灯片](https://yuanfan.rbind.io/slides/echarts4r.html#1)，[B站视频](https://www.bilibili.com/video/BV14S4y1R7SX/?spm_id_from=333.337.search-card.all.click)）
-    
-    - 探索定西市的 Sci-Hub 流量之谜（[文章](https://cosx.org/2022/05/scihub-traffic-analysis/)，[幻灯片](https://yuanfan.rbind.io/slides/sci-hub202206.html#1)，[B站视频](https://www.bilibili.com/video/BV1nF411c7Ro/?spm_id_from=333.337.search-card.all.click)）
-    
-    - Echarts4r 挥发化飞花（[文章](https://cosx.org/2022/04/echarts4r-flower/)）
-    
-    - DT 速查手册（[DT：给交互式表格设置静态样式](https://yuanfan.rbind.io/slides/dt-r15#1)）
-  
-+ 我喜欢一切美好事物，愿意探循宇宙天地万物的规律。无论人、事、物，总是想要弄清楚背后的行事逻辑、因果。倒也不强求，当下不明白的事情放一放，积累够了，某天碰到一个该明白的时机自然就明白了。
-  
-+ 喜欢李杜的诗、苏轼的词、金庸笔下的江湖世界，还喜欢看海贼王、银魂、钢炼，玩银河恶魔城游戏如空洞骑士、奥日，Sky光遇、FEZ、Gorogoa至今让我觉得惊艳。 
++ **阅读与写作** ∠( ᐛ 」∠)_ 
++ 音乐
+  - 唱歌（改变发声部位可以拓宽音域）
+  - 横笛、竖笛、洞箫、排箫、埙、陶笛（乐器便宜买来玩，只能吹响基础的7个音）
++ 美术
+  - 素描
+  - 油画（棒）
++ 体育
+  - 骑车
+  - 羽毛球
+  - 户外徒步
+  - 投篮（仅限游戏城）
+  - 射箭（太费钱，暂停）
++ 美食
+  - 做饭
+  - 觅食
++ 娱乐
+  - 手机摄影（只会简单的构图）
+  - 电影、电视剧
+  - 游戏（电子游戏、下棋、打扑克、成语接龙、放风筝、纸翻花、叠叠乐）
+  - 手工 DIY（植物拓染、编扇子、马赛克瓶、数字油画、拼图、拼玩具、拼家具、拼三轮车、缝布娃娃、编手绳、织围巾）
+  - 旅行（等以后每年有十天年假，可以在淡季去长途旅行）
++ 狗  
+  - 阿木之后再无阿木
+  - 看动物
   
 &emsp; &emsp; 
     
