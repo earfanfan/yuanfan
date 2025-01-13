@@ -78,7 +78,7 @@ params:
   # To hidden post summary in home page, you could set `hiddenPostSummaryInHomePage: true`, default is `false`
   hiddenPostSummaryInHomePage: false
   # Website copy write, default: '© Copyright 2021 ❤️ {params.author}'
-  copyright: '© Copyright 2021-2025 ❤️ [阿木狗主](https://github.com/earfanfan)'
+  copyright: '© Copyright 2021-{Year} ❤️ [阿木狗主](https://github.com/earfanfan)'
   # Extra links in navigation
   links:
   - name: "苦作舟-R"
