@@ -5,7 +5,7 @@
 
     <div class="copyright">
     {{ with .Site.Params.copyright }}
-        {{ . | markdownify }}
+        {{ replace . "{Year}" now.Year | markdownify }}
     {{ else }}
        © Copyright
        {{ now.Format "2006"}}
