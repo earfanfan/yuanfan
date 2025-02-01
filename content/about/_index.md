@@ -55,6 +55,10 @@ title: About Me
 
 + [黄国政](https://guozheng.rbind.io/)：人类学，真诚，温柔，会长大的小孩
 
++ [闫誉腾](https://blog.yanyuteng.cn/): 温润、善良，未来的人口学大师
+
++ [易迟](https://hustyichi.github.io/): RAG   
+
 &emsp; &emsp;
     
 # 阿木狗主的自白 ❥(^_-)
