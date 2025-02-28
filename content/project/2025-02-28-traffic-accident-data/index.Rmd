@@ -1,0 +1,351 @@
+---
+title: 湖北更容易出交通事故？
+author: yuanfan
+date: 2025-02-28T21:37:34+0800
+slug: traffic-accident-data
+categories:
+  - R
+tags:
+  - R
+draft: no
+output:
+  blogdown::html_page:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,message = FALSE,warning = FALSE)
+```
+
+<!--more-->
+
+不久前听同事吐槽一件小事，据说其在武汉开车十几年从没扣过分，但是近期出省自驾游一趟驾照分扣完了。我听闻后突然有个猜想，难道只有武汉在城市交通这方面管理很松懈么？如果总是管得松，会不会导致发生交通事故的概率很高？于是乎，上国家统计局网站搜索一番，由于城市级别的数据指标很少，进而决定看看分省年度数据，分别从“公共管理、社会保障及其他-交通事故”和“运输与邮电-客运量/货运量/民用汽车拥有量”目录下载历年数据，然后尝试分析——是不是湖北省的交通事故更多、出现交通事故的比例更高？
+
+我国交通事故发生数在21世纪初经历高峰后，随着道路交通安全法的制定与施行，此后十数年间交通事故总数不断减少。但随着我国民用汽车拥有量的不断上升，自2016年开始，交通事故总数又出现了上升的趋势。
+
+```{r}
+library(data.table)
+library(echarts4r)
+library(DT)
+
+data <- fread('data/交通事故数据.csv')
+data[, `地区` := gsub("省|市|自治区|壮族|回族|维吾尔", "", `地区`)]
+
+data.table(
+  year = c(1990:2023),
+  value1 = c(
+    250244,
+    264596,
+    228326,
+    240623,
+    253537,
+    271843,
+    287685,
+    304217,
+    346129,
+    412860,
+    616971,
+    754919,
+    773137,
+    667507,
+    517889,
+    450254,
+    378781,
+    327209,
+    265204,
+    238351,
+    219521,
+    210812,
+    204196,
+    198394,
+    196812,
+    187781,
+    212846,
+    203049,
+    244937,
+    247646,
+    244674,
+    273098,
+    256409,
+    254738
+  ),
+  value2 = c(
+    551.36,
+    606.11,
+    691.74,
+    817.58,
+    941.95,
+    1040,
+    1100.08,
+    1219.09,
+    1319.3,
+    1452.94,
+    1608.91,
+    1802.04,
+    2053.17,
+    2382.93,
+    2693.71,
+    3159.66,
+    3697.35,
+    4358.36,
+    5099.61,
+    6280.61,
+    7801.83,
+    9356.32,
+    10933.09,
+    12670.14,
+    14598.11,
+    16284.45,
+    18574.54,
+    20906.67,
+    23231.23,
+    25376.38,
+    27340.92,
+    29418.59,
+    31184.44,
+    32911.55
+  )
+) |>
+  e_charts(year) |>
+  e_line(value1, name = '交通事故发生数总计(起)', color = 'red') |>
+  e_line(value2,
+         name = '民用汽车拥有量(万辆)',
+         color = 'blue',
+         y_index = 1) |>
+  e_x_axis(type = 'category') |>
+  e_y_axis(
+    name = '事故数(起)',
+    interval = 400000,
+    axisLine = list(show = TRUE),
+    splitLine = list(show = FALSE)
+  ) |>
+  e_y_axis(
+    name = '汽车量(万辆)',
+    index = 1,
+    interval = 20000,
+    axisLine = list(show = TRUE),
+    splitLine = list(show = FALSE)
+  ) |>
+  e_tooltip(trigger = 'axis') |>
+  e_title(text = '1990-2023年全国（不含港澳台）交通事故数与汽车拥有量') |>
+  e_legend(top = '5%')
+
+```
+
+键者写作此文时是2025年2月，但国家统计局网站与交通事故有关的数据最新的年份是2023年，因此接下来先从2023年的截面来对比各省、直辖市、自治区的情况。
+
+根据2023年的省级交通事故数据，发生数、死亡人数、受伤人数这三个指标都是广东第一高、湖北第二高，但在直接财产损失这个指标却是湖北第一高。观察其他省的数据，发现江苏、湖南的交通事故死亡人数在数值上相对较高，在其事故发生数相对不高的基础上，等于是平均每起交通事故的死亡人数较高。
+
+```{r}
+# 2023年省级交通事故数据
+datatable(
+  data[`年份` == 2023, c('地区',
+                       '交通事故发生数总计起',
+                       '交通事故死亡人数总计人',
+                       '交通事故受伤人数总计人',
+                       '交通事故直接财产损失总计万元')],
+  options = list(
+    dom = 't',
+    pageLength = 31,
+    order = list(list(1, 'desc'))
+  ),
+  rownames = FALSE,
+  colnames = c('地区', '发生数（起）', '死亡人数（人）', '受伤人数（人）', '直接财产损失（万元）'),
+  caption = htmltools::tags$caption(style = 'caption-side: top; text-align: left; font-size: 20px; font-weight: bold;', '2023年省级交通事故数据')
+) |>
+  formatStyle(
+    columns = '交通事故发生数总计起',
+    background = styleColorBar(data$交通事故发生数总计起, '#B50A2AFF'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  ) |>
+  formatStyle(
+    columns = '交通事故死亡人数总计人',
+    background = styleColorBar(data$交通事故死亡人数总计人, color = '#0E84B4FF'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  ) |>
+  formatStyle(
+    columns = '交通事故受伤人数总计人',
+    background = styleColorBar(data$交通事故受伤人数总计人, color = '#9E8356FF'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  ) |>
+  formatStyle(
+    columns = '交通事故直接财产损失总计万元',
+    background = styleColorBar(data$交通事故直接财产损失总计万元, color = '#7EBAC2FF'),
+    backgroundSize = '100% 90%',
+    backgroundRepeat = 'no-repeat',
+    backgroundPosition = 'center'
+  )
+```
+
+继续看2023年的数据，以交通事故发生数为分母，计算平均每起交通事故的死亡人数、受伤人数及直接财产损失，分别对应散点图的横轴、纵轴、气泡大小。据下图，湖北的位置是平均每起事故死亡人数低、受伤人数高、直接财产损失小。
+
+观察全图，平均每起事故死亡人数最高的是上海，而平均每起事故受伤人数最高、直接财产损失最大的是西藏。上海和西藏是2023年交通事故数量上最少的地区，也是我国经济发展最发达和最不发达的地区。西藏地广人稀，事故少有天然因素，但西藏地处高原，地理和气候环境都很复杂，道路基础条件相对较差，可能因此导致平均受伤人数高、直接财产损失大。上海人口众多但道路交通条件好、执法完善，事故少是人为因素，而导致平均死亡人数高的因素可能在于车辆行驶速度较快。若与西藏相比，湖北整体地理和气候环境更加简单，道路设施基础条件更好，若与上海相比，湖北平均死亡人数低可能代表着车辆行驶速度没那么快，或者没有足够条件支持车速更加快。两相对比后，湖北平均受伤人数高的因素极有可能就在于执法松懈或是司机的驾驶习惯等方面。
+
+```{r}
+data[`年份` == 2023, ':='(
+  value1 = round(`交通事故死亡人数总计人` / `交通事故发生数总计起`, 2),
+  value2 = round(`交通事故受伤人数总计人` / `交通事故发生数总计起`, 2) ,
+  value3 = round(`交通事故直接财产损失总计万元` / `交通事故发生数总计起`, 2)
+)] |>
+  e_charts(value1) |> #横轴
+  e_scatter(
+    value2,
+    value3,
+    `地区`,
+    label = list(show = TRUE, formatter = '{b}'),
+    labelLayout = list(x = "95%", moveOverlap = "shiftY"),
+    labelLine = list(show = TRUE, lineStyle = list(color = "gray")),
+    emphasis = list(focus = "self")
+  ) |> #纵轴
+  e_x_axis(name = "平均每起事故死亡人数",
+           nameLocation = "center",
+           nameGap = 30) |>
+  e_y_axis(name = "平均每起事故受伤人数",
+           nameLocation = "center",
+           nameGap = 30) |>
+  e_tooltip(
+    trigger = "item",
+    formatter = htmlwidgets::JS(
+      "function(params){
+        return(params.name+':' +
+               '<br />平均每起事故死亡人数: ' + params.value[0] +
+               '<br />平均每起事故受伤人数: ' + params.value[1] +
+               '<br />平均每起事故直接财产损失万元: ' + params.value[2]
+      )}"
+    )
+  ) |>
+  e_legend(show = FALSE) |>
+  e_title(text = '2023年省级交通事故数据',
+          subtext = '气泡大小：平均每起事故直接财产损失万元',
+          left = 'center')
+```
+
+以上数据都是从交通事故单方面去看，接下来结合各地区的人口、汽车数量等基数，依然是2023年的截面数据，以交通事故发生数为分子，分别以各地区的年末常住人口、民用汽车拥有量、公路客运量为分母计算比例。用这三个指标绘制的图形如下，都是湖北最高。
+
+对比2023年的各省级数据综合来看，湖北省的人口、公路客运量、汽车拥有量都不是最多，但确实是出现交通事故的比例最高，且从事故平均水平来看，特点是死亡人数低、受伤人数高、直接财产损失小。简单来说就是，出事多，但不出大事。这令键者不得不猜测，是不是湖北省公安厅把道路交通方面的警力资源更多放在预防出大事上面。
+
+```{r}
+data2 <- data[, ':='(
+  value1 = round(`交通事故发生数总计起` / `年末常住人口万人`, 1),
+  value2 = round(`交通事故发生数总计起` / `民用汽车拥有量万辆`, 1),
+  value3 = round(`交通事故发生数总计起` / `公路客运量万人`, 1)
+)][`年份` == 2023][order(-value1)]
+
+e1 <- data2 |>
+  e_charts(`地区`, height = 100) |>
+  e_single_axis(
+    bottom = 50,
+    left = 10,
+    axisLabel = list(
+      interval = 0,
+      formatter = htmlwidgets::JS("function(value) { return value.split('').join('\\n') }")
+    )
+  ) |>
+  e_scatter(
+    `地区`,
+    value1,
+    scale_js = 'function (dataItem) {return dataItem[2] * 6;}',
+    color = "#91cc75",
+    coord_system = "singleAxis"
+  ) |>
+  e_legend(show = FALSE) |>
+  e_title(
+    "2023：交通事故数（起）/年末常住人口（万人）",
+    left = "right",
+    top = 'top',
+    textStyle = list(fontSize = 12)
+  ) |>
+  e_labels(position = 'bottom', formatter = '{@[2]}')
+
+e2 <- data2 |>
+  e_charts(`地区`, height = 100) |>
+  e_single_axis(
+    bottom = 50,
+    left = 10,
+    axisLabel = list(
+      interval = 0,
+      formatter = htmlwidgets::JS("function(value) { return value.split('').join('\\n') }")
+    )
+  ) |>
+  e_scatter(
+    `地区`,
+    value2,
+    scale_js = 'function (dataItem) {return dataItem[2] * 1;}',
+    color = "#fc8452",
+    coord_system = "singleAxis"
+  ) |>
+  e_legend(show = FALSE) |>
+  e_title(
+    "2023：交通事故数（起）/民用汽车拥有量（万辆）",
+    left = "right",
+    top = 'top',
+    textStyle = list(fontSize = 12)
+  ) |>
+  e_labels(position = 'bottom', formatter = '{@[2]}')
+
+e3 <- data2 |>
+  e_charts(`地区`, height = 100) |>
+  e_single_axis(
+    bottom = 50,
+    left = 10,
+    axisLabel = list(
+      interval = 0,
+      formatter = htmlwidgets::JS("function(value) { return value.split('').join('\\n') }")
+    )
+  ) |>
+  e_scatter(
+    `地区`,
+    value3,
+    scale_js = 'function (dataItem) {return dataItem[2] * 30;}',
+    color = "#3ba272",
+    coord_system = "singleAxis"
+  ) |>
+  e_legend(show = FALSE) |>
+  e_title(
+    "2023：交通事故数（起）/公路客运量（万人）",
+    left = "right",
+    top = 'top',
+    textStyle = list(fontSize = 12)
+  ) |>
+  e_labels(position = 'bottom', formatter = '{@[2]}')
+
+e_arrange(e1, e2, e3, cols = 1)
+```
+
+在梳理了2023年的数据以后，再进一步看看近十年的数据。如下表所示，原来湖北省10年前发生交通事故的比例在排名上是靠后的，不知道2016年发生了什么，导致交通事故数、交通事故数/常住人口、交通事故数/民用汽车量等三个指标的排名一口气上升到了第2、3名。
+
+```{r}
+dt <- data[, ':='(
+  value1 = round(`交通事故发生数总计起` / `年末常住人口万人`, 2),
+  value2 = round(`交通事故发生数总计起` / `民用汽车拥有量万辆`, 2),
+  value3 = round(`交通事故发生数总计起` / `公路客运量万人`, 2)
+)][, `:=`(
+  rank = frank(-`交通事故发生数总计起`, ties.method = "min"),
+  rank_value1 = frank(-value1, ties.method = "min"),
+  rank_value2 = frank(-value2, ties.method = "min"),
+  rank_value3 = frank(-value3, ties.method = "min")
+), by = `年份`]
+
+datatable(
+  dt[`地区` == '湖北' &
+       `年份` %in% c(2014:2023), .(`年份`, rank, rank_value1, rank_value2, rank_value3)],
+  options = list(
+    dom = 't',
+    pageLength = 10,
+    columnDefs = list(list(
+      className = 'dt-center', targets = "_all"
+    ))
+  ),
+  rownames = FALSE,
+  colnames = c('年份', '交通事故数', '交通事故数/常住人口', '交通事故数/民用汽车量', '交通事故数/公路客运量'),
+  caption = htmltools::tags$caption(style = 'caption-side: top; text-align: left; font-size: 20px; font-weight: bold;', '2014-2023年各指标中湖北省的排名（按从高到底排序）')
+) |> formatStyle(columns = c(2:6), color = styleEqual(1, "red"))
+```
+
+总而言之，开车要注意安全，在湖北开车更要注意安全。
