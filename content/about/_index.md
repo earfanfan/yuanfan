@@ -61,7 +61,7 @@ title: About Me
 
 + [雨遥随心记](https://mp.weixin.qq.com/s/65uYrR_7SPAyOZMzpHi6TQ)：微信公众号，多年老友
 
-+ [刘福贵](https://lfg12.github.io/)：Giser，一见如故，缘分
++ [小福](https://lfg12.github.io/)：GISer，一见如故，缘分
 
 &emsp; &emsp;
     
