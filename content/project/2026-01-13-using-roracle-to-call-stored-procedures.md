@@ -12,9 +12,9 @@ draft: no
 
 <!--more-->
 
-# 安装 ROracle 包
+# 1.安装 ROracle 包
 
-# 服务器离线安装步骤
+## 1.1.服务器离线安装步骤
 
 在服务器上离线安装 ROracle 包，如果只是下载 ROracle_1.5-1.tar.gz 然后直接装会报下面的错误。这是因为 ROracle 的编译步骤默认从 Oracle 官网下载所需客户端。
 
@@ -65,7 +65,7 @@ install.packages(
 )
 ```
 
-## 踩到的坑
+## 1.2.踩到的坑
 
 在 RStudio Server 中加载 ROracle 包，随后在执行`drv <- dbDriver("Oracle")`时报出下面的错误，表明 rstudio 没有找到正确的路径。
 
@@ -88,9 +88,9 @@ Environment="OCI_INC=/xxxx/R/Oracle/instantclient_19_29/sdk/include"
   
 执行`sudo yum install libnsl`安装上 libnsl 包，再执行`ls /usr/lib64/libnsl.so*`检查一遍路径是否正常输出。最后再重启服务，终于能够正常使用。
 
-# 使用 ROracle 
+# 2.使用 ROracle 
 
-## 连接数据库
+## 2.1.连接数据库
 
 提前查清楚两处细节。
 
@@ -149,7 +149,7 @@ dbDisconnect(con)
 dbUnloadDriver(drv)
 ```
 
-## 调用 Oracle 存储过程
+## 2.2.调用 Oracle 存储过程
 
 现在需求有三步：
 
@@ -207,7 +207,7 @@ for (i in seq_along(case_list)) {
 }
 ```
 
-# DBI 和 ROracle/RJDBC 的关系？ROracle 和 RJDBC 的区别？ 
+# 3.DBI 和 ROracle/RJDBC 的关系？ROracle 和 RJDBC 的区别？ 
 
 `R -- DBI -- ROracle/RJDBC -- 数据库`
 
