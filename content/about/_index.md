@@ -38,6 +38,7 @@ title: About Me
 
 + [雨遥随心记](https://mp.weixin.qq.com/s/65uYrR_7SPAyOZMzpHi6TQ)：微信公众号，多年老友
 
++ [山上的那座城](https://mp.weixin.qq.com/s/rnbegZ5pl60ygix9dgsVKA)：微信公众号，多年老友
 
 &emsp; &emsp;
     
