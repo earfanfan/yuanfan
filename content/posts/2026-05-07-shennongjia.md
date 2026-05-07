@@ -30,7 +30,7 @@ draft: false
 
 第一天和第二天走的山路是成熟的徒步路线，泥土上至少能看到路的痕迹。而第二天走的是最近才开发出来的路线，有些是向导才劈开枝桠、或者砍断放倒树木形成的路，有些是成片“鬼缠脚”拦路只能强行穿过，翻过老君顶就是拔高100米直接翻过去……最高海拔2936米。山上没信号（ps神农架作为国家级保护区，不允许在山上建信号塔），若是跟丢了向导，就得使用最原始的通讯方式——大声喊叫、听声辨位。
 
-|![](https://yuanfan.rbind.io/images/2026/20260507-01.jpg)|![](https://yuanfan.rbind.io/images/2026/20260507-01.jpg)|
+|![](https://yuanfan.rbind.io/images/2026/20260507-01.jpg)|![](https://yuanfan.rbind.io/images/2026/20260507-02.jpg)|
 |:-:|:-:|
 
 |![](https://yuanfan.rbind.io/images/2026/20260507-03.jpg)|![](https://yuanfan.rbind.io/images/2026/20260507-04.jpg)|
