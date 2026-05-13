@@ -6,7 +6,7 @@ slug: after life
 categories:
   - living
 tags:
-  - 生活
+  - 狗 小说
 draft: false
 ---
 

@@ -6,7 +6,7 @@ slug: the living well
 categories:
   - Living
 tags:
-  - 生活
+  - 小说
 draft: no
 ---
 
