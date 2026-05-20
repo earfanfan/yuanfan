@@ -19,12 +19,12 @@ jobs:
             const body = discussion.body || '';
 
             // Find the link in the discussion body
-            const linkMatch = body.match(/https?:\/\/[^\s)>\]]+/);
+            const linkMatch = body.match(/https?:\/\/[^\s)>\]]+/g);
             if (!linkMatch) {
               throw new Error('No URL found in discussion body');
             }
-            const linkUrl = new URL(linkMatch[0]);
-            const pathname = linkUrl.pathname;
+            const linkUrl = new URL(linkMatch.pop());
+            const pathname = linkUrl.pathname.replace(/^\//, '');
 
             // Only update the title if the discussion title matches the link pathname
             if (discussion.title !== pathname) {
