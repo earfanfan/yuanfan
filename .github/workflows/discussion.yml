@@ -9,6 +9,7 @@ jobs:
     if: github.event.discussion.user.login == 'giscus[bot]'
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       discussions: write
     steps:
       - name: Update discussion title and body
