@@ -15,7 +15,7 @@ jobs:
       - name: Update discussion title and body
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
             const discussion = context.payload.discussion;
             const body = discussion.body || '';
