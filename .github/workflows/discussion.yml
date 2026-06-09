@@ -9,13 +9,12 @@ jobs:
     if: github.event.discussion.user.login == 'giscus[bot]'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read
       discussions: write
     steps:
       - name: Update discussion title and body
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.PAT_TOKEN }}
           script: |
             const discussion = context.payload.discussion;
             const body = discussion.body || '';
