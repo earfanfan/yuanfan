@@ -10,6 +10,8 @@ tags:
 draft: false
 ---
 
+<!--more-->
+
 本月初接了个做图像分类的任务，给的时间相对充裕。没想到这次领导腾出来的资源居然也挺充裕，三处服务器算内存的话，一个128G，一个近500G，还有一个7个节点加起来1T（ps当然都是只有 CPU 的）。以前折腾装 R 我都是挨个服务器、挨个节点手动编译……这次有 AI 辅助，也不用离线鼓捣，方案改为直接从 DockerHub 拉取可用的镜像，然后 Dockerfile 编译即可。
 
 # 了解服务器配置
@@ -18,11 +20,13 @@ draft: false
 
 检查操作系统的类型和版本。（ps.十几年前的老机型，又被从灰尘堆里淘出来用的。）
 
->uname -a
-Linux DCG1JNYC2-R730 5.10.134-19.3.1.an8.x86_64 #1 SMP Sat May 2 16:03:33 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
+`uname -a`
 
->cat /etc/os-release
-NAME="Anolis OS"
+>Linux DCG1JNYC2-R730 5.10.134-19.3.1.an8.x86_64 #1 SMP Sat May 2 16:03:33 CST 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+`cat /etc/os-release`
+
+>NAME="Anolis OS"
 VERSION="8.10"
 ID="anolis"
 ID_LIKE="rhel fedora centos"
@@ -34,27 +38,31 @@ HOME_URL="https://openanolis.cn/"
 
 查看 gcc 版本。
 
->gcc -v
-gcc version 8.5.0 20210514 (Anolis 8.5.0-23.0.1) (GCC) 
+`gcc -v`
+
+>gcc version 8.5.0 20210514 (Anolis 8.5.0-23.0.1) (GCC) 
 
 查看 CPU 详细信息。
 
->lscpu
-CPU(s):              48
+`lscpu`
+
+>CPU(s):              48
 Model name:          Intel(R) Xeon(R) CPU E5-2670 v3 @ 2.30GHz
 CPU MHz:             3100
 
 查看内存和磁盘的总量及已使用情况。
 
->free -h
-              total        used        free      shared  buff/cache   available
+`free -h`
+
+>              total        used        free      shared  buff/cache   available
 Mem:          503Gi       2.4Gi       430Gi        21Mi        70Gi       497Gi
 Swap:          63Gi          0B        63Gi
 
 查看 Glibc 版本。
 
->ldd --version
-ldd (GNU libc) 2.28
+`ldd --version`
+
+>ldd (GNU libc) 2.28
 
 接着一层层配网络代理，按顺序给服务器  -> 包管理器（dnf/yum/rpm）  -> Docker 配代理，启动 Docker 容器时也要注意配代理。
 
@@ -68,7 +76,7 @@ ldd (GNU libc) 2.28
 
 2. 启动镜像。注意配置代理，其中`-v /home/hadoop/yf:/opt/notebooks`用于指定脚本的存储路径，由于8888端口被占用改为8787。
 
-```{bash}
+```bash
 docker run -i -t -p 8787:8888 \
 -v /home/hadoop/yf:/opt/notebooks \
 -e HTTPS_PROXY=http://xx.xx.xx.xx:10809 \
@@ -85,11 +93,11 @@ continuumio/miniconda3 /bin/bash -c "\
 
 镜像启动完成后，日志里面会有类似如下内容。
 
->To access the server, open this file in a browser:
-        file:///root/.local/share/jupyter/runtime/jpserver-1-open.html
-    Or copy and paste one of these URLs:
-        http://e15f101bece4:8888/tree?token=f10e2c3d855cd7fb220be9dee94af8d29ef589f6c98a1c4f
-        http://127.0.0.1:8888/tree?token=f10e2c3d855cd7fb220be9dee94af8d29ef589f6c98a1c4f
+>To access the server, open this file in a browser:<br/>
+file:///root/.local/share/jupyter/runtime/jpserver-1-open.html<br/>
+Or copy and paste one of these URLs:<br/>
+http://e15f101bece4:8888/tree?token=f10e2c3d855cd7fb220be9dee94af8d29ef589f6c98a1c4f<br/>
+http://127.0.0.1:8888/tree?token=f10e2c3d855cd7fb220be9dee94af8d29ef589f6c98a1c4f
 
 根据提示的 URL 地址从浏览器登录，但正确的地址应该把 IP 和端口号改成<服务器IP:8787>。登陆以后能正常使用 jupyter，就不需要改用别的镜像了。
 
@@ -103,7 +111,7 @@ continuumio/miniconda3 /bin/bash -c "\
 
 >error checking context: 'can't stat '/home/hadoop/yf/.Trash-0''.”，
 
-```{bash}
+```bash
 # 查看当前目录及内容
 pwd && ls -la
 
@@ -120,7 +128,7 @@ ls -l Dockerfile
 
 下面是要放到 Dockerfile 里面的内容，主要是配代理，以及写明需要安装的 python 包。此前在两台服务器都单独拉取了“continuumio/miniconda3”镜像，但是前后隔了几天版本就差了许多，新版本里面封装的 python 版本变成3.14，出现很多不稳定的因素，而老版本封装的 python 是3.13还算稳定，所以 Dockerfile 里面干脆写死镜像的版本号。
 
-```{bash}
+```bash
 FROM continuumio/miniconda3:26.3.2-2
 ENV HTTPS_PROXY=http://xx.xx.xx.xx:10809
 ENV HTTP_PROXY=http://xx.xx.xx.xx:10809
@@ -144,7 +152,7 @@ CMD jupyter notebook --notebook-dir=/opt/notebooks \
 
 其中`image-class:v1`是`<新镜像名称>:<标签>`，`--progress=plain`表示显示构建进度。
 
-```{bash}
+```bash
 # 使用绝对路径
 # docker build -t image-class:v1 --progress=plain /home/hadoop/yf/docker-build
 
@@ -160,7 +168,7 @@ docker images image-class:v1
 
 下面`--name myjupyter`是对启动后的容器重命名，后续与容器相关的操作使用容器名称，但镜像名称要保持一致。
 
-```{bash}
+```bash
 # 启动容器
 docker run -d -p 8787:8888 \
   -v /home/hadoop/yf:/opt/notebooks \
@@ -191,7 +199,7 @@ jupyter 里检查到 opencv-python 未安装，执行`import cv2`报下面的错
 
 其二，如果新安装的 python 包还需要装系统依赖包，临时使用需要进入运行中的容器来装。比如 pyzbar 这个 python 包依赖系统的 ZBAR 库，在 jupyter 执行`!pip install scikit-image`能安装 python 包但使用时会报错，错误是“ImportError: Unable to find zbar shared library”。
 
-```{bash}
+```bash
 # 进入容器 docker exec -it <容器名称或容器id> bash
 docker exec -it myjupyter bash
 
@@ -208,7 +216,7 @@ python -c "from pyzbar.pyzbar import decode; print('pyzbar OK')"
 
 5. 按需重构镜像。
 
-```{bash}
+```bash
 # 1. 停止并删除旧容器 docker stop <容器名称或容器id> && docker rm <容器名称或容器id>
 docker stop myjupyter && docker rm myjupyter
 
@@ -239,7 +247,7 @@ docker run -d -p 8787:8888 \
  - 安装 python 包。
  - 再次按 Ctrl+P 然后 Ctrl+Q，脱离容器后执行 docker commit
  
-```{bash}
+```bash
 # 运行镜像
 docker run -i -t continuumio/miniconda3 /bin/bash
 
