@@ -6,7 +6,8 @@ slug: special museum
 categories:
   - Living
 tags:
-  - 生活
+  - 小说
+  - 梦
 draft: no
 ---
 
