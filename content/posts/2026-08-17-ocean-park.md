@@ -46,16 +46,16 @@ draft: false
 
 白鲸有两只，不知道它们摸起来是什么触感，不过我总觉得它们的鱼嘴很像是在微笑着。不知何故，属于白鲸的空间里有人进来往水里放了玩具，就看着它俩叼起玩具游得更开心了。
 
-![](https://yuanfan.rbind.io/images/2026/20260816-03.jpg)
+![](https://yuanfan.rbind.io/images/2026/20260817-03.jpg)
 
 # 美人鱼
 
-|![](https://yuanfan.rbind.io/images/2026/20260816-04.jpg)|![](https://yuanfan.rbind.io/images/2026/20260816-05.jpg)|
+|![](https://yuanfan.rbind.io/images/2026/20260817-04.jpg)|![](https://yuanfan.rbind.io/images/2026/20260817-05.jpg)|
 |:-:|:-:|
 
 # 鱼群
 
 很多鱼的颜色特别好看，蓝色、紫色的。
 
-![](https://yuanfan.rbind.io/images/2026/20260816-06.jpg)
+![](https://yuanfan.rbind.io/images/2026/20260817-06.jpg)
 
