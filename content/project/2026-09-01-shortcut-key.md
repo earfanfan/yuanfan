@@ -176,3 +176,7 @@ pigz -dc -p 35 ./04.tar.gz | tar -xvf - -C /data/datafile2/yf/ImageClass/data
 + `free -h` ：查看剩余内存。
 
 + `df -h`：查看剩余磁盘空间（disk free）。
+
+[***橘子汽水***](https://kg.qq.com/node/play?s=f5b_WhfYOQtIhfNE&shareuid=6a9d9a83242f318f34&shareDescABType=1&topsource=&chain_share_id=co3dZLk3PPyaU2yWM427FOSTti1b4U1YZmcSXozxnro&pageId=details_of_creations)
+
+[***橙子汽水***](https://kg.qq.com/node/play?s=XoN3wSXy21mFpXXT&shareuid=6a9d9a83242f318f34&shareDescABType=1&topsource=&chain_share_id=co3dZLk3PPyaU2yWM427FOSTti1b4U1YZmcSXozxnro&pageId=details_of_creations)
