@@ -68,13 +68,15 @@ Swap:          63Gi          0B        63Gi
 
 # 部署环境
 
-找 AI 描述需求，让推荐一个合适的镜像：[continuumio/miniconda3](https://hub.docker.com/r/continuumio/miniconda3/)。
+找 AI 描述需求，安装在服务器上，启动服务后可以在浏览器上像使用 Rstudio Server 一样，让推荐一个合适的镜像。AI 推荐的[continuumio/miniconda3](https://hub.docker.com/r/continuumio/miniconda3/)，启动后可以在浏览器使用 Jupyter notebook。
 
-## 拉取镜像并启动
+## 拉取镜像
+
+在初次拉取镜像后，按照官网的介绍直接启动镜像，主要是初次测试镜像是否正常可用。
 
 1. 拉取镜像，执行`docker pull continuumio/miniconda3`。
 
-2. 启动镜像。注意配置代理，其中`-v /home/hadoop/yf:/opt/notebooks`用于指定脚本的存储路径，由于8888端口被占用改为8787。
+2. 启动镜像。注意配置代理，其中`-v /home/hadoop/yf:/opt/notebooks`用于指定脚本的存储路径，而`http://xx.xx.xx.xx:10809`是配的网络代理，由于8888端口被占用改为8787。
 
 ```bash
 docker run -i -t -p 8787:8888 \
@@ -99,13 +101,11 @@ Or copy and paste one of these URLs:<br/>
 http://e15f101bece4:8888/tree?token=f10e2c3d855cd7fb220be9dee94af8d29ef589f6c98a1c4f<br/>
 http://127.0.0.1:8888/tree?token=f10e2c3d855cd7fb220be9dee94af8d29ef589f6c98a1c4f
 
-根据提示的 URL 地址从浏览器登录，但正确的地址应该把 IP 和端口号改成<服务器IP:8787>。登陆以后能正常使用 jupyter，就不需要改用别的镜像了。
+根据提示的 URL 地址从浏览器登录，但正确的地址应该把 IP 和端口号改成<服务器IP:8787>。登陆以后能正常使用 Jupyter notebook，就不需要改用别的镜像了。
 
 注意，如果重启容器，容器内生成的 token 不一样。
 
-## 用 Dockerfile 构建新镜像
-
-1. 创建 Dockerfile 文件。
+## 创建 Dockerfile 文件
 
 初次构建镜像是在`/home/hadoop/yf`目录下，但是报了下面的错。AI 的说法是“Trash-0 是 Linux 桌面环境的回收站文件夹，Docker 在打包构建上下文时遇到了权限问题。”于是换到新目录`/home/hadoop/yf/docker-build`，然后就顺利地构建成功了。
 
@@ -118,15 +118,32 @@ pwd && ls -la
 # 进入指定目录
 cd /home/hadoop/yf/docker-build
 
+# 若有必要，删除旧的 Dockerfile 文件
+# rm -f Dockerfile
 # 创建 Dockerfile 文件
 # 粘贴内容，按 Ctrl+O 回车保存，Ctrl+X 退出
 nano Dockerfile
 
-# 确认文件存在
+# 确认文件存在，更新时间对得上
 ls -l Dockerfile
 ```
 
-下面是要放到 Dockerfile 里面的内容，主要是配代理，以及写明需要安装的 python 包。此前在两台服务器都单独拉取了“continuumio/miniconda3”镜像，但是前后隔了几天版本就差了许多，新版本里面封装的 python 版本变成3.14，出现很多不稳定的因素，而老版本封装的 python 是3.13还算稳定，所以 Dockerfile 里面干脆写死镜像的版本号。
+### 初版 Dockerfile 文件
+
+下面是要放到 Dockerfile 里面的内容，主要构成有以下几点：
+
+1. 写明拉取镜像的版本号。
+
+此前在两台服务器都单独拉取了“continuumio/miniconda3”镜像，但是前后隔了几天版本就差了许多，新版本里面封装的 python 版本变成3.14，出现很多不稳定的因素，而老版本封装的 python 是3.13还算稳定，所以初版 Dockerfile 里面干脆写死镜像的版本号。
+
+```bash
+# 查看详细的版本信息 26.3.2-2
+docker image inspect continuumio/miniconda3 | grep -i "version\|tag"
+```
+
+2. 配代理，确保网络通畅。
+
+3. 写明需要安装的 python 包，以及系统依赖包。
 
 ```bash
 FROM continuumio/miniconda3:26.3.2-2
@@ -148,7 +165,96 @@ CMD jupyter notebook --notebook-dir=/opt/notebooks \
     --ip=0.0.0.0 --port=8888 --no-browser --allow-root
 ```
 
-2. 构建新镜像。
+### 终版 Dockerfile 文件
+
+图像分类折腾到后期，发现需要装飞桨（paddle）来增加 OCR 特征。而 paddleocr 和 opencv 存在依赖冲突，opencv 其实有四个“opencv-python / opencv-contrib-python / opencv-contrib-python-headless / opencv-python-headless”，在容器里临时安装的时候反复把 opencv 装了卸、卸了装，搞了很久才弄好。所以在终版的 Dockerfile 文件里，干脆把安装包、下载模型、验证一块加上了。
+
+这里把版本号指向固定序号，终版文件里就不用加版本号了。
+
+```bash
+# 1. 拉取指定版本的镜像
+docker pull continuumio/miniconda3:26.3.2-2
+# 2. 把它的 latest 标签指向这个版本（覆盖）
+docker tag continuumio/miniconda3:26.3.2-2 continuumio/miniconda3:latest
+```
+
+提前在`/home/hadoop/yf/docker-build`目录下执行`nano preload_models.py`，创建文件后粘贴下载模型的代码，便于后续引用。
+
+```python
+from paddleocr import PaddleOCR
+
+PaddleOCR(
+    lang="ch",
+    use_doc_orientation_classify=False,
+    use_doc_unwarping=False,
+    use_textline_orientation=False,
+    text_detection_model_name="PP-OCRv6_tiny_det",
+    text_recognition_model_name="PP-OCRv6_tiny_rec",
+    cpu_threads=4,
+)
+print("ok")
+```
+
+下面是终版文件内容。
+
+```bash
+FROM continuumio/miniconda3
+
+ENV HTTPS_PROXY=http://xx.xx.xx.xx:10809
+ENV HTTP_PROXY=http://xx.xx.xx.xx:10809
+ENV NO_PROXY=localhost,127.0.0.1,.ulic.com.cn,10.
+ENV PADDLE_PDX_DISABLE_MODEL_SOURCE_CHECK=True
+ENV HF_ENDPOINT=https://hf-mirror.com
+
+RUN echo 'Acquire::http::Proxy "http://xx.xx.xx.xx:10809";' > /etc/apt/apt.conf.d/99proxy && \
+    echo 'Acquire::https::Proxy "http://xx.xx.xx.xx:10809";' >> /etc/apt/apt.conf.d/99proxy && \
+    echo 'Acquire::Retries "5";' >> /etc/apt/apt.conf.d/99proxy && \
+    apt-get update --fix-missing && \
+    apt-get install -y --no-install-recommends libgl1 libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN conda config --set remote_read_timeout_secs 120 && \
+    conda config --set remote_connect_timeout_secs 30 && \
+    conda config --set remote_max_retries 5 && \
+    conda install jupyter -y --quiet && \
+    conda install -c conda-forge zbar -y && \
+    conda install -c conda-forge tesseract
+
+RUN pip install --proxy http://xx.xx.xx.xx:10809 \
+    numpy pandas matplotlib scikit-learn \
+    pillow joblib tensorflow torch torchvision tqdm \
+    scikit-image pyzbar easyocr lightgbm xgboost pytesseract onnxruntime
+
+RUN pip install --proxy http://xx.xx.xx.xx:10809 paddlepaddle
+RUN pip install --proxy http://xx.xx.xx.xx:10809 paddleocr "paddlex[ocr]==3.7.2"
+
+COPY preload_models.py /tmp/preload_models.py
+RUN python /tmp/preload_models.py
+
+RUN pip install --proxy http://xx.xx.xx.xx:10809 --no-deps --force-reinstall --ignore-installed \
+    "opencv-contrib-python==4.10.0.84"
+
+RUN python -c "import cv2;        print(cv2.__version__)" && \
+    python -c "import paddle;     print('paddle OK', paddle.__version__)" && \
+    python -c "import paddleocr;  print('paddleocr OK', paddleocr.__version__)" && \
+    python -c "import importlib.metadata; print(importlib.metadata.version('opencv-contrib-python'))" && \
+    python -c "import paddlex;    print('paddlex OK', paddlex.__version__)"
+
+RUN mkdir -p /opt/notebooks
+EXPOSE 8888
+CMD jupyter notebook --notebook-dir=/opt/notebooks \
+    --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+```
+
+## 构建新镜像。
+
+构建镜像的时候，如果遇到网络抽风报错就重跑，最后把不用的镜像删掉即可。
+
+如果创建镜像时，指定目录下有撒大文件，可以创建`.dockerignore`文件忽略掉，这里我就写了`data/`把相对路径下这个目录里面的数据忽略掉了。
+
+```
+nano .dockerignore
+```
 
 其中`image-class:v1`是`<新镜像名称>:<标签>`，`--progress=plain`表示显示构建进度。
 
@@ -160,11 +266,18 @@ CMD jupyter notebook --notebook-dir=/opt/notebooks \
 cd /home/hadoop/yf/docker-build
 docker build -t image-class:v1 --progress=plain  .
 
-# 查看镜像
+# 查看构建的镜像
 docker images image-class:v1
+
+# 查看所有镜像
+docker images
+
+# 删除镜像
+docker rmi image-class:v1
+docker rmi <镜像id>
 ```
 
-3. 启动容器，检查是否正常。
+## 启动容器，检查是否正常。
 
 下面`--name myjupyter`是对启动后的容器重命名，后续与容器相关的操作使用容器名称，但镜像名称要保持一致。
 
@@ -177,7 +290,7 @@ docker run -d -p 8787:8888 \
   jupyter notebook --notebook-dir=/opt/notebooks \
     --ip=0.0.0.0 --port=8888 --no-browser --allow-root
 
-# 查看容器状态，是否正常生成
+# 查看容器状态（process status），是否正常生成
 docker ps   
 
 # 如果生成失败就删了重来
@@ -187,7 +300,7 @@ docker stop myjupyter && docker rm myjupyter
 docker logs myjupyter
 ```
 
-4. 临时安装 python 包。
+## 容器内临时安装
 
 jupyter 里检查到 opencv-python 未安装，执行`import cv2`报下面的错误。
 
@@ -214,11 +327,13 @@ python -c "import ctypes; ctypes.cdll.LoadLibrary('libzbar.so'); print('OK')"
 python -c "from pyzbar.pyzbar import decode; print('pyzbar OK')"
 ```
 
-5. 按需重构镜像。
+## 按需重构镜像。
 
 ```bash
 # 1. 停止并删除旧容器 docker stop <容器名称或容器id> && docker rm <容器名称或容器id>
 docker stop myjupyter && docker rm myjupyter
+# 删除旧镜像
+#docker rmi image-class:v1
 
 # 2. 修改 Dockerfile
 cd /home/hadoop/yf/docker-build
@@ -234,9 +349,12 @@ docker run -d -p 8787:8888 \
   image-class:v1 \
   jupyter notebook --notebook-dir=/opt/notebooks \
     --ip=0.0.0.0 --port=8888 --no-browser --allow-root
+    
+# 查看容器日志，找到 token，浏览器登录
+docker logs myjupyter
 ```
 
-## 踩的坑
+# 踩的坑
 
 最开始给 AI 描述需求后，给的方案里有一个是直接在 docker 容器里安装需要的 python 包，然后另存为固定的镜像名称。这样做的好处是依次安装包的时候，遇到报错可以立刻发现。
 
