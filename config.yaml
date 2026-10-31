@@ -37,6 +37,16 @@ markup:
     startLevel: 1
   # needed to render raw HTML (e.g. <sub>, <sup>, <kbd>, <mark>)
   goldmark:
+    extensions:
+      passthrough:
+        delimiters:
+          block:
+            - ['\[', '\]']
+            - ['$$', '$$']
+          inline:
+            - ['\(', '\)']
+            - ['$', '$']
+        enable: true
     renderer:
       unsafe: true
 

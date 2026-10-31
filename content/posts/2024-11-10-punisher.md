@@ -7,7 +7,7 @@ categories:
   - Living
 tags:
   - 生活
-draft: no
+draft: yes
 ---
 
 <!--more-->
