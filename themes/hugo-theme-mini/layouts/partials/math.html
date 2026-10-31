@@ -12,6 +12,9 @@ document.addEventListener("DOMContentLoaded", function () {
         {left: "\\(", right: "\\)", display: false},
         {left: "\\[", right: "\\]", display: true}
       ],
+      preProcess: function (math) {
+        return math.replace(/(^|[^\\])%/g, "$1\\%");
+      },
       throwOnError: false
     });
   }
